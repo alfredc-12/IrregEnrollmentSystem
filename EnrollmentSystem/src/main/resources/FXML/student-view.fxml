@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="528.0" prefWidth="996.0" stylesheets="@../CSS/student-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentController">
+
+   <left>
+      <AnchorPane fx:id="leftpane" prefHeight="468.0" prefWidth="193.0" BorderPane.alignment="CENTER" />
+   </left>
+   <center>
+      <AnchorPane fx:id="rightpane" prefHeight="514.0" prefWidth="802.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="insertButton" layoutX="141.0" layoutY="316.0" text="INSERT" />
+            <Button fx:id="clearButton" layoutX="423.0" layoutY="316.0" text="CLEAR" />
+
+            <TextField fx:id="studID" editable="false" layoutX="113.0" layoutY="55.0" promptText="Student ID" />
+            <TextField fx:id="firstName" layoutX="113.0" layoutY="107.0" />
+            <TextField fx:id="middleName" layoutX="113.0" layoutY="157.0" />
+            <TextField fx:id="lastName" layoutX="113.0" layoutY="208.0" />
+            <TextField fx:id="srCode" layoutX="358.0" layoutY="55.0" />
+            <TextField fx:id="contact" layoutX="358.0" layoutY="107.0" />
+            <TextField fx:id="address" layoutX="358.0" layoutY="157.0" />
+            <TextField fx:id="picLink" layoutX="358.0" layoutY="208.0" />
+            <TextField fx:id="email" layoutX="113.0" layoutY="250.0" />
+            <TextField fx:id="password" layoutX="358.0" layoutY="250.0" />
+
+            <ComboBox fx:id="yearLevel" accessibleText="adsf" layoutX="611.0" layoutY="52.0" prefWidth="150.0" />
+            <ComboBox fx:id="program" layoutX="611.0" layoutY="104.0" prefWidth="150.0" />
+            <ComboBox fx:id="major" layoutX="611.0" layoutY="154.0" prefWidth="150.0" />
+            <ComboBox fx:id="status" layoutX="611.0" layoutY="205.0" prefWidth="150.0" />
+            <Label layoutX="22.0" layoutY="111.0" text="First Name" />
+            <Label layoutX="22.0" layoutY="161.0" text="Middle Name" />
+            <Label layoutX="22.0" layoutY="212.0" text="Last Name" />
+            <Label layoutX="537.0" layoutY="56.0" text="Year Level" />
+            <Label layoutX="537.0" layoutY="108.0" text="Program" />
+            <Label layoutX="537.0" layoutY="158.0" text="Major" />
+            <Label layoutX="537.0" layoutY="209.0" text="Status" />
+            <Label layoutX="281.0" layoutY="59.0" text="SR-Code" />
+            <Label layoutX="281.0" layoutY="111.0" text="Contact" />
+            <Label layoutX="281.0" layoutY="161.0" text="Address" />
+            <Label layoutX="281.0" layoutY="212.0" text="ID Picture" />
+            <Label layoutX="22.0" layoutY="254.0" text="Email" />
+            <Label layoutX="282.0" layoutY="254.0" text="Password" />
+            <Button fx:id="Delete" layoutX="235.0" layoutY="316.0" mnemonicParsing="false" onAction="#deleteStudent" text="DELETE" />
+
+            <Button fx:id="Update" layoutX="328.0" layoutY="316.0" mnemonicParsing="false" onAction="#updateStudent" text="UPDATE" />
+            <TextField fx:id="searchField" layoutX="611.0" layoutY="316.0" promptText="FILTER" />
+
+            <TableView fx:id="studentTable" layoutX="20" layoutY="355.0" prefHeight="152.0" prefWidth="742.0">
+               <columns>
+                  <TableColumn fx:id="studIDColumn" text="Student ID" />
+                  <TableColumn fx:id="firstNameColumn" text="First Name" />
+                  <TableColumn fx:id="middleNameColumn" text="Middle Name" />
+                  <TableColumn fx:id="lastNameColumn" text="Last Name" />
+                  <TableColumn fx:id="srCodeColumn" text="SR Code" />
+                  <TableColumn fx:id="yearLevelColumn" text="Year Level" />
+                  <TableColumn fx:id="programColumn" text="Program" />
+                  <TableColumn fx:id="majorColumn" text="Major" />
+                  <TableColumn fx:id="contactColumn" text="Contact" />
+                  <TableColumn fx:id="emailColumn" text="Email" />
+                  <TableColumn fx:id="addressColumn" text="Address" />
+                  <TableColumn fx:id="statusColumn" text="Status" />
+               </columns>
+            </TableView>
+
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

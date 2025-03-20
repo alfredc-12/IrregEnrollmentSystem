@@ -1,0 +1,86 @@
+/* 🌟 General Styling */
+.root {
+    -fx-background-color: #f4f4f4;
+    -fx-font-family: "Arial";
+}
+
+/* 🌟 Table View */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* 🌟 Table Column Headers (Green) */
+.table-view .column-header {
+    -fx-background-color: #4CAF50; /* Green */
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white; /* White text */
+    -fx-font-weight: bold;
+}
+
+/* 🌟 Table Rows */
+.table-column {
+    -fx-alignment: CENTER;
+    -fx-font-size: 14px;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #A8E6A2;  /* Green highlight for selected row */
+    -fx-text-fill: black;
+}
+
+/* 🌟 Buttons */
+.button {
+    -fx-background-color: #3498db; /* Blue */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9; /* Darker Blue */
+}
+
+.button:pressed {
+    -fx-background-color: #1f618d; /* Even Darker Blue */
+}
+
+/* 🌟 Delete Button - Red */
+#Delete {
+    -fx-background-color: #dc3545;
+}
+
+#Delete:hover {
+    -fx-background-color: #a71d2a;
+}
+
+/* 🌟 Text Fields */
+.text-field, .combo-box {
+    -fx-border-color: #007BFF;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #4CAF50; /* Green border when focused */
+}
+
+/* 🌟 ComboBox */
+.combo-box {
+    -fx-background-color: white;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: black;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #007BFF;
+    -fx-text-fill: white;
+}
