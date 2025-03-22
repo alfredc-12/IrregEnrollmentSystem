@@ -57,6 +57,12 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- pom.xml (Maven dependency for OR Tools) -->
+    <dependency>
+      <groupId>com.google.ortools</groupId>
+      <artifactId>ortools-java</artifactId>
+      <version>9.12.4544</version>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>

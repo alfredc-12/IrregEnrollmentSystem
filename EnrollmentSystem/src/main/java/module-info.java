@@ -7,6 +7,7 @@ module org.enrolment.enrollmentsystem {
     requires java.sql;
     requires java.desktop;
     requires webcam.capture;
+    requires ortools.java;
 
     exports Application;
     opens Application to javafx.fxml;
