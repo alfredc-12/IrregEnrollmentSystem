@@ -3,6 +3,7 @@ package Classes; //Hello - Marlo
 import Application.HelloApplication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -38,13 +39,17 @@ public class Dashboard {
     private void openFaculty() throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/FXML/Faculty.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        Parent root = fxmlLoader.load();
+        Scene scene = new Scene(root, 750, 449); // fixed scene dimensions
         stage.setTitle("Faculty!");
         stage.setScene(scene);
+        stage.setResizable(false); // disable stage resizing
         stage.show();
-        // Close the current stage
+
+         // Close the current stage
         Stage currentStage = (Stage) adminLabel.getScene().getWindow();
         currentStage.close();
+
     }
 
     @FXML

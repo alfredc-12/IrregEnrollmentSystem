@@ -14,7 +14,7 @@
          <children>
             <Button fx:id="btnStudent" layoutX="46.0" layoutY="138.0" mnemonicParsing="false" onAction="#openStudent" prefHeight="26.0" prefWidth="130.0" text="Student">
                <graphic>
-                  <ImageView fx:id="btnStudent" fitHeight="30.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Images/icons8-student-50.png" />
                      </image>
