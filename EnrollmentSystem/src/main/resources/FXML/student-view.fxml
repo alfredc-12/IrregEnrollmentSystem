@@ -90,8 +90,8 @@
                   <TableColumn fx:id="passwordColumn" text="Password" />
                </columns>
             </TableView>
-            <Pane fx:id="imagePanel" layoutX="448.0" layoutY="302.0" prefHeight="94.0" prefWidth="110.0" style="-fx-background-color: white;" />
-            <Pane fx:id="signaturePanel" layoutX="594.0" layoutY="301.0" prefHeight="95.0" prefWidth="116.0" style="-fx-background-color: white;" />
+            <Pane fx:id="imagePanel" layoutX="448.0" layoutY="307.0" prefHeight="89.0" prefWidth="110.0" style="-fx-background-color: white;" />
+            <Pane fx:id="signaturePanel" layoutX="594.0" layoutY="308.0" prefHeight="95.0" prefWidth="116.0" style="-fx-background-color: white;" />
             <Button fx:id="picture" layoutX="454.0" layoutY="406.0" mnemonicParsing="false" onAction="#openPictureDialog" prefHeight="18.0" prefWidth="98.0" text="Take Picture">
                <font>
                   <Font size="10.0" />
