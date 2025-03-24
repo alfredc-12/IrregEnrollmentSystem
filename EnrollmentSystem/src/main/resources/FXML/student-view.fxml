@@ -6,19 +6,26 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="528.0" prefWidth="996.0" stylesheets="@../CSS/student-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentController">
-
-   <left>
-      <AnchorPane fx:id="leftpane" prefHeight="468.0" prefWidth="193.0" BorderPane.alignment="CENTER" />
-   </left>
-   <center>
-      <AnchorPane fx:id="rightpane" prefHeight="514.0" prefWidth="802.0" BorderPane.alignment="CENTER">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentController">
+   <bottom>
+      <AnchorPane fx:id="rightpane" prefHeight="450.0" prefWidth="750.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="insertButton" layoutX="141.0" layoutY="316.0" text="INSERT" />
-            <Button fx:id="clearButton" layoutX="423.0" layoutY="316.0" text="CLEAR" />
+            <Button fx:id="insertButton" layoutX="22.0" layoutY="310.0" prefHeight="30.0" prefWidth="92.0" text="INSERT">
+               <graphic>
+                  <ImageView fitHeight="17.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/icons8-add-48.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="clearButton" layoutX="452.0" layoutY="312.0" prefHeight="26.0" prefWidth="68.0" text="CLEAR" />
 
             <TextField fx:id="studID" editable="false" layoutX="113.0" layoutY="55.0" promptText="Student ID" />
             <TextField fx:id="firstName" layoutX="113.0" layoutY="107.0" />
@@ -27,33 +34,45 @@
             <TextField fx:id="srCode" layoutX="358.0" layoutY="55.0" />
             <TextField fx:id="contact" layoutX="358.0" layoutY="107.0" />
             <TextField fx:id="address" layoutX="358.0" layoutY="157.0" />
-            <TextField fx:id="picLink" layoutX="358.0" layoutY="208.0" />
             <TextField fx:id="email" layoutX="113.0" layoutY="250.0" />
-            <TextField fx:id="password" layoutX="358.0" layoutY="250.0" />
+            <TextField fx:id="password" layoutX="358.0" layoutY="212.0" />
 
-            <ComboBox fx:id="yearLevel" accessibleText="adsf" layoutX="611.0" layoutY="52.0" prefWidth="150.0" />
-            <ComboBox fx:id="program" layoutX="611.0" layoutY="104.0" prefWidth="150.0" />
-            <ComboBox fx:id="major" layoutX="611.0" layoutY="154.0" prefWidth="150.0" />
-            <ComboBox fx:id="status" layoutX="611.0" layoutY="205.0" prefWidth="150.0" />
+            <ComboBox fx:id="yearLevel" accessibleText="adsf" layoutX="582.0" layoutY="55.0" prefWidth="150.0" />
+            <ComboBox fx:id="program" layoutX="582.0" layoutY="104.0" prefWidth="150.0" />
+            <ComboBox fx:id="major" layoutX="582.0" layoutY="145.0" prefWidth="150.0" />
+            <ComboBox fx:id="status" layoutX="582.0" layoutY="199.0" prefWidth="150.0" />
             <Label layoutX="22.0" layoutY="111.0" text="First Name" />
             <Label layoutX="22.0" layoutY="161.0" text="Middle Name" />
             <Label layoutX="22.0" layoutY="212.0" text="Last Name" />
-            <Label layoutX="537.0" layoutY="56.0" text="Year Level" />
-            <Label layoutX="537.0" layoutY="108.0" text="Program" />
-            <Label layoutX="537.0" layoutY="158.0" text="Major" />
-            <Label layoutX="537.0" layoutY="209.0" text="Status" />
+            <Label layoutX="510.0" layoutY="59.0" text="Year Level" />
+            <Label layoutX="513.0" layoutY="108.0" text="Program" />
+            <Label layoutX="512.0" layoutY="158.0" text="Major" />
+            <Label layoutX="512.0" layoutY="209.0" text="Status" />
             <Label layoutX="281.0" layoutY="59.0" text="SR-Code" />
             <Label layoutX="281.0" layoutY="111.0" text="Contact" />
             <Label layoutX="281.0" layoutY="161.0" text="Address" />
-            <Label layoutX="281.0" layoutY="212.0" text="ID Picture" />
             <Label layoutX="22.0" layoutY="254.0" text="Email" />
-            <Label layoutX="282.0" layoutY="254.0" text="Password" />
-            <Button fx:id="Delete" layoutX="235.0" layoutY="316.0" mnemonicParsing="false" onAction="#deleteStudent" text="DELETE" />
+            <Label layoutX="279.0" layoutY="216.0" text="Password" />
+            <Button fx:id="Delete" layoutX="157.0" layoutY="310.0" mnemonicParsing="false" onAction="#deleteStudent" prefHeight="29.0" prefWidth="95.0" text="DELETE">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/icons8-delete-48%20(green).png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 
-            <Button fx:id="Update" layoutX="328.0" layoutY="316.0" mnemonicParsing="false" onAction="#updateStudent" text="UPDATE" />
-            <TextField fx:id="searchField" layoutX="611.0" layoutY="316.0" promptText="FILTER" />
+            <Button fx:id="Update" layoutX="308.0" layoutY="312.0" mnemonicParsing="false" onAction="#updateStudent" prefHeight="28.0" prefWidth="99.0" text="UPDATE">
+               <graphic>
+                  <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Images/icons8-update-64.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <TextField fx:id="searchField" layoutX="575.0" layoutY="313.0" promptText="FILTER" />
 
-            <TableView fx:id="studentTable" layoutX="20" layoutY="355.0" prefHeight="152.0" prefWidth="742.0">
+            <TableView fx:id="studentTable" layoutX="20.0" layoutY="355.0" prefHeight="119.0" prefWidth="388.0">
                <columns>
                   <TableColumn fx:id="studIDColumn" text="Student ID" />
                   <TableColumn fx:id="firstNameColumn" text="First Name" />
@@ -67,10 +86,22 @@
                   <TableColumn fx:id="emailColumn" text="Email" />
                   <TableColumn fx:id="addressColumn" text="Address" />
                   <TableColumn fx:id="statusColumn" text="Status" />
+                  <TableColumn fx:id="picLinkColumn" text="Picture" />
+                  <TableColumn fx:id="passwordColumn" text="Password" />
                </columns>
             </TableView>
+            <Pane fx:id="imagePanel" layoutX="446.0" layoutY="354.0" prefHeight="94.0" prefWidth="110.0" style="-fx-background-color: white;" />
+            <Pane fx:id="signaturePanel" layoutX="599.0" layoutY="354.0" prefHeight="95.0" prefWidth="116.0" style="-fx-background-color: white;" />
+            <Button fx:id="picture" layoutX="452.0" layoutY="457.0" mnemonicParsing="false" onAction="#openPictureDialog" prefHeight="18.0" prefWidth="98.0" text="Take Picture">
+               <font>
+                  <Font size="10.0" />
+               </font></Button>
+            <Button fx:id="picture1" layoutX="612.0" layoutY="457.0" mnemonicParsing="false" onAction="#openSignatureDialog" prefHeight="15.0" prefWidth="90.0" text="Take Signature">
+               <font>
+                  <Font size="10.0" />
+               </font></Button>
 
          </children>
       </AnchorPane>
-   </center>
+   </bottom>
 </BorderPane>
