@@ -1,0 +1,88 @@
+/* ListViews: subjectListView and facultyListView */
+#subjectListView, #facultyListView {
+    -fx-background-color: #ffffff;                /* White background */
+    -fx-border-color: #B22222;                    /* Firebrick red border */
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+#subjectListView .list-cell, #facultyListView .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+#subjectListView .list-cell:hover, #facultyListView .list-cell:hover {
+    -fx-background-color: rgba(178, 34, 34, 0.2); /* Subtle red overlay */
+}
+
+#subjectListView .list-cell:filled:selected,
+#facultyListView .list-cell:filled:selected {
+    -fx-background-color: rgba(178, 34, 34, 0.3); /* Selected effect */
+}
+
+/* ComboBoxes: subjectCb and facultyCb */
+#subjectCb, #facultyCb {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-border-color: #B22222;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-size: 14px;
+}
+
+#subjectCb:hover, #facultyCb:hover {
+    -fx-background-color: #ffe6e6; /* Light red tint on hover */
+}
+
+#subjectCb:focused, #facultyCb:focused {
+    -fx-border-color: #FF4500; /* Brighter red when focused */
+}
+
+/* Search Fields: searchSubject and searchFaculty */
+#searchSubject, #searchFaculty {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-border-color: #B22222;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+
+}
+
+#searchSubject:hover, #searchFaculty:hover {
+    -fx-background-color: #ffe6e6;
+}
+
+
+
+/* Buttons: btnGenerateSched and btnDeleteSched */
+#btnGenerateSched, #btnDeleteSched {
+    -fx-background-color: linear-gradient(to bottom, #FF6347, #FF4500); /* Tomato to OrangeRed */
+    -fx-text-fill: #FDFCEA; /* Light text */
+    -fx-font-weight: bold;
+    -fx-background-radius: 25px;
+    -fx-border-radius: 25px;
+
+    -fx-border-color: #B22222;
+    -fx-border-width: 2px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 8, 0, 0, 2);
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+#btnGenerateSched:hover, #btnDeleteSched:hover {
+    -fx-background-color: linear-gradient(to bottom, #FF4500, #FF6347); /* Reverse gradient */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+#btnGenerateSched:pressed, #btnDeleteSched:pressed {
+    -fx-background-color: #B22222; /* Firebrick red for pressed state */
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 5, 0, 0, 2);
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
