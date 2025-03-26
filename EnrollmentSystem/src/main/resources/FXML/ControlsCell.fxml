@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox alignment="CENTER" prefHeight="24.0" prefWidth="48.0" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ExtraSources.ControlsCellController">
+    <children>
+        <Button fx:id="updateButton" mnemonicParsing="false">
+         <graphic>
+            <ImageView>
+               <image>
+                  <Image url="@../Images/edit.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+        <Button fx:id="deleteButton" mnemonicParsing="false">
+         <graphic>
+            <ImageView>
+               <image>
+                  <Image url="@../Images/delete.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+    </children>
+</HBox>

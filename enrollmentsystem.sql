@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 01:06 PM
+-- Generation Time: Mar 23, 2025 at 03:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,11 +33,24 @@ CREATE TABLE `faculty` (
   `middle_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) NOT NULL,
   `role` enum('Professor','Assistant Professor','Lecturer','Program Chair','Guest Lecturer','Dean') NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `contact_no` varchar(20) NOT NULL,
+  `personal_email` varchar(100) NOT NULL,
+  `bsu_email` varchar(100) NOT NULL,
+  `password` varchar(255) DEFAULT '12345',
   `pic_link` varchar(255) DEFAULT NULL,
   `sign_link` varchar(255) DEFAULT NULL,
-  `max_subjects` int(11) DEFAULT 2
+  `max_subjects` int(11) DEFAULT 2,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `faculty`
+--
+
+INSERT INTO `faculty` (`id`, `first_name`, `middle_name`, `last_name`, `role`, `contact_no`, `personal_email`, `bsu_email`, `password`, `pic_link`, `sign_link`, `max_subjects`, `isDeleted`) VALUES
+(1, 'David Alfred', 'Cabali', 'Gludo', 'Assistant Professor', '09953373692', 'davidgludo@gmail.com', 'davidalfred.gludo@g.batstate-u.edu.ph', '12345', 'https://drive.google.com/uc?export=view&id=1kT8rEJkZit3qHRcNPZt_P0JD3gGz2WpE', NULL, 2, 0),
+(6, 'Josiah Angelo', 'Tabora', 'Sangalang', 'Lecturer', '0973289137', 'gelo@gmail.com', 'josiahangelo.sangalang@g.batstate-u.edu.ph', '12345', 'https://drive.google.com/uc?export=view&id=1qGu5nUFkLws9ZKOV3XtxBTa0xD2BuJOt', 'https://drive.google.com/uc?export=view&id=13qfw1yx-FEwMx0V4LhuIYjwNHa52JWjw', 2, 0),
+(8, 'Marlo', 'Humarang', 'Condicion', 'Program Chair', '09321313', 'marlo@gmail.com', 'marlo.condicion@g.batstate-u.edu.ph', NULL, 'https://drive.google.com/uc?export=view&id=1O09FVpnbW7td6CacoSJh-6o33H0jdfBt', 'https://drive.google.com/uc?export=view&id=1QK768pq6Fc29MBmpf4BEOTHs43AcRAmr', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -107,6 +120,7 @@ CREATE TABLE `student` (
   `middle_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) NOT NULL,
   `pic_link` text DEFAULT NULL,
+  `sign_link` text DEFAULT NULL,
   `sr_code` varchar(100) NOT NULL,
   `year_level` varchar(50) NOT NULL,
   `program` varchar(100) NOT NULL,
@@ -274,7 +288,7 @@ ALTER TABLE `time_slots`
 -- AUTO_INCREMENT for table `faculty`
 --
 ALTER TABLE `faculty`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `guardian`

@@ -15,10 +15,12 @@ public class Student {
     private final SimpleStringProperty email;
     private final SimpleStringProperty address;
     private final SimpleStringProperty status;
+    private final SimpleStringProperty picLink;
+    private final SimpleStringProperty password;
 
     public Student(int studID, String firstName, String middleName, String lastName, String srCode,
                    String yearLevel, String program, String major, String contact, String email,
-                   String address, String status) {
+                   String address, String status, String picLink, String password) {
         this.studID = new SimpleIntegerProperty(studID);
         this.firstName = new SimpleStringProperty(firstName);
         this.middleName = new SimpleStringProperty(middleName);
@@ -31,6 +33,8 @@ public class Student {
         this.email = new SimpleStringProperty(email);
         this.address = new SimpleStringProperty(address);
         this.status = new SimpleStringProperty(status);
+        this.picLink = new SimpleStringProperty(picLink);
+        this.password = new SimpleStringProperty(password);
     }
 
     // Getter methods for TableView
@@ -46,6 +50,8 @@ public class Student {
     public SimpleStringProperty emailProperty() { return email; }
     public SimpleStringProperty addressProperty() { return address; }
     public SimpleStringProperty statusProperty() { return status; }
+    public SimpleStringProperty picLinkProperty() { return picLink; }
+    public SimpleStringProperty passwordProperty() { return password; }
 
 
     public int getStudID() { return studID.get(); }
@@ -60,6 +66,9 @@ public class Student {
     public String getEmail() { return email.get(); }
     public String getAddress() { return address.get(); }
     public String getStatus() { return status.get(); }
+    public String getPicLink() { return picLink.get(); }
+    public String getPassword() { return password.get(); }
+
 
 }
 

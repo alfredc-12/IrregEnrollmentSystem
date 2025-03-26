@@ -127,20 +127,21 @@ public class PictureDialog {
      */
     @FXML
     private void handleTakePicture() {
-        // Capture the current image from the ImageView.
         capturedImage = imageView.getImage();
+        stopCamera();
+        Stage stage = (Stage) takePicture.getScene().getWindow();
+        stage.close();
+    }
 
-        // Stop the AnimationTimer and close the webcam.
+
+    void stopCamera() {
         if (timer != null) {
             timer.stop();
         }
         if (webcam != null && webcam.isOpen()) {
             webcam.close();
+            System.out.println("Camera closed.");
         }
-
-        // Close the dialog window.
-        Stage stage = (Stage) takePicture.getScene().getWindow();
-        stage.close();
     }
 
     /**
