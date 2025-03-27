@@ -6,15 +6,13 @@ import GettersSetters.ScheduleModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import ExtraSources.DBConnect;
 
@@ -83,26 +81,39 @@ public class PopUpSchedController {
 
     // Handler to delete record from the database based on the selected item in the parent's table view.
     private void deleteScheduleRecord() {
-        // Assume that SchedulerController has a method getSelectedSchedule() that returns the selected ScheduleModel
+        // Get the selected schedule record from the parent controller.
         ScheduleModel selected = parentController.getSelectedSchedule();
         if (selected == null) {
             System.out.println("No record selected to delete.");
             return;
         }
-        int schedId = selected.getSchedId();
-        String sql = "DELETE FROM subsched WHERE sched_id = ?";
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, schedId);
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Record deleted successfully.");
+
+        // Display a confirmation dialog asking the user
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Record");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete this record?");
+        ButtonType yesButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("No", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == yesButton) {
+            int schedId = selected.getSchedId();
+            String sql = "DELETE FROM subsched WHERE sched_id = ?";
+            try (Connection con = DBConnect.getConnection();
+                 PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, schedId);
+                int affectedRows = ps.executeUpdate();
+                if (affectedRows > 0) {
+                    System.out.println("Record deleted successfully.");
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+            // Refresh table view in the parent controller
+            parentController.loadScheduleData();
         }
-        // Refresh table view in the parent controller
-        parentController.loadScheduleData();
     }
 
     private int getRoomIdByType(String roomType) {

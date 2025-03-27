@@ -47,7 +47,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="btnDeleteSched" alignment="CENTER" layoutX="42.0" layoutY="152.0" mnemonicParsing="false" onAction="#generateSchedule" prefHeight="30.0" prefWidth="156.0" text="Delete Schedule">
+      <Button fx:id="btnDeleteSched" alignment="CENTER" layoutX="42.0" layoutY="152.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="156.0" text="Delete Schedule">
          <graphic>
             <ImageView fitHeight="18.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
                <image>
