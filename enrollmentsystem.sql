@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 12:55 PM
+-- Generation Time: Mar 28, 2025 at 06:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,22 +33,16 @@ CREATE TABLE `faculty` (
   `middle_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) NOT NULL,
   `role` enum('Professor','Assistant Professor','Lecturer','Program Chair','Guest Lecturer','Dean') NOT NULL,
-  `email` varchar(100) NOT NULL,
+  `contact_no` varchar(20) DEFAULT NULL,
+  `personal_email` varchar(100) DEFAULT NULL,
+  `bsu_email` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `password` varchar(255) DEFAULT '12345',
   `pic_link` varchar(255) DEFAULT NULL,
   `sign_link` varchar(255) DEFAULT NULL,
-  `max_subjects` int(11) DEFAULT 2
+  `max_subjects` int(11) DEFAULT 2,
+  `isDeleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `faculty`
---
-
-INSERT INTO `faculty` (`faculty_id`, `first_name`, `middle_name`, `last_name`, `role`, `email`, `pic_link`, `sign_link`, `max_subjects`) VALUES
-(1, 'John', 'A.', 'Doe', 'Professor', 'john.doe@example.com', 'images/john_doe.jpg', 'signatures/john_doe.png', 3),
-(2, 'Jane', 'B.', 'Smith', 'Assistant Professor', 'jane.smith@example.com', 'images/jane_smith.jpg', 'signatures/jane_smith.png', 2),
-(3, 'Michael', 'C.', 'Johnson', 'Lecturer', 'michael.johnson@example.com', 'images/michael_johnson.jpg', 'signatures/michael_johnson.png', 4),
-(4, 'Emily', 'D.', 'Brown', 'Professor', 'emily.brown@example.com', 'images/emily_brown.jpg', 'signatures/emily_brown.png', 3),
-(5, 'David', 'E.', 'Wilson', 'Assistant Professor', 'david.wilson@example.com', 'images/david_wilson.jpg', 'signatures/david_wilson.png', 2);
 
 -- --------------------------------------------------------
 
@@ -94,16 +88,6 @@ CREATE TABLE `rooms` (
   `room_type` enum('Lecture','Lab') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `rooms`
---
-
-INSERT INTO `rooms` (`room_id`, `room_name`, `room_type`) VALUES
-(1, 'Room A', 'Lecture'),
-(2, 'Room B', 'Lab'),
-(3, 'Room D', 'Lecture'),
-(4, 'Room E', 'Lab');
-
 -- --------------------------------------------------------
 
 --
@@ -115,17 +99,6 @@ CREATE TABLE `section` (
   `section_name` varchar(100) NOT NULL,
   `department` enum('CICS','CAS','CABEIHM','CHS','CTE','CCJE') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `section`
---
-
-INSERT INTO `section` (`section_id`, `section_name`, `department`) VALUES
-(1, 'BSIT-1A', 'CICS'),
-(2, 'BSIT-1B', 'CICS'),
-(3, 'BSCS-2A', 'CICS'),
-(4, 'BSCS-2B', 'CICS'),
-(5, 'BSIS-3A', 'CICS');
 
 -- --------------------------------------------------------
 
@@ -139,6 +112,7 @@ CREATE TABLE `student` (
   `middle_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) NOT NULL,
   `pic_link` text DEFAULT NULL,
+  `sign_link` text DEFAULT NULL,
   `sr_code` varchar(100) NOT NULL,
   `year_level` varchar(50) NOT NULL,
   `program` varchar(100) NOT NULL,
@@ -173,19 +147,9 @@ CREATE TABLE `subjects` (
   `sub_id` int(11) NOT NULL,
   `subject_name` varchar(100) NOT NULL,
   `credit_hours` int(11) NOT NULL,
-  `is_major` tinyint(1) NOT NULL DEFAULT 0
+  `is_major` tinyint(1) NOT NULL,
+  `preferred_room` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `subjects`
---
-
-INSERT INTO `subjects` (`sub_id`, `subject_name`, `credit_hours`, `is_major`) VALUES
-(1, 'Mathematics', 3, 1),
-(2, 'Physics', 3, 1),
-(3, 'History', 2, 0),
-(4, 'Chemistry', 3, 1),
-(5, 'Art', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -203,25 +167,6 @@ CREATE TABLE `subsched` (
   `faculty_id` int(11) NOT NULL,
   `section_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `subsched`
---
-
-INSERT INTO `subsched` (`sched_id`, `subject_id`, `time_in`, `time_out`, `days`, `room_id`, `faculty_id`, `section_id`) VALUES
-(3, 3, '10:00:00', '12:00:00', 'Monday', 1, 1, 3),
-(4, 3, '12:00:00', '14:00:00', 'Monday', 1, 1, 4),
-(5, 3, '14:00:00', '16:00:00', 'Monday', 1, 1, 5),
-(6, 1, '08:00:00', '09:30:00', 'Monday', 1, 2, 1),
-(7, 1, '08:00:00', '09:30:00', 'Thursday', 1, 2, 2),
-(8, 1, '08:00:00', '09:30:00', 'Friday', 1, 2, 3),
-(9, 1, '08:00:00', '09:30:00', 'Tuesday', 1, 2, 4),
-(10, 1, '08:00:00', '09:30:00', 'Wednesday', 1, 2, 5),
-(11, 1, '08:00:00', '09:30:00', 'Thursday', 2, 2, 1),
-(12, 1, '08:00:00', '09:30:00', 'Wednesday', 2, 2, 2),
-(13, 1, '08:00:00', '09:30:00', 'Monday', 2, 2, 3),
-(14, 1, '08:00:00', '09:30:00', 'Friday', 2, 2, 4),
-(15, 1, '08:00:00', '09:30:00', 'Tuesday', 2, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -336,7 +281,7 @@ ALTER TABLE `time_slots`
 -- AUTO_INCREMENT for table `faculty`
 --
 ALTER TABLE `faculty`
-  MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `faculty_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `guardian`
@@ -351,10 +296,16 @@ ALTER TABLE `logs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `rooms`
+--
+ALTER TABLE `rooms`
+  MODIFY `room_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -372,13 +323,13 @@ ALTER TABLE `student_section`
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `sub_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `sub_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `subsched`
 --
 ALTER TABLE `subsched`
-  MODIFY `sched_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `sched_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `substud`
