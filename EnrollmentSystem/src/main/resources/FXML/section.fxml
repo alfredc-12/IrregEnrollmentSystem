@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="442.0" prefWidth="801.0" stylesheets="@/CSS/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.Section">
+<AnchorPane prefHeight="442.0" prefWidth="801.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.Section">
 
 
     <children>
@@ -30,7 +30,7 @@
          <graphic>
             <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@/Images/icons8-add-48.png" />
+                  <Image url="@../Images/icons8-add-48.png" />
                </image>
             </ImageView>
          </graphic>
@@ -42,7 +42,7 @@
          <graphic>
             <ImageView fitHeight="23.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@/Images/icons8-update-64.png" />
+                  <Image url="@../Images/icons8-update-64.png" />
                </image>
             </ImageView>
          </graphic></Button>
@@ -51,7 +51,7 @@
          <graphic>
             <ImageView fitHeight="21.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@/Images/icons8-delete-48 (green).png" />
+                  <Image url="@../Images/icons8-delete-48 (green).png" />
                </image>
             </ImageView>
          </graphic></Button>

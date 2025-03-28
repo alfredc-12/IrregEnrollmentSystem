@@ -1,0 +1,133 @@
+/* student-style.css */
+
+/* Set a default font and background for the application */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-base: #fafafa;
+    -fx-background-color: #fafafa;
+}
+
+/* --------------------------
+   Global Control Styles
+--------------------------- */
+
+/* Labels use the main accent color (#d2232a) for text */
+.label {
+    -fx-text-fill: #d2232a;
+}
+
+/* TextFields with a light background and a subtle border */
+.text-field {
+    -fx-background-color: #fafafa;
+    -fx-text-fill: #d2232a;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 1px;
+}
+
+/* ComboBoxes styled similarly to text fields */
+.combo-box {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 1px;
+    -fx-text-fill: #d2232a;
+}
+
+/* RadioButtons and MenuItems using the main color for text */
+.radio-button,
+.menu-item {
+    -fx-text-fill: #d2232a;
+}
+
+/* ContextMenus for search suggestions */
+.context-menu {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 1px;
+}
+
+/* --------------------------
+   Pane Styles
+--------------------------- */
+
+/* The left pane might be used for navigation; use an accent background (#0186c9) */
+#leftpane {
+    -fx-background-color: #0186c9;
+}
+
+/* For the hidePane, use a contrasting background and border */
+#hidePane {
+    -fx-background-color: #9a9ca0;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 2px;
+}
+
+/* The facultyPane, where the table is, keeps a light background */
+#facultyPane {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 2px;
+}
+
+/* The showSearch pane (which contains the search TextField) */
+#showSearch {
+    -fx-background-color: #fafafa;
+    -fx-border-color: #d2232a;
+    -fx-border-width: 1px;
+}
+
+/* --------------------------
+   Button Styles
+--------------------------- */
+
+/* Default buttons: use main color for background and light text */
+.button {
+    -fx-background-color: #d2232a;
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 14px;
+    -fx-padding: 5 10 5 10;
+    -fx-background-radius: 4;
+}
+
+/* Hover effect: use one of the accent colors (#f19f17) */
+.button:hover {
+    -fx-background-color: #f19f17;
+}
+
+/* Pressed effect: slightly darken the button (using #0186c9 as an example) */
+.button:pressed {
+    -fx-background-color: #0186c9;
+}
+
+/* --------------------------
+   ImageView Styles
+--------------------------- */
+
+/* Add a slight drop shadow for images */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}
+
+/* --------------------------
+   Specific Element Styles
+--------------------------- */
+
+/* Admin label styling: white text on main background */
+#adminLabel {
+    -fx-background-color: #d2232a;
+    -fx-text-fill: #fafafa;
+    -fx-alignment: center;
+}
+
+/* Optionally, adjust the search TextField appearance */
+#search {
+    -fx-background-color: #fafafa;
+    -fx-text-fill: #d2232a;
+    -fx-prompt-text-fill: #9a9ca0; /* light gray prompt */
+    -fx-border-color: #d2232a;
+    -fx-border-width: 1px;
+}
+
+/* Style for the context menu attached to the search field */
+#searching {
+    -fx-pref-width: 224px;
+}

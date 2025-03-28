@@ -100,8 +100,10 @@ public class Faculty {
         return "https://drive.google.com/uc?export=view&id=" + uploadedFile.getId();
     }
 
-    // Helper method to show a confirmation dialog with two buttons.
-    private void showConfirmationDialog(String message, Runnable onConfirm, String cancelText, Runnable onCancel, String iconType) {
+    private void showConfirmationDialog(String message,
+                                        String confirmText, Runnable onConfirm,
+                                        String cancelText, Runnable onCancel,
+                                        String iconType) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/Notification.fxml"));
             Parent root = loader.load();
@@ -111,7 +113,7 @@ public class Faculty {
             dialogStage.initModality(Modality.APPLICATION_MODAL);
             notification.setStage(dialogStage);
             notification.setMessage(message);
-            notification.setButtons("Confirm", () -> {
+            notification.setButtons(confirmText, () -> {
                 dialogStage.close();
                 onConfirm.run();
             }, cancelText, () -> {
@@ -132,6 +134,15 @@ public class Faculty {
                 searching.hide();
             } else {
                 loadSuggestions(newValue.trim());
+            }
+        });
+
+        search.focusedProperty().addListener((observable, wasFocused, isNowFocused) -> {
+            if (!isNowFocused) { // Focus lost
+                String text = search.getText().trim();
+                if (text.isEmpty() || text.equals("(Search Name)")) {
+                    animateSearchResetTransition();
+                }
             }
         });
 
@@ -163,7 +174,7 @@ public class Faculty {
                 if (search.getText().equals("(Search Name)")) {
                     search.setText("");
                     // Change text fill to black (or any other color you want for user input).
-                    search.setStyle("-fx-text-fill: black; -fx-alignment: center;");
+                    search.setStyle("-fx-text-fill: black; -fx-alignment: center-left;");
                 }
             } else {
                 // When the field loses focus:
@@ -187,14 +198,17 @@ public class Faculty {
     }
 
     private void animateSearchResetTransition() {
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(300),
-                        new KeyValue(search.layoutXProperty(), originalSearchLayoutX, Interpolator.EASE_BOTH),
-                        new KeyValue(search.prefWidthProperty(), originalSearchPrefWidth, Interpolator.EASE_BOTH),
-                        new KeyValue(showDeleted.layoutXProperty(), originalShowDeletedLayoutX, Interpolator.EASE_BOTH)
-                )
-        );
-        timeline.play();
+        String currentText = search.getText();
+        if (currentText.isEmpty() || currentText.equals("(Search Name)")) {
+            Timeline timeline = new Timeline(
+                    new KeyFrame(Duration.millis(300),
+                            new KeyValue(search.layoutXProperty(), originalSearchLayoutX, Interpolator.EASE_BOTH),
+                            new KeyValue(search.prefWidthProperty(), originalSearchPrefWidth, Interpolator.EASE_BOTH),
+                            new KeyValue(showDeleted.layoutXProperty(), originalShowDeletedLayoutX, Interpolator.EASE_BOTH)
+                    )
+            );
+            timeline.play();
+        }
     }
 
     private void loadSuggestions(String query) {
@@ -233,6 +247,56 @@ public class Faculty {
         }
     }
 
+    private void performTogglePaneAndResize() {
+        if (!isPaneHidden) {
+            // Hide the hidePane by sliding it downward.
+            TranslateTransition hideTransition = new TranslateTransition(Duration.millis(200), hidePane);
+            hideTransition.setToY(213); // Adjust as needed
+            hideTransition.setInterpolator(Interpolator.SPLINE(0.42, 0, 0.58, 1));
+            hideTransition.play();
+
+            // Expand the TableView and its container.
+            double extraHeight = 218;
+            Timeline expandTimeline = new Timeline(
+                    new KeyFrame(Duration.millis(200),
+                            new KeyValue(facultyTable.prefHeightProperty(), originalFacultyTableHeight + extraHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1)),
+                            new KeyValue(facultyPane.prefHeightProperty(), originalFacultyPaneHeight + extraHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1))
+                    )
+            );
+            expandTimeline.play();
+
+            isPaneHidden = true;
+        } else {
+            // Slide hidePane back up.
+            TranslateTransition showTransition = new TranslateTransition(Duration.millis(200), hidePane);
+            showTransition.setToY(0);
+            showTransition.setInterpolator(Interpolator.SPLINE(0.42, 0, 0.58, 1));
+            showTransition.play();
+
+            // Contract the TableView and container back to original heights.
+            Timeline contractTimeline = new Timeline(
+                    new KeyFrame(Duration.millis(200),
+                            new KeyValue(facultyTable.prefHeightProperty(), originalFacultyTableHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1)),
+                            new KeyValue(facultyPane.prefHeightProperty(), originalFacultyPaneHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1))
+                    )
+            );
+            contractTimeline.play();
+
+            isPaneHidden = false;
+        }
+    }
+
+    private void clearAllFields() {
+        FName.clear();
+        MName.clear();
+        LName.clear();
+        contantno.clear();
+        email.clear();
+        role.setValue(null);
+        imagePanel.getChildren().clear();
+        signaturePanel.getChildren().clear();
+    }
+
     @FXML
     public void addFacultyRecord() {
         // Check required fields.
@@ -244,11 +308,12 @@ public class Faculty {
                 role.getValue() == null ||
                 role.getValue().toString().trim().isEmpty()) {
 
-            // Show a warning dialog with only an "Ok" button.
+            // Show a warning dialog with only one button ("Ok").
             showConfirmationDialog(
                     "Warning: Required fields are empty. Please fill in all required fields.",
+                    "Ok",    // Confirm button text (only one button will be shown)
                     () -> { /* No action on confirm */ },
-                    "Ok",    // Cancel button text ("Ok" here, so only one button is shown)
+                    "",      // Cancel button text is empty so it won't show
                     () -> { /* Do nothing on cancel */ },
                     "warning"
             );
@@ -260,9 +325,10 @@ public class Faculty {
                 ? "Are you sure you want to add this faculty record?"
                 : "Are you sure you want to update this faculty record?";
 
-        // Show confirmation dialog.
+        // Show confirmation dialog with "Confirm" and "Cancel" buttons.
         showConfirmationDialog(
                 confirmMessage,
+                "Confirm", // Confirm button text
                 () -> {
                     // Run database operations on a background thread.
                     Task<Void> task = new Task<Void>() {
@@ -410,9 +476,9 @@ public class Faculty {
                     t.setDaemon(true);
                     t.start();
                 },
-                "Cancel",
+                "Cancel",        // Cancel button text.
                 () -> { /* Cancel action: do nothing */ },
-                "confirm"
+                "confirm"        // Icon type.
         );
     }
 
@@ -434,7 +500,8 @@ public class Faculty {
 
     @FXML
     private void initialize() {
-        searching.setStyle("-fx-pref-width: 224px;");
+        hidePane.setTranslateY(213);
+        searching.setStyle("-fx-pref-width: 200px;");
         DBConnectInitialize();
         kon = DBConnect.getConnection();
         colId.setVisible(false);
@@ -540,7 +607,8 @@ public class Faculty {
         if (showDeleted.isSelected()) {
             showConfirmationDialog(
                     "Are you sure you want to restore this faculty record?",
-                    () -> { // onConfirm: restore record (set isDeleted = false)
+                    "Restore", // Confirm button label
+                    () -> {    // onConfirm: restore record
                         Task<Void> task = new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
@@ -564,15 +632,18 @@ public class Faculty {
                         task.setOnFailed(event -> task.getException().printStackTrace());
                         new Thread(task).start();
                     },
-                    "Cancel", // cancel button text
-                    () -> { /* onCancel: no action */ },
-                    "confirm" // icon type for restore (set this as "confirm")
+                    "Cancel", // Cancel button label
+                    () -> {    // onCancel: no action
+                        // Optionally, perform any cancel action here.
+                    },
+                    "confirm" // Icon type (set to "confirm")
             );
         } else {
             // Otherwise, perform deletion (set isDeleted = true)
             showConfirmationDialog(
                     "Are you sure you want to delete this faculty record?",
-                    () -> { // onConfirm: delete record
+                    "Delete", // Confirm button label
+                    () -> {   // onConfirm: delete record
                         Task<Void> task = new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
@@ -596,9 +667,11 @@ public class Faculty {
                         task.setOnFailed(event -> task.getException().printStackTrace());
                         new Thread(task).start();
                     },
-                    "Cancel", // cancel button text
-                    () -> { /* onCancel: no action */ },
-                    "warning" // icon type for delete
+                    "Cancel",  // Cancel button label
+                    () -> {    // onCancel: no action
+                        // Optionally do something on cancel
+                    },
+                    "warning"  // Icon type
             );
         }
     }
@@ -818,42 +891,39 @@ public class Faculty {
 
     @FXML
     public void togglePaneAndResize() {
-        if (!isPaneHidden) {
-            // Hide the hidePane by sliding it downward.
-            TranslateTransition hideTransition = new TranslateTransition(Duration.millis(200), hidePane);
-            hideTransition.setToY(213); // Adjust the value as needed.
-            hideTransition.setInterpolator(Interpolator.SPLINE(0.42, 0, 0.58, 1));
-            hideTransition.play();
+        // Check for unsaved changes.
+        boolean unsaved = !FName.getText().trim().isEmpty() ||
+                !MName.getText().trim().isEmpty() ||
+                !LName.getText().trim().isEmpty() ||
+                !contantno.getText().trim().isEmpty() ||
+                !email.getText().trim().isEmpty() ||
+                (role.getValue() != null && !role.getValue().toString().trim().isEmpty()) ||
+                !imagePanel.getChildren().isEmpty() ||
+                !signaturePanel.getChildren().isEmpty();
 
-            // Expand the TableView and its container by the height of hidePane.
-            double extraHeight = 218;
-            Timeline expandTimeline = new Timeline(
-                    new KeyFrame(Duration.millis(200),
-                            new KeyValue(facultyTable.prefHeightProperty(), originalFacultyTableHeight + extraHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1)),
-                            new KeyValue(facultyPane.prefHeightProperty(), originalFacultyPaneHeight + extraHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1))
-                    )
+        if (unsaved) {
+            // Use different messages based on mode.
+            String msg = (currentUpdateFacultyId == null)
+                    ? "You have unsaved changes in Add mode. Do you want to discard them and hide the pane?"
+                    : "You have unsaved update changes. Do you want to discard them and hide the pane?";
+            showConfirmationDialog(
+                    msg,
+                    "Discard",
+                    () -> {
+                        clearAllFields();
+                        performTogglePaneAndResize();
+                        // Reset update mode if applicable.
+                        currentUpdateFacultyId = null;
+                        add.setText("Add Faculty");
+                    },
+                    "Cancel",
+                    () -> { /* No action on cancel */ },
+                    "warning"
             );
-            expandTimeline.play();
-
-            isPaneHidden = true;
-        } else {
-            // Slide hidePane back up (restore to Y = 0).
-            TranslateTransition showTransition = new TranslateTransition(Duration.millis(200), hidePane);
-            showTransition.setToY(0);
-            showTransition.setInterpolator(Interpolator.SPLINE(0.42, 0, 0.58, 1));
-            showTransition.play();
-
-            // Contract the TableView and its container back to their original heights.
-            Timeline contractTimeline = new Timeline(
-                    new KeyFrame(Duration.millis(200),
-                            new KeyValue(facultyTable.prefHeightProperty(), originalFacultyTableHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1)),
-                            new KeyValue(facultyPane.prefHeightProperty(), originalFacultyPaneHeight, Interpolator.SPLINE(0.42, 0, 0.58, 1))
-                    )
-            );
-            contractTimeline.play();
-
-            isPaneHidden = false;
+            return;
         }
+        // No unsaved changes – simply toggle.
+        performTogglePaneAndResize();
     }
 
     @FXML
@@ -973,11 +1043,11 @@ public class Faculty {
 
         if (applySearch) {
             // Use CONCAT with spaces; adjust for possible NULL middle names.
-            sql = "SELECT id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
+            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
                     "FROM faculty " +
                     "WHERE " + isDeletedCondition + " AND CONCAT(first_name, ' ', IFNULL(middle_name, ''), ' ', last_name) LIKE ?";
         } else {
-            sql = "SELECT id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
+            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
                     "FROM faculty " +
                     "WHERE " + isDeletedCondition;
         }
@@ -1038,12 +1108,11 @@ public class Faculty {
     @FXML private Pane hidePane;
     @FXML private AnchorPane facultyPane;
     @FXML private RadioButton showDeleted;
-    @FXML
-    private Pane showSearch;
+    @FXML private Pane showSearch;
     @FXML private TextField search;
     @FXML private MenuItem searcher;
     @FXML private ContextMenu searching;
-
+    @FXML private AnchorPane paneFaculty;
 
     @FXML private TableView<FacultyTable> facultyTable;
     @FXML private TableColumn<FacultyTable, Integer> colId;

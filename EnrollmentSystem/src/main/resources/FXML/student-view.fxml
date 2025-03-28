@@ -57,7 +57,7 @@
                <graphic>
                   <ImageView fitHeight="16.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../Images/icons8-delete-48%20(green).png" />
+                        <Image url="@../Images/icons8-delete-48 (green).png" />
                      </image>
                   </ImageView>
                </graphic></Button>

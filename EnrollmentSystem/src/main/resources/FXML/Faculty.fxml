@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="450.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.Faculty">
+<AnchorPane prefHeight="450.0" prefWidth="750.0" style="-fx-background-color: #FF0000;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.Faculty">
    <children>
-      <Pane fx:id="hidePane" layoutY="215.0" prefHeight="235.0" prefWidth="750.0" style="-fx-background-color: #808080;">
+      <Pane fx:id="hidePane" layoutY="210.0" prefHeight="240.0" prefWidth="750.0" style="-fx-background-color: #808080;">
          <children>
             <TextField fx:id="FName" layoutX="23.0" layoutY="80.0" prefHeight="25.0" prefWidth="160.0" />
             <Label layoutX="23.0" layoutY="63.0" prefHeight="17.0" prefWidth="149.0" text="First Name" textAlignment="JUSTIFY" />

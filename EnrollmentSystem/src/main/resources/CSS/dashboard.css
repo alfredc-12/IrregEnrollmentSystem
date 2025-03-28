@@ -1,0 +1,63 @@
+/* ================================
+   Dashboard FXML Scoped Styling
+   ================================ */
+
+/* Root node styling */
+#dashboardRoot {
+    -fx-background-color: #fafafa;
+    -fx-font-family: "Arial";
+    -fx-padding: 0;
+}
+
+/* Left Pane */
+#leftpane {
+    -fx-background-color: #d2232a; /* Main color (red) */
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+}
+
+/* Right Pane */
+#rightpane {
+    -fx-background-color: #fafafa; /* Main background */
+    -fx-border-radius: 5px;
+}
+
+/* Button Styles */
+/* Note: List each button by its fx:id */
+#btnStudent,
+#btnFaculty,
+#btnSection,
+#btnSched,
+#btnSubject {
+    -fx-background-color: #0186c9; /* Main blue */
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+#btnStudent:hover,
+#btnFaculty:hover,
+#btnSection:hover,
+#btnSched:hover,
+#btnSubject:hover {
+    -fx-background-color: #0173a7; /* Darker blue on hover */
+}
+
+#btnStudent:pressed,
+#btnFaculty:pressed,
+#btnSection:pressed,
+#btnSched:pressed,
+#btnSubject:pressed {
+    -fx-background-color: #015f87; /* Even darker on press */
+}
+
+/* Admin Label */
+#adminLabel {
+    -fx-text-fill: #fafafa;
+    -fx-font-size: 27px;
+    -fx-font-weight: bold;
+}
+
+/* You can add any additional element-specific rules by targeting their fx:id here */

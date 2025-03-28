@@ -66,7 +66,7 @@ public class Section {
         }
 
         // SQL Query to delete the selected section
-        String query = "DELETE FROM section WHERE Section = ?";
+        String query = "DELETE FROM section WHERE section_id = ?";
 
         try (PreparedStatement stmt = kon.prepareStatement(query)) {
             stmt.setString(1, selected.getSection()); // Use the section name as the identifier
@@ -94,12 +94,12 @@ public class Section {
     private void loadData() {
         sectionList.clear(); // Clear existing data before reloading
 
-        String query = "SELECT section, department FROM section";
+        String query = "SELECT section_name, department FROM section";
         try (PreparedStatement stmt = kon.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                sectionList.add(new SectionModel(rs.getString("section"), rs.getString("department")));
+                sectionList.add(new SectionModel(rs.getString("section_name"), rs.getString("department")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -118,7 +118,7 @@ public class Section {
             return;
         }
 
-        String query = "INSERT INTO section (Section, Department) VALUES (?, ?)";
+        String query = "INSERT INTO section (section_name, department) VALUES (?, ?)";
         try (PreparedStatement stmt = kon.prepareStatement(query)) {
             stmt.setString(1, section);
             stmt.setString(2, department);
@@ -150,7 +150,7 @@ public class Section {
             return;
         }
 
-        String query = "UPDATE section SET Section = ?, Department = ? WHERE Section = ?";
+        String query = "UPDATE section SET section_name = ?, department = ? WHERE section_id = ?";
         try (PreparedStatement stmt = kon.prepareStatement(query)) {
             stmt.setString(1, newSection);
             stmt.setString(2, newDepartment);

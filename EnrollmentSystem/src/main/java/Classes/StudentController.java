@@ -116,13 +116,13 @@ public class StudentController {
         //filter
         setupSearchFilter();
 
-        Platform.runLater(() -> {
+        /*Platform.runLater(() -> {
             Stage stage = (Stage) studentTable.getScene().getWindow();
             stage.setOnCloseRequest(event -> {
                 event.consume(); // Prevents the window from closing
                 returnToDashboard();
             });
-        });
+        });*/
 
     }
 
