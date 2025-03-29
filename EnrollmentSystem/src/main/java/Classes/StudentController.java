@@ -862,19 +862,26 @@ public class StudentController {
 
     @FXML
     private void insertStudent() {
+        kon = DBConnect.getConnection();
         if (kon == null) {
             new Alert(Alert.AlertType.ERROR, "Database connection is unavailable!").show();
             return;
         }
+
+        // Validate input fields
         if (isInputInvalid()) {
-            return;
+            return; // Stop execution if validation fails
         }
+
+        // Check if student already exists
         if (isStudentExists(srCode.getText(), email.getText(), contact.getText())) {
             new Alert(Alert.AlertType.ERROR, "Student with the same SR-Code, Email, or Contact already exists!").show();
             return;
         }
 
         try {
+            kon.setAutoCommit(false); // Start transaction
+
             String photoLinks = null;
             String signatureLinks = null;
             Drive driveService = getDriveService();
@@ -899,9 +906,11 @@ public class StudentController {
                 throw new IOException("File upload failed: Photo or Signature URL is empty.");
             }
 
+            // Insert into student table first
             String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, pic_link, sign_link, sr_code, year_level, program, major, contact, email, password, address, status, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
             int studentID;
-            try (PreparedStatement studentStmt = DBConnect.getConnection().prepareStatement(studentSQL, Statement.RETURN_GENERATED_KEYS)) {
+
+            try (PreparedStatement studentStmt = kon.prepareStatement(studentSQL, Statement.RETURN_GENERATED_KEYS)) {
                 studentStmt.setString(1, firstName.getText());
                 studentStmt.setString(2, middleName.getText());
                 studentStmt.setString(3, lastName.getText());
@@ -917,6 +926,7 @@ public class StudentController {
                 studentStmt.setString(13, address.getText());
                 studentStmt.setString(14, status.getValue());
                 studentStmt.executeUpdate();
+
                 try (ResultSet rs = studentStmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         studentID = rs.getInt(1);
@@ -925,25 +935,51 @@ public class StudentController {
                     }
                 }
             }
-            kon = DBConnect.getConnection();
-            loadStudents();
-            clearFields();
+
+            // Get guardian details
+            Map<String, String> guardianDetails = getGuardianDetails();
+            if (guardianDetails.isEmpty()) {
+                kon.rollback(); // Rollback if user cancels input
+                return;
+            }
+
+            // Insert into guardian table (now referencing `student_id`)
+            String guardianSQL = "INSERT INTO guardian (student_id, first_name, middle_name, last_name, address, email, contact_no, relationship) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement guardianStmt = kon.prepareStatement(guardianSQL)) {
+                guardianStmt.setInt(1, studentID); // Use generated student_id
+                guardianStmt.setString(2, guardianDetails.get("GFName"));
+                guardianStmt.setString(3, guardianDetails.get("GMName"));
+                guardianStmt.setString(4, guardianDetails.get("GLName"));
+                guardianStmt.setString(5, guardianDetails.get("GAddress"));
+                guardianStmt.setString(6, guardianDetails.get("GEmail"));
+                guardianStmt.setString(7, guardianDetails.get("GContactNo"));
+                guardianStmt.setString(8, guardianDetails.get("Relationship"));
+
+                guardianStmt.executeUpdate();
+            }
+
+            kon.commit(); // Commit transaction
+            loadStudents(); // Refresh student list
+            clearFields(); // Clear form fields
             new Alert(Alert.AlertType.INFORMATION, "Student and Guardian inserted successfully!").show();
+
         } catch (Exception ex) {
             try {
-                kon.rollback();
+                kon.rollback(); // Rollback transaction on error
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show();
         } finally {
             try {
-                kon.setAutoCommit(true);
+                kon.setAutoCommit(true); // Restore default mode
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     @FXML
     private void updateStudent() {
