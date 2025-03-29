@@ -16,11 +16,12 @@ public class Student {
     private final SimpleStringProperty address;
     private final SimpleStringProperty status;
     private final SimpleStringProperty picLink;
+    private final SimpleStringProperty signLink;
     private final SimpleStringProperty password;
 
     public Student(int studID, String firstName, String middleName, String lastName, String srCode,
                    String yearLevel, String program, String major, String contact, String email,
-                   String address, String status, String picLink, String password) {
+                   String address, String status, String picLink, String signLink, String password) {
         this.studID = new SimpleIntegerProperty(studID);
         this.firstName = new SimpleStringProperty(firstName);
         this.middleName = new SimpleStringProperty(middleName);
@@ -34,6 +35,7 @@ public class Student {
         this.address = new SimpleStringProperty(address);
         this.status = new SimpleStringProperty(status);
         this.picLink = new SimpleStringProperty(picLink);
+        this.signLink = new SimpleStringProperty(signLink);
         this.password = new SimpleStringProperty(password);
     }
 
@@ -51,6 +53,7 @@ public class Student {
     public SimpleStringProperty addressProperty() { return address; }
     public SimpleStringProperty statusProperty() { return status; }
     public SimpleStringProperty picLinkProperty() { return picLink; }
+    public SimpleStringProperty signLinkProperty() { return signLink; }
     public SimpleStringProperty passwordProperty() { return password; }
 
 
@@ -67,6 +70,7 @@ public class Student {
     public String getAddress() { return address.get(); }
     public String getStatus() { return status.get(); }
     public String getPicLink() { return picLink.get(); }
+    public String getSignLink() { return signLink.get(); }
     public String getPassword() { return password.get(); }
 
 

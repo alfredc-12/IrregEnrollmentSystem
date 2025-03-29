@@ -218,7 +218,7 @@ public class Faculty {
                 "WHERE isDeleted = 0 " +
                 "AND CONCAT(first_name, ' ', middle_name, ' ', last_name) LIKE ? " +
                 "LIMIT 10";
-        try (PreparedStatement ps = kon.prepareStatement(sql)) {
+        try (PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql)) {
             // Use '%' wildcards to match any characters before/after the query.
             ps.setString(1, "%" + query + "%");
             ResultSet rs = ps.executeQuery();
@@ -395,10 +395,11 @@ public class Faculty {
                                 }
 
                                 if (currentUpdateFacultyId == null) {
+                                    Connection connect = DBConnect.getConnection();
                                     // --- INSERT new record ---
                                     String sql = "INSERT INTO faculty (first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, password, pic_link, sign_link, max_subjects) " +
                                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                                    PreparedStatement ps = kon.prepareStatement(sql);
+                                    PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql);
                                     ps.setString(1, firstName);
                                     ps.setString(2, middleName);
                                     ps.setString(3, lastName);
@@ -428,8 +429,8 @@ public class Faculty {
                                 } else {
                                     // --- UPDATE existing record ---
                                     String sql = "UPDATE faculty SET first_name=?, middle_name=?, last_name=?, role=?, contact_no=?, personal_email=?, bsu_email=?, pic_link=?, sign_link=? " +
-                                            "WHERE id=?";
-                                    PreparedStatement ps = kon.prepareStatement(sql);
+                                            "WHERE faculty_id=?";
+                                    PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql);
                                     ps.setString(1, firstName);
                                     ps.setString(2, middleName);
                                     ps.setString(3, lastName);
@@ -502,7 +503,7 @@ public class Faculty {
     private void initialize() {
         hidePane.setTranslateY(213);
         searching.setStyle("-fx-pref-width: 200px;");
-        DBConnectInitialize();
+        //DBConnectInitialize();
         kon = DBConnect.getConnection();
         colId.setVisible(false);
         initializeTableColumns();
@@ -523,7 +524,7 @@ public class Faculty {
         togglePaneAndResize();
     }
 
-    @FXML
+   /* @FXML
     private void DBConnectInitialize() {
         // In your initialize() method or wherever you need the connection:
         Task<Connection> connectionTask = new Task<Connection>() {
@@ -552,7 +553,7 @@ public class Faculty {
         Thread connectionThread = new Thread(connectionTask);
         connectionThread.setDaemon(true);
         connectionThread.start();
-    }
+    }*/
 
     @FXML
     private void handleUpdate(FacultyTable faculty) {
@@ -612,8 +613,8 @@ public class Faculty {
                         Task<Void> task = new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
-                                String sql = "UPDATE faculty SET isDeleted = ? WHERE id = ?";
-                                try (PreparedStatement ps = kon.prepareStatement(sql)) {
+                                String sql = "UPDATE faculty SET isDeleted = ? WHERE faculty_id = ?";
+                                try (PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql)) {
                                     ps.setBoolean(1, false); // restore record
                                     ps.setInt(2, faculty.getId());
                                     int affectedRows = ps.executeUpdate();
@@ -647,8 +648,8 @@ public class Faculty {
                         Task<Void> task = new Task<Void>() {
                             @Override
                             protected Void call() throws Exception {
-                                String sql = "UPDATE faculty SET isDeleted = ? WHERE id = ?";
-                                try (PreparedStatement ps = kon.prepareStatement(sql)) {
+                                String sql = "UPDATE faculty SET isDeleted = ? WHERE faculty_id = ?";
+                                try (PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql)) {
                                     ps.setBoolean(1, true); // mark as deleted
                                     ps.setInt(2, faculty.getId());
                                     int affectedRows = ps.executeUpdate();
@@ -1055,13 +1056,13 @@ public class Faculty {
         facultyList.clear();
 
         try {
-            PreparedStatement ps = kon.prepareStatement(sql);
+            PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql);
             if (applySearch) {
                 ps.setString(1, "%" + searchText + "%");
             }
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("faculty_id");
                 String firstName = rs.getString("first_name");
                 String middleName = rs.getString("middle_name");
                 String lastName = rs.getString("last_name");
@@ -1085,6 +1086,7 @@ public class Faculty {
         }
 
         facultyTable.setItems(facultyList);
+        adjustPanelAndColumns();
     }
 
     @FXML private TextField FName;

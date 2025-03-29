@@ -25,4 +25,21 @@ public class DBConnect {
         }
         return kon;
     }
+
+    public static void keepConnectionAlive() {
+        try {
+            if (kon != null && !kon.isClosed()) {
+                kon.createStatement().executeQuery("SELECT 1"); // Simple query to keep it alive
+            }
+        } catch (SQLException e) {
+            System.err.println("Connection lost, attempting to reconnect...");
+            kon = getConnection(); // Reconnect if needed
+        }
+    }
+
+    public static void preventClosing() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Preventing database connection from closing...");
+        }));
+    }
 }
