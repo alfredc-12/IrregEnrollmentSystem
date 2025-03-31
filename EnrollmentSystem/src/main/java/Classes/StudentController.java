@@ -289,7 +289,6 @@ public class StudentController {
     }
 
 
-
     // Method to return to the dashboard
     private void returnToDashboard() {
         try {
@@ -870,7 +869,7 @@ public class StudentController {
 
         // Validate input fields
         if (isInputInvalid()) {
-            return; // Stop execution if validation fails
+            return;
         }
 
         // Check if student already exists
@@ -886,18 +885,16 @@ public class StudentController {
             String signatureLinks = null;
             Drive driveService = getDriveService();
 
+            // Handle photo upload
             if (photoFile != null) {
-                System.out.println("Uploading photo...");
                 photoLinks = uploadFileToDrive(driveService, photoFile, "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW", "image/jpeg");
-                System.out.println("Photo uploaded to: " + photoLinks);
             } else {
                 photoLinks = getImageUrlFromPane(imagePanel);
             }
 
+            // Handle signature upload
             if (signatureFile != null) {
-                System.out.println("Uploading signature...");
                 signatureLinks = uploadFileToDrive(driveService, signatureFile, "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW", "image/png");
-                System.out.println("Signature uploaded to: " + signatureLinks);
             } else {
                 signatureLinks = getImageUrlFromPane(signaturePanel);
             }
@@ -906,9 +903,9 @@ public class StudentController {
                 throw new IOException("File upload failed: Photo or Signature URL is empty.");
             }
 
-            // Insert into student table first
+            // Insert student into database
             String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, pic_link, sign_link, sr_code, year_level, program, major, contact, email, password, address, status, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
-            int studentID;
+            int studentID = -1;
 
             try (PreparedStatement studentStmt = kon.prepareStatement(studentSQL, Statement.RETURN_GENERATED_KEYS)) {
                 studentStmt.setString(1, firstName.getText());
@@ -925,7 +922,11 @@ public class StudentController {
                 studentStmt.setString(12, password.getText());
                 studentStmt.setString(13, address.getText());
                 studentStmt.setString(14, status.getValue());
-                studentStmt.executeUpdate();
+
+                int rowsInserted = studentStmt.executeUpdate();
+                if (rowsInserted == 0) {
+                    throw new SQLException("Failed to insert student record.");
+                }
 
                 try (ResultSet rs = studentStmt.getGeneratedKeys()) {
                     if (rs.next()) {
@@ -936,18 +937,24 @@ public class StudentController {
                 }
             }
 
-            // Get guardian details
-            Map<String, String> guardianDetails = getGuardianDetails();
+            if (studentID == -1) {
+                throw new SQLException("Invalid Student ID retrieved.");
+            }
+
+            new Alert(Alert.AlertType.INFORMATION, "Student inserted successfully! Now, please provide guardian details.").showAndWait();
+
+            // Prompt user for guardian details
+            Map<String, String> guardianDetails = getGuardianDetails(studentID);
             if (guardianDetails.isEmpty()) {
-                kon.rollback(); // Rollback if user cancels input
+                new Alert(Alert.AlertType.WARNING, "Guardian details are required!").show();
                 return;
             }
 
-            // Insert into guardian table (now referencing `student_id`)
+            // Insert guardian record using retrieved studentID
             String guardianSQL = "INSERT INTO guardian (student_id, first_name, middle_name, last_name, address, email, contact_no, relationship) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement guardianStmt = kon.prepareStatement(guardianSQL)) {
-                guardianStmt.setInt(1, studentID); // Use generated student_id
+                guardianStmt.setInt(1, studentID);
                 guardianStmt.setString(2, guardianDetails.get("GFName"));
                 guardianStmt.setString(3, guardianDetails.get("GMName"));
                 guardianStmt.setString(4, guardianDetails.get("GLName"));
@@ -956,29 +963,34 @@ public class StudentController {
                 guardianStmt.setString(7, guardianDetails.get("GContactNo"));
                 guardianStmt.setString(8, guardianDetails.get("Relationship"));
 
-                guardianStmt.executeUpdate();
+                int guardianInserted = guardianStmt.executeUpdate();
+                if (guardianInserted == 0) {
+                    throw new SQLException("Failed to insert guardian record.");
+                }
             }
 
-            kon.commit(); // Commit transaction
-            loadStudents(); // Refresh student list
-            clearFields(); // Clear form fields
+            // Commit the transaction
+            kon.commit();
+            loadStudents();
+            clearFields();
             new Alert(Alert.AlertType.INFORMATION, "Student and Guardian inserted successfully!").show();
 
         } catch (Exception ex) {
             try {
-                kon.rollback(); // Rollback transaction on error
+                kon.rollback();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show();
         } finally {
             try {
-                kon.setAutoCommit(true); // Restore default mode
+                kon.setAutoCommit(true);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
 
     @FXML
@@ -997,7 +1009,7 @@ public class StudentController {
             String photoLink;
             if (studID == null) {
                 if (photoFile != null) {
-                    String photoFolderId = "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW";
+                    String photoFolderId = "16S9t0duAtEBVtKgu3YNTHDAIm__YSexd";
                     Drive driveService = getDriveService();
                     photoLink = uploadFileToDrive(driveService, photoFile, photoFolderId, "image/jpeg");
                     System.out.println("Photo uploaded: " + photoLink);
@@ -1006,7 +1018,7 @@ public class StudentController {
                 }
             } else {
                 if (photoFile != null) {
-                    String photoFolderId = "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW";
+                    String photoFolderId = "16S9t0duAtEBVtKgu3YNTHDAIm__YSexd";
                     Drive driveService = getDriveService();
                     photoLink = uploadFileToDrive(driveService, photoFile, photoFolderId, "image/jpeg");
                     System.out.println("Updated photo uploaded: " + photoLink);
@@ -1017,7 +1029,7 @@ public class StudentController {
 
             String signatureLink;
                 if (signatureFile != null) {
-                    String signatureFolderId = "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW";
+                    String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
                     Drive driveService = getDriveService();
                     signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
                     System.out.println("Signature uploaded: " + signatureLink);
@@ -1025,7 +1037,7 @@ public class StudentController {
                     signatureLink = getImageUrlFromPane(signaturePanel);
                 }
                 if (signatureFile != null) {
-                    String signatureFolderId = "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW";
+                    String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
                     Drive driveService = getDriveService();
                     signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
                     System.out.println("Updated signature uploaded: " + signatureLink);
@@ -1067,7 +1079,7 @@ public class StudentController {
             }
 
             // Get guardian details
-            Map<String, String> guardianDetails = getGuardianDetails();
+            Map<String, String> guardianDetails = getGuardianDetails(studentID);
             if (guardianDetails.isEmpty()) {
                 return; // Stop update if user cancels input
             }
@@ -1167,25 +1179,16 @@ public class StudentController {
 
 
     @FXML
-    private Map<String, String> getGuardianDetails() {
+    private Map<String, String> getGuardianDetails(int studentID) {
         Map<String, String> guardianData = new HashMap<>();
 
-        // Get selected student from TableView
-        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent == null) {
-            new Alert(Alert.AlertType.ERROR, "No student selected! Please select a student to update.").show();
-            return new HashMap<>();
-        }
-
-        int studentID = selectedStudent.getStudID(); // Get student ID from the selected row
-
-        // Query to fetch guardian details
+        // Fetch guardian details only if a record exists
         String fetchGuardianSQL = "SELECT first_name, middle_name, last_name, address, email, contact_no, relationship FROM guardian WHERE student_id = ?";
 
         try (PreparedStatement stmt = DBConnect.getConnection().prepareStatement(fetchGuardianSQL)) {
             stmt.setInt(1, studentID);
             try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
+                if (rs.next()) { // Load existing guardian details if available
                     guardianData.put("GFName", rs.getString("first_name"));
                     guardianData.put("GMName", rs.getString("middle_name"));
                     guardianData.put("GLName", rs.getString("last_name"));
@@ -1197,18 +1200,19 @@ public class StudentController {
             }
         } catch (SQLException ex) {
             new Alert(Alert.AlertType.ERROR, "Error fetching guardian details: " + ex.getMessage()).show();
-            return new HashMap<>(); // Return empty map on error
+            return new HashMap<>();
         }
 
-        // Display the input dialog with pre-filled values
+        // Display the input dialog for guardian details
         Dialog<Map<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Guardian Information");
-        dialog.setHeaderText("Update Guardian Details:");
+        dialog.setHeaderText("Enter Guardian Details:");
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
 
+        // TextFields for input
         TextField gfName = new TextField(guardianData.getOrDefault("GFName", ""));
         TextField gmName = new TextField(guardianData.getOrDefault("GMName", ""));
         TextField glName = new TextField(guardianData.getOrDefault("GLName", ""));
@@ -1216,9 +1220,10 @@ public class StudentController {
         TextField gEmail = new TextField(guardianData.getOrDefault("GEmail", ""));
         TextField gContactNo = new TextField(guardianData.getOrDefault("GContactNo", ""));
 
+        // ComboBox for Relationship selection
         ComboBox<String> relationship = new ComboBox<>();
         relationship.getItems().addAll("Father", "Mother", "Guardian");
-        relationship.setValue(guardianData.getOrDefault("Relationship", "Father"));
+        relationship.setValue(guardianData.getOrDefault("Relationship", "Father")); // Default to "Father"
 
         grid.add(new Label("First Name:"), 0, 0);
         grid.add(gfName, 1, 0);
@@ -1250,7 +1255,7 @@ public class StudentController {
                 result.put("Relationship", relationship.getValue());
                 return result;
             }
-            return new HashMap<>();
+            return new HashMap<>(); // Return empty if user cancels
         });
 
         return dialog.showAndWait().orElse(new HashMap<>());

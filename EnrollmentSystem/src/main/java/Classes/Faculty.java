@@ -942,6 +942,9 @@ public class Faculty {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Capture Picture");
+
+            // Ensure camera stops when the window is closed
+            stage.setOnHidden(event -> dialogController.stopCamera());
             stage.showAndWait();
 
             // After the dialog closes, retrieve the captured image
@@ -1044,11 +1047,11 @@ public class Faculty {
 
         if (applySearch) {
             // Use CONCAT with spaces; adjust for possible NULL middle names.
-            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
+            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link, sign_link " +
                     "FROM faculty " +
                     "WHERE " + isDeletedCondition + " AND CONCAT(first_name, ' ', IFNULL(middle_name, ''), ' ', last_name) LIKE ?";
         } else {
-            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link " +
+            sql = "SELECT faculty_id, first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, pic_link, sign_link " +
                     "FROM faculty " +
                     "WHERE " + isDeletedCondition;
         }
@@ -1071,10 +1074,10 @@ public class Faculty {
                 String personalEmail = rs.getString("personal_email");
                 String bsuEmail = rs.getString("bsu_email");
                 String picLink = rs.getString("pic_link");
+                String signLink = rs.getString("sign_link");
 
                 // Dummy values for the unused fields.
                 String password = "";
-                String signLink = "";
                 int maxSubjects = 0;
 
                 FacultyTable facultyRecord = new FacultyTable(id, firstName, middleName, lastName,
