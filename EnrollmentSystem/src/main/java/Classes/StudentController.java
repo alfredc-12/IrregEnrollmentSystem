@@ -85,14 +85,24 @@ public class StudentController {
     @FXML private TableColumn<Student, String> signLinkColumn;
     @FXML private TableColumn<Student, String> passwordColumn;
 
+
+    @FXML private TableColumn<Student, String> semesterColumn;
+    @FXML private TableColumn<Student, Boolean> isIrregularColumn;
+
+    @FXML private TableColumn<Student, String> guardianFullNameColumn;
+    @FXML private TableColumn<Student, String> guardianContactNoColumn;
+    @FXML private TableColumn<Student, String> guardianRelationshipColumn;
+
     @FXML private TextField firstName, middleName, lastName, picLink, signLink, srCode, contact, email, password, address;
-    @FXML private ComboBox<String> yearLevel, program, major, status;
+    @FXML private ComboBox<String> yearLevel, program, major, status, semester;
     @FXML private Button insertButton, clearButton;
+    @FXML private CheckBox isIrregular;
     @FXML private TextField studID; // If needed for the database
 
     @FXML private Button Delete;
     @FXML private TextField searchField; //search or filter
     @FXML private RadioButton showDeleted;
+    @FXML private RadioButton showIrregular;
 
     @FXML private Pane signaturePanel; // Signature
     @FXML private Pane imagePanel; // Image
@@ -112,11 +122,13 @@ public class StudentController {
 
     private final double originalSearchLayoutX = 577.0;  // Updated to match FXML
     private final double originalSearchPrefWidth = 150.0;
-    private final double originalShowDeletedLayoutX = 460.0;  // Updated to match FXML
+    private final double originalShowDeletedLayoutX = 460.0;
+    private final double originalShowIrregularLayoutX = 340.0;// Updated to match FXML
 
     private final double targetSearchLayoutX = 498.0;
     private final double targetSearchPrefWidth = 230.0;
     private final double targetShowDeletedLayoutX = 385.0;
+    private final double targetShowIrregularLayoutX = 265.0;
 
 
 
@@ -125,6 +137,9 @@ public class StudentController {
     // Mapping of programs to their respective majors
     private final Map<String, String[]> majorsMap = new HashMap<>();
 
+    @FXML private TextField guardianFullName;
+    @FXML private TextField guardianContact;
+    @FXML private TextField guardianRelationship;
 
 
     @FXML
@@ -137,6 +152,7 @@ public class StudentController {
         yearLevel.getItems().addAll("1st Year", "2nd Year", "3rd Year", "4th Year");
         program.getItems().addAll("BS Computer Science", "BS Information Technology", "BS Computer Engineering");
         status.getItems().addAll("Enrolled", "Not Enrolled");
+        semester.getItems().addAll("1st Sem", "2nd Sem", "Midterms");
 
         // Define major options based on the selected program
         majorsMap.put("BS Computer Science", new String[]{"None", "Data Science", "Web Development"});
@@ -157,6 +173,7 @@ public class StudentController {
         initializeTableColumns();
         studIDColumn.setVisible(false);
         signLinkColumn.setVisible(false);
+        isIrregularColumn.setVisible(false);
 
         originalStudentPaneHeight = rightpane.getPrefHeight();
         originalStudentTableHeight = studentTable.getPrefHeight();
@@ -169,6 +186,7 @@ public class StudentController {
         originalStudentTableHeight = studentTable.getPrefHeight();
 
         togglePaneAndResize();
+
 
     }
 
@@ -248,6 +266,14 @@ public class StudentController {
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().statusProperty());
         picLinkColumn.setCellValueFactory(cellData -> cellData.getValue().picLinkProperty());
         passwordColumn.setCellValueFactory(cellData -> cellData.getValue().passwordProperty());
+        semesterColumn.setCellValueFactory(cellData -> cellData.getValue().semesterProperty());
+        isIrregularColumn.setCellValueFactory(cellData -> cellData.getValue().isIrregularProperty());
+
+        // Bind the guardian-related columns to the corresponding properties in the Student and Guardian class
+        guardianFullNameColumn.setCellValueFactory(cellData -> cellData.getValue().guardianFullNameProperty());
+        guardianContactNoColumn.setCellValueFactory(cellData -> cellData.getValue().guardianContactNoProperty());
+        guardianRelationshipColumn.setCellValueFactory(cellData -> cellData.getValue().guardianRelationshipProperty());
+
 
         picLinkColumn.setCellFactory(column -> new TableCell<Student, String>() {
             private final ImageView imageView = new ImageView();
@@ -596,7 +622,8 @@ public class StudentController {
                 new KeyFrame(Duration.millis(300),
                         new KeyValue(searchField.layoutXProperty(), targetSearchLayoutX, Interpolator.EASE_BOTH),
                         new KeyValue(searchField.prefWidthProperty(), targetSearchPrefWidth, Interpolator.EASE_BOTH),
-                        new KeyValue(showDeleted.layoutXProperty(), targetShowDeletedLayoutX, Interpolator.EASE_BOTH)
+                        new KeyValue(showDeleted.layoutXProperty(), targetShowDeletedLayoutX, Interpolator.EASE_BOTH),
+                        new KeyValue(showIrregular.layoutXProperty(), targetShowIrregularLayoutX, Interpolator.EASE_BOTH)
                 )
         );
         timeline.play();
@@ -607,7 +634,8 @@ public class StudentController {
                 new KeyFrame(Duration.millis(300),
                         new KeyValue(searchField.layoutXProperty(), originalSearchLayoutX, Interpolator.EASE_BOTH),
                         new KeyValue(searchField.prefWidthProperty(), originalSearchPrefWidth, Interpolator.EASE_BOTH),
-                        new KeyValue(showDeleted.layoutXProperty(), originalShowDeletedLayoutX, Interpolator.EASE_BOTH)
+                        new KeyValue(showDeleted.layoutXProperty(), originalShowDeletedLayoutX, Interpolator.EASE_BOTH),
+                        new KeyValue(showIrregular.layoutXProperty(), originalShowIrregularLayoutX, Interpolator.EASE_BOTH)
                 )
         );
         timeline.play();
@@ -696,38 +724,93 @@ public class StudentController {
 
         ObservableList<Student> filteredStudents = FXCollections.observableArrayList();
 
-        String sql = "SELECT * FROM student WHERE " +
-                "first_name LIKE ? OR middle_name LIKE ? OR last_name LIKE ? OR " +
-                "sr_code LIKE ? OR year_level LIKE ? OR program LIKE ? OR " +
-                "major LIKE ? OR contact LIKE ? OR email LIKE ? OR " +
-                "address LIKE ? OR status LIKE ?";
-
+        // Updated query to include guardian fields for search
+        String sql = "SELECT s.id, s.first_name, s.middle_name, s.last_name, s.sr_code, " +
+                "s.year_level, s.program, s.major, s.contact, s.email, s.address, s.status, " +
+                "s.pic_link, s.sign_link, s.password, s.semester, s.isIrregular, " +
+                "g.first_name AS guardian_first_name, g.middle_name AS guardian_middle_name, " +
+                "g.last_name AS guardian_last_name, g.contact_no AS guardian_contact, g.relationship AS guardian_relationship " +
+                "FROM student s LEFT JOIN guardian g ON s.id = g.student_id WHERE " +
+                "s.first_name LIKE ? OR s.middle_name LIKE ? OR s.last_name LIKE ? OR " +
+                "s.sr_code LIKE ? OR s.year_level LIKE ? OR s.program LIKE ? OR " +
+                "s.major LIKE ? OR s.contact LIKE ? OR s.email LIKE ? OR s.address LIKE ? OR " +
+                "s.status LIKE ? OR g.first_name LIKE ? OR g.middle_name LIKE ? OR g.last_name LIKE ? OR " +
+                "g.contact_no LIKE ? OR g.relationship LIKE ?";
 
         try (PreparedStatement stmt = DBConnect.getConnection().prepareStatement(sql)) {
             String searchPattern = "%" + searchText + "%"; // Allow partial matching with wildcards
-            for (int i = 1; i <= 11; i++) {
+
+            // Set search text for all columns
+            for (int i = 1; i <= 16; i++) {
                 stmt.setString(i, searchPattern);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Student student = new Student(
-                        rs.getInt("id"),  // Changed "studID" to "id" (as per your table)
-                        rs.getString("first_name"),
-                        rs.getString("middle_name"),
-                        rs.getString("last_name"),
-                        rs.getString("sr_code"),
-                        rs.getString("year_level"),
-                        rs.getString("program"),
-                        rs.getString("major"),
-                        rs.getString("contact"),
-                        rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getString("status"),  // Ensure enum handling as needed
-                        rs.getString("pic_link"),
-                        rs.getString("sign_link"),
-                        rs.getString("password")
+                // Retrieve Student data
+                int studentId = rs.getInt("id");
+                String firstName = rs.getString("first_name");
+                String middleName = rs.getString("middle_name");
+                String lastName = rs.getString("last_name");
+                String srCode = rs.getString("sr_code");
+                String yearLevel = rs.getString("year_level");
+                String program = rs.getString("program");
+                String major = rs.getString("major");
+                String contact = rs.getString("contact");
+                String email = rs.getString("email");
+                String address = rs.getString("address");
+                String status = rs.getString("status");
+                String picLink = rs.getString("pic_link");
+                String signLink = rs.getString("sign_link");
+                String password = rs.getString("password");
+                String semester = rs.getString("semester");
+                boolean isIrregular = rs.getBoolean("isIrregular");
+
+                // Create full name for the student
+                String fullName = firstName + " " + (middleName == null ? "" : middleName + " ") + lastName;
+
+                // Create Guardian data (handle potential null values for guardian's fields)
+                String guardianFirstName = rs.getString("guardian_first_name");
+                String guardianMiddleName = rs.getString("guardian_middle_name");
+                String guardianLastName = rs.getString("guardian_last_name");
+
+                // Concatenate the guardian's full name
+                String guardianFullName = guardianFirstName + " " +
+                        (guardianMiddleName == null || guardianMiddleName.isEmpty() ? "" : guardianMiddleName + " ") +
+                        (guardianLastName == null ? "" : guardianLastName);
+
+                String guardianContact = rs.getString("guardian_contact");
+                String guardianRelationship = rs.getString("guardian_relationship");
+
+                // Create Guardian object
+                Guardian guardian = new Guardian(
+                        guardianFullName,
+                        guardianContact,
+                        guardianRelationship
                 );
+
+                // Create Student object with the loaded data and associated Guardian
+                Student student = new Student(
+                        studentId,
+                        firstName,
+                        middleName,
+                        lastName,
+                        srCode,
+                        yearLevel,
+                        program,
+                        major,
+                        contact,
+                        email,
+                        address,
+                        status,
+                        picLink,
+                        signLink,
+                        password,
+                        semester,
+                        isIrregular,
+                        guardian // Set the Guardian object
+                );
+
                 filteredStudents.add(student);
             }
 
@@ -739,14 +822,25 @@ public class StudentController {
     }
 
 
+
     @FXML
     private void loadStudents() {
         boolean showDeletedSelected = showDeleted.isSelected();
+        boolean showIrregularSelected = showIrregular.isSelected(); // Added for irregular students
 
-        // Adjust the WHERE clause based on the checkbox selection
-        String query = "SELECT id, first_name, IFNULL(middle_name, '') AS middle_name, last_name, sr_code, " +
-                "year_level, program, major, contact, email, address, status, pic_link, sign_link, password " +
-                "FROM student WHERE is_deleted = ?";
+        // Adjust the WHERE clause based on the checkbox selections
+        String query = "SELECT s.id, s.first_name, IFNULL(s.middle_name, '') AS middle_name, s.last_name, s.sr_code, " +
+                "s.year_level, s.program, s.major, s.contact, s.email, s.address, s.status, s.pic_link, s.semester, " +
+                "s.sign_link, s.password, s.isIrregular, g.first_name AS guardian_first_name, g.middle_name AS guardian_middle_name, " +
+                "g.last_name AS guardian_last_name, g.contact_no AS guardian_contact, g.relationship AS guardian_relationship " +
+                "FROM student s LEFT JOIN guardian g ON s.id = g.student_id WHERE s.is_deleted = ? ";
+
+        // Modify query to filter based on irregular students
+        if (showIrregularSelected) {
+            query += "AND s.isIrregular = 1 "; // Filter to show only irregular students
+        } else {
+            query += "AND s.isIrregular = 0 "; // Filter to show only regular students
+        }
 
         ObservableList<Student> studentList = FXCollections.observableArrayList();
 
@@ -757,12 +851,33 @@ public class StudentController {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String firstName = rs.getString("first_name");
-                String middleName = rs.getString("middle_name"); // Ensures NULL middle names are handled
+                String middleName = rs.getString("middle_name");
                 String lastName = rs.getString("last_name");
 
-                // Concatenate full name for display purposes
-                String fullName = firstName + " " + (middleName.isEmpty() ? "" : middleName + " ") + lastName;
+                // Concatenate full name for the student (Handle potential null middle name)
+                String fullName = firstName + " " +
+                        (middleName == null || middleName.isEmpty() ? "" : middleName + " ") +
+                        lastName;
 
+                // Retrieve guardian details
+                String guardianFirstName = rs.getString("guardian_first_name");
+                String guardianMiddleName = rs.getString("guardian_middle_name");
+                String guardianLastName = rs.getString("guardian_last_name");
+                String guardianContact = rs.getString("guardian_contact");
+                String guardianRelationship = rs.getString("guardian_relationship");
+
+                // Create Guardian object with concatenated full name (Handle potential null middle name)
+                String guardianFullName = guardianFirstName + " " +
+                        (guardianMiddleName == null || guardianMiddleName.isEmpty() ? "" : guardianMiddleName + " ") +
+                        guardianLastName;
+
+                Guardian guardian = new Guardian(
+                        guardianFullName,
+                        guardianContact,
+                        guardianRelationship
+                );
+
+                // Create Student object and assign Guardian to it
                 studentList.add(new Student(
                         id,
                         firstName,
@@ -778,7 +893,10 @@ public class StudentController {
                         rs.getString("status"),
                         rs.getString("pic_link"),
                         rs.getString("sign_link"),
-                        rs.getString("password")
+                        rs.getString("password"),
+                        rs.getString("semester"),
+                        rs.getBoolean("isIrregular"),
+                        guardian // Assign the Guardian object
                 ));
             }
 
@@ -789,7 +907,7 @@ public class StudentController {
             studentNameColumn.setCellValueFactory(cellData -> {
                 Student student = cellData.getValue();
                 String fullName = student.getFirstName() + " " +
-                        (student.getMiddleName().isEmpty() ? "" : student.getMiddleName() + " ") +
+                        (student.getMiddleName() == null || student.getMiddleName().isEmpty() ? "" : student.getMiddleName() + " ") +
                         student.getLastName();
                 return new SimpleStringProperty(fullName);
             });
@@ -798,7 +916,6 @@ public class StudentController {
             new Alert(Alert.AlertType.ERROR, "Error loading students: " + e.getMessage()).show();
         }
     }
-
 
 
     @FXML
@@ -816,6 +933,8 @@ public class StudentController {
             email.setText(selectedStudent.getEmail());
             address.setText(selectedStudent.getAddress());
             status.setValue(selectedStudent.getStatus());
+            semester.setValue(selectedStudent.getSemester());
+            isIrregular.setSelected(selectedStudent.getIsIrregular()); // Assuming isActive() returns a boolean
             password.setText(selectedStudent.getPassword());
 
             // Load picture into imagePanel if available.
@@ -846,18 +965,21 @@ public class StudentController {
         }
     }
 
-    //Updates the "Major" ComboBox based on the selected "Program".
     @FXML
     private void updateMajorOptions() {
         String selectedProgram = program.getValue();
+        String selectedYearLevel = yearLevel.getValue();
         major.getItems().clear(); // Clear previous major options
 
-        if (selectedProgram != null && majorsMap.containsKey(selectedProgram)) {
+        // If 1st Year or 2nd Year is selected, show only "None" as the major
+        if ("1st Year".equals(selectedYearLevel) || "2nd Year".equals(selectedYearLevel)) {
+            major.getItems().add("None");
+            major.setValue("None"); // Automatically select "None"
+        } else if (selectedProgram != null && majorsMap.containsKey(selectedProgram)) {
             major.getItems().addAll(majorsMap.get(selectedProgram));
             major.setValue(null); // Reset major selection
         }
     }
-
 
     @FXML
     private void insertStudent() {
@@ -885,9 +1007,13 @@ public class StudentController {
             String signatureLinks = null;
             Drive driveService = getDriveService();
 
+            boolean isIrregularSelected = isIrregular.isSelected();
+
+
             // Handle photo upload
             if (photoFile != null) {
                 photoLinks = uploadFileToDrive(driveService, photoFile, "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW", "image/jpeg");
+                System.out.println("Updated signature uploaded: " + photoLinks);
             } else {
                 photoLinks = getImageUrlFromPane(imagePanel);
             }
@@ -895,6 +1021,7 @@ public class StudentController {
             // Handle signature upload
             if (signatureFile != null) {
                 signatureLinks = uploadFileToDrive(driveService, signatureFile, "1Sb89lmsZMpicUJWEWsud9Yl_lStkWJfW", "image/png");
+                System.out.println("Updated signature uploaded: " + signatureLinks);
             } else {
                 signatureLinks = getImageUrlFromPane(signaturePanel);
             }
@@ -904,7 +1031,7 @@ public class StudentController {
             }
 
             // Insert student into database
-            String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, pic_link, sign_link, sr_code, year_level, program, major, contact, email, password, address, status, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+            String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, pic_link, sign_link, sr_code, year_level, semester, program, major, contact, email, password, address, status, is_deleted, isIrregular) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
             int studentID = -1;
 
             try (PreparedStatement studentStmt = kon.prepareStatement(studentSQL, Statement.RETURN_GENERATED_KEYS)) {
@@ -915,13 +1042,16 @@ public class StudentController {
                 studentStmt.setString(5, signatureLinks);
                 studentStmt.setString(6, srCode.getText());
                 studentStmt.setString(7, yearLevel.getValue());
-                studentStmt.setString(8, program.getValue());
-                studentStmt.setString(9, major.getValue());
-                studentStmt.setString(10, contact.getText());
-                studentStmt.setString(11, email.getText());
-                studentStmt.setString(12, password.getText());
-                studentStmt.setString(13, address.getText());
-                studentStmt.setString(14, status.getValue());
+                studentStmt.setString(8, semester.getStyle());
+                studentStmt.setString(9, program.getValue());
+                studentStmt.setString(10, major.getValue());
+                studentStmt.setString(11, contact.getText());
+                studentStmt.setString(12, email.getText());
+                studentStmt.setString(13, password.getText());
+                studentStmt.setString(14, address.getText());
+                studentStmt.setString(15, status.getValue());
+                studentStmt.setBoolean(16, isIrregularSelected);
+
 
                 int rowsInserted = studentStmt.executeUpdate();
                 if (rowsInserted == 0) {
@@ -1116,25 +1246,29 @@ public class StudentController {
                 }
             }
 
-            // Update student details
-            String studentSQL = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, pic_link = ?, year_level = ?, program = ?, major = ?, contact = ?, email = ?, password = ?, address = ?, status = ? WHERE id = ?";
+            boolean isIrregularSelected = isIrregular.isSelected();
+// Update student details
+            String studentSQL = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, pic_link = ?, year_level = ?, semester = ?, program = ?, major = ?, contact = ?, email = ?, password = ?, address = ?, status = ?, isIrregular = ? WHERE id = ?";
             try (PreparedStatement studentStmt = DBConnect.getConnection().prepareStatement(studentSQL)) {
                 studentStmt.setString(1, firstName.getText());
                 studentStmt.setString(2, middleName.getText());
                 studentStmt.setString(3, lastName.getText());
                 studentStmt.setString(4, photoLink);
                 studentStmt.setString(5, yearLevel.getValue());
-                studentStmt.setString(6, program.getValue());
-                studentStmt.setString(7, major.getValue());
-                studentStmt.setString(8, contact.getText());
-                studentStmt.setString(9, email.getText());
-                studentStmt.setString(10, password.getText());
-                studentStmt.setString(11, address.getText());
-                studentStmt.setString(12, status.getValue());
-                studentStmt.setInt(13, studentID);
+                studentStmt.setString(6, semester.getValue());
+                studentStmt.setString(7, program.getValue());
+                studentStmt.setString(8, major.getValue());
+                studentStmt.setString(9, contact.getText());
+                studentStmt.setString(10, email.getText());
+                studentStmt.setString(11, password.getText());
+                studentStmt.setString(12, address.getText());
+                studentStmt.setString(13, status.getValue());
+                studentStmt.setBoolean(14, isIrregularSelected);
+                studentStmt.setInt(15, studentID);
 
                 studentStmt.executeUpdate();
             }
+
 
             loadStudents(); // Refresh student list
             clearFields(); // Clear form fields
@@ -1320,8 +1454,10 @@ public class StudentController {
         Arrays.asList(firstName, middleName, lastName, password, srCode, contact, email, password, address)
                 .forEach(TextField::clear);
 
-        Arrays.asList(yearLevel, program, major, status)
+        Arrays.asList(yearLevel, program, major, status, semester)
                 .forEach(comboBox -> comboBox.setValue(null));
+
+        isIrregular.setSelected(false);  // Clear selection for the "showIrregular" RadioButton
 
         clearPanels();
     }

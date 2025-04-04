@@ -18,10 +18,16 @@ public class Student {
     private final SimpleStringProperty picLink;
     private final SimpleStringProperty signLink;
     private final SimpleStringProperty password;
+    private final SimpleStringProperty semester;
+    private final SimpleBooleanProperty isIrregular;
+
+
+    private Guardian guardian;  // Guardian field for Student class
+
 
     public Student(int studID, String firstName, String middleName, String lastName, String srCode,
                    String yearLevel, String program, String major, String contact, String email,
-                   String address, String status, String picLink, String signLink, String password) {
+                   String address, String status, String picLink, String signLink, String password, String semester, boolean isIrregular, Guardian guardian) {
         this.studID = new SimpleIntegerProperty(studID);
         this.firstName = new SimpleStringProperty(firstName);
         this.middleName = new SimpleStringProperty(middleName);
@@ -37,6 +43,10 @@ public class Student {
         this.picLink = new SimpleStringProperty(picLink);
         this.signLink = new SimpleStringProperty(signLink);
         this.password = new SimpleStringProperty(password);
+        this.semester = new SimpleStringProperty(semester);
+        this.isIrregular = new SimpleBooleanProperty(isIrregular);
+        this.guardian = guardian;  // Assign guardian
+
     }
 
     // Getter methods for TableView
@@ -55,6 +65,8 @@ public class Student {
     public SimpleStringProperty picLinkProperty() { return picLink; }
     public SimpleStringProperty signLinkProperty() { return signLink; }
     public SimpleStringProperty passwordProperty() { return password; }
+    public SimpleStringProperty semesterProperty() { return semester; }
+    public SimpleBooleanProperty isIrregularProperty() { return isIrregular; }
 
 
     public int getStudID() { return studID.get(); }
@@ -72,6 +84,43 @@ public class Student {
     public String getPicLink() { return picLink.get(); }
     public String getSignLink() { return signLink.get(); }
     public String getPassword() { return password.get(); }
+    public String getSemester() { return semester.get(); }
+    public boolean getIsIrregular() { return isIrregular.get(); }
+
+
+    // Getters and setters for firstName, middleName, lastName
+    public String getFullName() {
+        return firstName.get() + " " + (middleName.get().isEmpty() ? "" : middleName.get() + " ") + lastName.get();
+    }
+
+    public StringProperty fullNameProperty() {
+        return new SimpleStringProperty(getFullName());
+    }
+
+    // Getters for Guardian properties (to be used in TableView)
+    public String getGuardianFullName() {
+        return guardian.getFullName();
+    }
+
+    public StringProperty guardianFullNameProperty() {
+        return guardian.fullNameProperty();
+    }
+
+    public String getGuardianContactNo() {
+        return guardian.getContactNo();
+    }
+
+    public StringProperty guardianContactNoProperty() {
+        return guardian.contactNoProperty();
+    }
+
+    public String getGuardianRelationship() {
+        return guardian.getRelationship();
+    }
+
+    public StringProperty guardianRelationshipProperty() {
+        return guardian.relationshipProperty();
+    }
 
 
 }
