@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polyline?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" prefHeight="689.0" prefWidth="1280.0" stylesheets="@../CSS/MainMenu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.MainMenu">
+   <children>
+      <ScrollPane prefHeight="689.0" prefWidth="1280.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="688.0" prefWidth="1280.0" style="-fx-background-color: #FAF9F6;">
+               <children>
+                  <Pane fx:id="mainPane" layoutX="197.0" prefHeight="689.0" prefWidth="886.0" style="-fx-background-color: #FFFFF0;" styleClass="shadow-pane">
+                     <children>
+                        <ImageView fx:id="image1" fitHeight="266.0" fitWidth="769.0">
+                           <image>
+                              <Image url="@../Images/487959892_1382718622752618_4819613899243731272_n.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="268.0" fitWidth="261.0" layoutX="625.0" layoutY="-2.0">
+                           <image>
+                              <Image url="@../Images/main-1-entrance.jpg" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="173.0" fitWidth="186.0" layoutX="14.0" layoutY="14.0">
+                           <image>
+                              <Image url="@../Images/BatStateU-NEU-Logo.png" />
+                           </image>
+                        </ImageView>
+                        <Label layoutX="229.0" layoutY="39.0" text="Batangas State University">
+                           <font>
+                              <Font name="Times New Roman Bold" size="32.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="268.0" layoutY="76.0" text="The National Engineering University" textFill="#a81313">
+                           <font>
+                              <Font name="Arial Bold" size="16.0" />
+                           </font>
+                        </Label>
+                        <Polyline fill="WHITE" layoutX="675.0" layoutY="40.0" points="-50.0, -40.0, 93.0, -40.0, -50.0, 227.0, -50.0, -40.0" stroke="WHITE" strokeType="INSIDE" style="-fx-opacity: 0.7;" />
+                        <Pane layoutX="-1.0" layoutY="200.0" prefHeight="66.0" prefWidth="626.0" style="-fx-background-color: #0186ca;">
+                           <children>
+                              <Label layoutX="108.0" layoutY="25.0" text="Leading Innovations, Transforming Lives, Building the Nation" textFill="WHITE">
+                                 <font>
+                                    <Font name="Arial Bold Italic" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                        <Label layoutX="276.0" layoutY="363.0" text="Please Login">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="username" layoutX="276.0" layoutY="403.0" prefHeight="25.0" prefWidth="361.0" promptText="Username">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="password" layoutX="276.0" layoutY="443.0" prefHeight="27.0" prefWidth="339.0" promptText="Password">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                        <ToggleButton fx:id="showPass" layoutX="614.0" layoutY="444.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="23.0" />
+                        <Label layoutX="276.0" layoutY="482.0" text="* Password is case sensitive" textFill="#b9b4b4">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="456.0" layoutY="273.0" text="Portal Login">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="signIn" layoutX="402.0" layoutY="565.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Sign In">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Button>
+                        <Line endX="781.0" layoutX="104.0" layoutY="304.0" startX="-105.0" />
+                        <Label accessibleRole="BUTTON" layoutX="276.0" layoutY="603.0" text="Forgot Password? Click Here!" textFill="#1c8d00" />
+                        <Label accessibleRole="BUTTON" layoutX="456.0" layoutY="603.0" text="Contact Us!" textFill="#1c8d00" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
