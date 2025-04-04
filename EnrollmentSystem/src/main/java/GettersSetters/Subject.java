@@ -1,59 +1,97 @@
 package GettersSetters;
 
 public class Subject {
-    private int id;
+    private int subId;
+    private String subjCode;
     private String subjectName;
-    private int creditHours;
-    private boolean isMajor;
-    private String preferredRoom;
+    private Integer lecture;
+    private int units;
+    private Integer lab;
+    private String yearLevel;
+    private String semester;
+    private String prerequisite;
+    private String acadTrack;
 
-    public Subject(int id, String subjectName, int creditHours, boolean isMajor, String preferredRoom) {
-        this.id = id;
-        this.subjectName = subjectName;
-        this.creditHours = creditHours;
-        this.isMajor = isMajor;
-        this.preferredRoom = preferredRoom;
+    public Subject() {
     }
 
-    // Getters
-    public int getId() {
-        return id;
+    public int getSubId() {
+        return subId;
+    }
+
+    public void setSubId(int subId) {
+        this.subId = subId;
+    }
+
+    public String getSubjCode() {
+        return subjCode;
+    }
+
+    public void setSubjCode(String subjCode) {
+        this.subjCode = subjCode;
     }
 
     public String getSubjectName() {
         return subjectName;
     }
 
-    public int getCreditHours() {
-        return creditHours;
-    }
-
-    public boolean getIsMajor() { // Updated to follow JavaBeans convention
-        return isMajor;
-    }
-
-    public String getPreferredRoom() {
-        return preferredRoom;
-    }
-
-    // Setters
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
     }
 
-    public void setCreditHours(int creditHours) {
-        this.creditHours = creditHours;
+    public Integer getLecture() {
+        return lecture;
     }
 
-    public void setIsMajor(boolean isMajor) { // Updated to match getter
-        this.isMajor = isMajor;
+    public void setLecture(Integer lecture) {
+        this.lecture = lecture;
     }
 
-    public void setPreferredRoom(String preferredRoom) {
-        this.preferredRoom = preferredRoom;
+    public int getUnits() {
+        return units;
+    }
+
+    public void setUnits(int units) {
+        this.units = units;
+    }
+
+    public Integer getLab() {
+        return lab;
+    }
+
+    public void setLab(Integer lab) {
+        this.lab = lab;
+    }
+
+    public String getYearLevel() {
+        return yearLevel;
+    }
+
+    public void setYearLevel(String yearLevel) {
+        this.yearLevel = yearLevel;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
+
+    public String getPrerequisite() {
+        return prerequisite;
+    }
+
+    public void setPrerequisite(String prerequisite) {
+        this.prerequisite = prerequisite;
+    }
+
+    public String getAcadTrack() {
+        return acadTrack;
+    }
+
+    public void setAcadTrack(String acadTrack) {
+        this.acadTrack = acadTrack;
     }
 }
