@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 05, 2025 at 04:42 AM
+-- Generation Time: Apr 05, 2025 at 03:37 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -85,10 +85,14 @@ INSERT INTO `enrolled` (`id`, `student_id`, `sub_id`, `subsched_id`, `grade`, `s
 (20, 2, 31, NULL, 1.75, NULL, NULL),
 (21, 2, 33, NULL, 1.75, NULL, NULL),
 (22, 2, 39, NULL, 1.75, NULL, NULL),
-(23, 2, 10, NULL, NULL, 'Second Semester', '2024 - 2025'),
-(24, 2, 11, NULL, NULL, 'Second Semester', '2024 - 2025'),
-(25, 2, 12, NULL, NULL, 'Second Semester', '2024 - 2025'),
-(26, 2, 13, NULL, NULL, 'Second Semester', '2024 - 2025');
+(23, 1, 1, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(24, 1, 2, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(25, 1, 3, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(26, 1, 4, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(27, 1, 5, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(28, 1, 6, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(29, 1, 7, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(30, 1, 8, NULL, NULL, 'Second Semester', '2024 - 2025');
 
 -- --------------------------------------------------------
 
@@ -228,15 +232,17 @@ CREATE TABLE `section` (
   `department` enum('CICS','CAS','CABEIHM','CHS','CTE','CCJE') NOT NULL,
   `year_level` enum('1st Year','2nd Year','3rd Year','4th Year') NOT NULL,
   `track` enum('BA','NT','SM') DEFAULT NULL,
-  `population` int(11) NOT NULL
+  `population` int(11) NOT NULL,
+  `semester` enum('First Semester','Second Semester','Midterm','') NOT NULL,
+  `acadYear` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `section`
 --
 
-INSERT INTO `section` (`section_id`, `section_name`, `department`, `year_level`, `track`, `population`) VALUES
-(1, 'BSIT - 2201', 'CICS', '2nd Year', NULL, 1);
+INSERT INTO `section` (`section_id`, `section_name`, `department`, `year_level`, `track`, `population`, `semester`, `acadYear`) VALUES
+(1, 'BSIT - 1101', 'CICS', '1st Year', NULL, 1, 'Second Semester', '2024 - 2025');
 
 -- --------------------------------------------------------
 
@@ -270,9 +276,9 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`id`, `first_name`, `middle_name`, `last_name`, `pic_link`, `sign_link`, `sr_code`, `year_level`, `semester`, `program`, `major`, `contact`, `email`, `password`, `address`, `status`, `isIrregular`, `is_deleted`) VALUES
-(1, 'John', 'Michael', 'Doe', 'https://drive.google.com/uc?export=view&id=1eN8E_sjGnw63mF7q-9D3KbtJTGNtU4-v', '', 'SR001', '1st Year', '1st Sem', 'BSIT', '', '09123456789', 'john.doe@example.com', 'password123', '123 Elm St', 'Not Enrolled', 0, 0),
-(2, 'Jane', 'Marie', 'Smith', 'https://drive.google.com/uc?export=view&id=1r7efa8tbGp6MRL6nAr235vIv3UkcC1Nt', '', 'SR002', '2nd Year', '2nd Sem', 'BSIT', '', '09234567890', 'jane.smith@example.com', 'pass456', '456 Oak St', 'Enrolled', 1, 0),
-(3, 'Alex', 'Hum', 'Johnson', 'https://drive.google.com/uc?export=view&id=1NGRa3NhcYJn3Lgoj-G2PUKw61iugXuuF', '', 'SR003', '1st Year', '2nd Sem', 'BSIT', '', '09345678901', 'alex.johnson@example.com', 'qwerty', '789 Pine St', 'Not Enrolled', 0, 0),
+(1, 'John', 'Michael', 'Doe', 'https://drive.google.com/uc?export=view&id=1eN8E_sjGnw63mF7q-9D3KbtJTGNtU4-v', '', 'SR001', '1st Year', '2nd Sem', 'BSIT', '', '09123456789', 'john.doe@example.com', 'password123', '123 Elm St', 'Enrolled', 0, 0),
+(2, 'Jane', 'Marie', 'Smith', 'https://drive.google.com/uc?export=view&id=1r7efa8tbGp6MRL6nAr235vIv3UkcC1Nt', '', 'SR002', '2nd Year', '2nd Sem', 'BSIT', '', '09234567890', 'jane.smith@example.com', 'pass456', '456 Oak St', 'Not Enrolled', 1, 0),
+(3, 'Alex', 'Hum', 'Johnson', 'https://drive.google.com/uc?export=view&id=1NGRa3NhcYJn3Lgoj-G2PUKw61iugXuuF', '', 'SR003', '2nd Year', '2nd Sem', 'BSIT', '', '09345678901', 'alex.johnson@example.com', 'qwerty', '789 Pine St', 'Not Enrolled', 0, 0),
 (4, 'Emily', 'Anne', 'Brown', NULL, '', 'SR004', '3rd Year', '1st Sem', 'BSIT', 'BA', '09456789012', 'emily.brown@example.com', 'abc123', '101 Maple St', 'Not Enrolled', 0, 0),
 (5, 'Daniel', 'James', 'Garcia', NULL, '', 'SR005', '3rd Year', '1st Sem', 'BSIT', 'NT', '09567890123', 'daniel.garcia@example.com', 'securePass', '202 Birch St', 'Not Enrolled', 0, 0),
 (6, 'Olivia', 'Jona', 'Martinez', NULL, '', 'SR006', '3rd Year', '1st Sem', 'BSIT', 'SM', '09678901234', 'olivia.martinez@example.com', 'olivia321', '303 Cedar St', 'Not Enrolled', 0, 0),
@@ -468,8 +474,17 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
     DECLARE new_section_name VARCHAR(100);
     DECLARE year_digit VARCHAR(1);
     DECLARE sem_code VARCHAR(1);
+    DECLARE curr_sem ENUM('First Semester','Second Semester','Midterm','');
+    DECLARE curr_ay VARCHAR(100);
 
     IF NEW.status = 'Enrolled' AND OLD.status <> 'Enrolled' THEN
+        -- Get current semester and academic year from the current table
+        SELECT Semester, AcademicYear 
+        INTO curr_sem, curr_ay 
+        FROM current 
+        ORDER BY currentID DESC 
+        LIMIT 1;
+
         -- Convert the year_level enum into a single digit.
         SET year_digit = CASE NEW.year_level
                            WHEN '1st Year' THEN '1'
@@ -485,7 +500,7 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
                            WHEN '2nd Sem' THEN '2'
                            WHEN 'Midterm' THEN 'M'
                            ELSE ''
-                         END;
+                       END;
 
         -- Build the base section name starting with the student's program.
         SET base_section_name = NEW.program;
@@ -498,67 +513,67 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
         -- Append the year digit and semester code.
         SET base_section_name = CONCAT(base_section_name, ' - ', year_digit, sem_code);
 
-        /*
-          For example:
-          - A BSIT student with year_level '1st Year' and semester '2nd Sem' becomes: "BSIT - 12"
-          - A BSIT student with year_level '3rd Year' with major 'BA' in '1st Sem' becomes: "BSIT-BA - 31"
-          The final section name will have a two-digit section number appended (e.g. "01").
-        */
-
         -- Look for an existing section matching the base section name pattern.
         SELECT section_id, RIGHT(section_name, 2) AS sec_num, population
-          INTO sec_id, sec_num, current_population
-          FROM section
-          WHERE section_name LIKE CONCAT(base_section_name, '%')
-          ORDER BY section_name DESC
-          LIMIT 1;
+        INTO sec_id, sec_num, current_population
+        FROM section
+        WHERE section_name LIKE CONCAT(base_section_name, '%')
+        ORDER BY section_name DESC
+        LIMIT 1;
 
         IF sec_id IS NULL THEN
             -- No section exists: create a new one with section number '01'
             SET sec_num = '01';
             SET new_section_name = CONCAT(base_section_name, sec_num);
-            INSERT INTO section(section_name, department, year_level, track, population)
-                 VALUES(
-                     new_section_name,
-                     'CICS',              -- Example department; adjust as needed.
-                     NEW.year_level,
-                     CASE
-                         WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
-                         THEN NEW.major
-                         ELSE NULL
-                     END,
-                     1
-                 );
+            INSERT INTO section(
+                section_name, department, year_level, track, population, semester, acadYear
+            ) VALUES (
+                new_section_name,
+                'CICS',
+                NEW.year_level,
+                CASE
+                    WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
+                    THEN NEW.major
+                    ELSE NULL
+                END,
+                1,
+                curr_sem,
+                curr_ay
+            );
             SET sec_id = LAST_INSERT_ID();
             INSERT INTO student_section(student_id, section_id)
-                 VALUES(NEW.id, sec_id);
+            VALUES (NEW.id, sec_id);
+
         ELSE
             IF current_population < 40 THEN
                 -- Existing section is not full, so increment its population.
                 UPDATE section
-                   SET population = population + 1
-                 WHERE section_id = sec_id;
+                SET population = population + 1
+                WHERE section_id = sec_id;
                 INSERT INTO student_section(student_id, section_id)
-                     VALUES(NEW.id, sec_id);
+                VALUES (NEW.id, sec_id);
             ELSE
                 -- The current section is full (40 students); create a new section.
                 SET sec_num = LPAD(CAST(CAST(sec_num AS UNSIGNED) + 1 AS CHAR), 2, '0');
                 SET new_section_name = CONCAT(base_section_name, sec_num);
-                INSERT INTO section(section_name, department, year_level, track, population)
-                     VALUES(
-                         new_section_name,
-                         'CICS',              -- Example department; adjust as needed.
-                         NEW.year_level,
-                         CASE
-                             WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
-                             THEN NEW.major
-                             ELSE NULL
-                         END,
-                         1
-                     );
+                INSERT INTO section(
+                    section_name, department, year_level, track, population, semester, acadYear
+                ) VALUES (
+                    new_section_name,
+                    'CICS',
+                    NEW.year_level,
+                    CASE
+                        WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
+                        THEN NEW.major
+                        ELSE NULL
+                    END,
+                    1,
+                    curr_sem,
+                    curr_ay
+                );
                 SET sec_id = LAST_INSERT_ID();
                 INSERT INTO student_section(student_id, section_id)
-                     VALUES(NEW.id, sec_id);
+                VALUES (NEW.id, sec_id);
             END IF;
         END IF;
     END IF;
@@ -583,7 +598,7 @@ CREATE TABLE `student_section` (
 --
 
 INSERT INTO `student_section` (`id`, `student_id`, `section_id`) VALUES
-(1, 2, 1);
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -951,7 +966,7 @@ ALTER TABLE `current`
 -- AUTO_INCREMENT for table `enrolled`
 --
 ALTER TABLE `enrolled`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `faculty`
