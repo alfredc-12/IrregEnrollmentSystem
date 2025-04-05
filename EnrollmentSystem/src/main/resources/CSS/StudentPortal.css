@@ -1,0 +1,4 @@
+/* Apply shadow to both left and right sides */
+#mainPane AnchorPane, Pane, TextField, Line, Button, ImageView{
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.2, 0, 0);
+}

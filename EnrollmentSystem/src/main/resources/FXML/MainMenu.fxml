@@ -66,12 +66,12 @@
                               <Font size="13.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="password" layoutX="276.0" layoutY="443.0" prefHeight="27.0" prefWidth="339.0" promptText="Password">
+                        <TextField fx:id="password" layoutX="276.0" layoutY="443.0" prefHeight="27.0" prefWidth="360.0" promptText="Password">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </TextField>
-                        <ToggleButton fx:id="showPass" layoutX="614.0" layoutY="444.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="23.0" />
+                        <ToggleButton fx:id="showPass" layoutX="612.0" layoutY="443.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" />
                         <Label layoutX="276.0" layoutY="482.0" text="* Password is case sensitive" textFill="#b9b4b4">
                            <font>
                               <Font size="9.0" />
