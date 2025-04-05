@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2025 at 06:17 PM
+-- Generation Time: Apr 05, 2025 at 04:42 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,7 +40,7 @@ CREATE TABLE `current` (
 --
 
 INSERT INTO `current` (`currentID`, `AcademicYear`, `Semester`, `DateStart`, `DateEnd`) VALUES
-(1, '2024 - 2025', 'First Semester', '2025-08-14', '2025-05-30');
+(1, '2024 - 2025', 'Second Semester', '2025-08-14', '2025-05-30');
 
 -- --------------------------------------------------------
 
@@ -63,16 +63,32 @@ CREATE TABLE `enrolled` (
 --
 
 INSERT INTO `enrolled` (`id`, `student_id`, `sub_id`, `subsched_id`, `grade`, `semester`, `academic_year`) VALUES
-(1, 2, 2, NULL, 1.75, NULL, NULL),
-(2, 2, 3, NULL, 1.50, NULL, NULL),
-(3, 1, 1, NULL, NULL, 'First Semester', '2024 - 2025'),
-(4, 1, 2, NULL, NULL, 'First Semester', '2024 - 2025'),
-(5, 1, 3, NULL, NULL, 'First Semester', '2024 - 2025'),
-(6, 1, 4, NULL, NULL, 'First Semester', '2024 - 2025'),
-(7, 1, 5, NULL, NULL, 'First Semester', '2024 - 2025'),
-(8, 1, 6, NULL, NULL, 'First Semester', '2024 - 2025'),
-(9, 1, 7, NULL, NULL, 'First Semester', '2024 - 2025'),
-(10, 1, 8, NULL, NULL, 'First Semester', '2024 - 2025');
+(1, 2, 1, NULL, 1.50, NULL, NULL),
+(2, 2, 2, NULL, 1.75, NULL, NULL),
+(3, 2, 3, NULL, 1.25, NULL, NULL),
+(4, 2, 4, NULL, 2.25, NULL, NULL),
+(5, 2, 5, NULL, 1.25, NULL, NULL),
+(6, 2, 6, NULL, 1.25, NULL, NULL),
+(7, 2, 7, NULL, 3.00, NULL, NULL),
+(8, 2, 8, NULL, 1.50, NULL, NULL),
+(9, 2, 9, NULL, 1.75, NULL, NULL),
+(10, 2, 14, NULL, 1.75, NULL, NULL),
+(11, 2, 15, NULL, 1.00, NULL, NULL),
+(12, 2, 16, NULL, 1.25, NULL, NULL),
+(13, 2, 17, NULL, 1.75, NULL, NULL),
+(14, 2, 18, NULL, 1.75, NULL, NULL),
+(15, 2, 20, NULL, 2.25, NULL, NULL),
+(16, 2, 21, NULL, 1.75, NULL, NULL),
+(17, 2, 23, NULL, 1.75, NULL, NULL),
+(18, 2, 24, NULL, 1.25, NULL, NULL),
+(19, 2, 30, NULL, 1.00, NULL, NULL),
+(20, 2, 31, NULL, 1.75, NULL, NULL),
+(21, 2, 33, NULL, 1.75, NULL, NULL),
+(22, 2, 39, NULL, 1.75, NULL, NULL),
+(23, 2, 10, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(24, 2, 11, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(25, 2, 12, NULL, NULL, 'Second Semester', '2024 - 2025'),
+(26, 2, 13, NULL, NULL, 'Second Semester', '2024 - 2025');
 
 -- --------------------------------------------------------
 
@@ -220,8 +236,7 @@ CREATE TABLE `section` (
 --
 
 INSERT INTO `section` (`section_id`, `section_name`, `department`, `year_level`, `track`, `population`) VALUES
-(1, 'BSIT - 2101', 'CICS', '2nd Year', NULL, 1),
-(2, 'BSIT - 1101', 'CICS', '1st Year', NULL, 1);
+(1, 'BSIT - 2201', 'CICS', '2nd Year', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -255,8 +270,8 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`id`, `first_name`, `middle_name`, `last_name`, `pic_link`, `sign_link`, `sr_code`, `year_level`, `semester`, `program`, `major`, `contact`, `email`, `password`, `address`, `status`, `isIrregular`, `is_deleted`) VALUES
-(1, 'John', 'Michael', 'Doe', 'https://drive.google.com/uc?export=view&id=1eN8E_sjGnw63mF7q-9D3KbtJTGNtU4-v', '', 'SR001', '1st Year', '1st Sem', 'BSIT', '', '09123456789', 'john.doe@example.com', 'password123', '123 Elm St', 'Enrolled', 0, 0),
-(2, 'Jane', 'Marie', 'Smith', 'https://drive.google.com/uc?export=view&id=1r7efa8tbGp6MRL6nAr235vIv3UkcC1Nt', '', 'SR002', '2nd Year', '1st Sem', 'BSIT', '', '09234567890', 'jane.smith@example.com', 'pass456', '456 Oak St', 'Enrolled', 1, 0),
+(1, 'John', 'Michael', 'Doe', 'https://drive.google.com/uc?export=view&id=1eN8E_sjGnw63mF7q-9D3KbtJTGNtU4-v', '', 'SR001', '1st Year', '1st Sem', 'BSIT', '', '09123456789', 'john.doe@example.com', 'password123', '123 Elm St', 'Not Enrolled', 0, 0),
+(2, 'Jane', 'Marie', 'Smith', 'https://drive.google.com/uc?export=view&id=1r7efa8tbGp6MRL6nAr235vIv3UkcC1Nt', '', 'SR002', '2nd Year', '2nd Sem', 'BSIT', '', '09234567890', 'jane.smith@example.com', 'pass456', '456 Oak St', 'Enrolled', 1, 0),
 (3, 'Alex', 'Hum', 'Johnson', 'https://drive.google.com/uc?export=view&id=1NGRa3NhcYJn3Lgoj-G2PUKw61iugXuuF', '', 'SR003', '1st Year', '2nd Sem', 'BSIT', '', '09345678901', 'alex.johnson@example.com', 'qwerty', '789 Pine St', 'Not Enrolled', 0, 0),
 (4, 'Emily', 'Anne', 'Brown', NULL, '', 'SR004', '3rd Year', '1st Sem', 'BSIT', 'BA', '09456789012', 'emily.brown@example.com', 'abc123', '101 Maple St', 'Not Enrolled', 0, 0),
 (5, 'Daniel', 'James', 'Garcia', NULL, '', 'SR005', '3rd Year', '1st Sem', 'BSIT', 'NT', '09567890123', 'daniel.garcia@example.com', 'securePass', '202 Birch St', 'Not Enrolled', 0, 0),
@@ -299,32 +314,36 @@ CREATE TRIGGER `trg_enroll_subjects` AFTER UPDATE ON `student` FOR EACH ROW BEGI
     DECLARE prereq VARCHAR(50);
     DECLARE student_numeric_year INT;
     DECLARE current_semester VARCHAR(20);
+    DECLARE subj_year INT;
+    DECLARE subj_semester VARCHAR(20);
+    DECLARE dbg_msg VARCHAR(1024);
 
     -- Declare cursors
     DECLARE cur_irreg CURSOR FOR
-         SELECT sub_id, units, prerequisite
-         FROM subjects
-         WHERE year_level = student_numeric_year
-           AND (semester = mapped_semester OR semester IN ('First Semester', 'Second Semester'))
-           AND (student_numeric_year < 3 OR acad_track = NEW.major);
+        SELECT sub_id, units, prerequisite, year_level, semester
+        FROM subjects
+        WHERE year_level BETWEEN 1 AND 4
+          AND year_level <= student_numeric_year;
 
     DECLARE cur_reg CURSOR FOR
-         SELECT sub_id, units
-         FROM subjects
-         WHERE year_level = student_numeric_year
-           AND (semester = mapped_semester OR semester IN ('First Semester', 'Second Semester'))
-           AND (student_numeric_year < 3 OR acad_track = NEW.major);
+        SELECT sub_id, units
+        FROM subjects
+        WHERE year_level = student_numeric_year
+          AND (semester = mapped_semester
+              OR (mapped_semester IN ('First Semester','Second Semester')
+                  AND semester IN ('First Semester','Second Semester')))
+          AND (student_numeric_year < 3 OR acad_track = NEW.major);
 
-    -- Declare handler for cursor end
+    -- Cursor handler
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-    -- Get the current academic year and semester
+    -- Get current semester and academic year
     SELECT AcademicYear, Semester INTO acad_year, current_semester
     FROM current
     ORDER BY currentID DESC
     LIMIT 1;
 
-    -- Map semester
+    -- Semester mapping
     SET mapped_semester = CASE NEW.semester
                             WHEN '1st Sem' THEN 'First Semester'
                             WHEN '2nd Sem' THEN 'Second Semester'
@@ -332,7 +351,7 @@ CREATE TRIGGER `trg_enroll_subjects` AFTER UPDATE ON `student` FOR EACH ROW BEGI
                             ELSE ''
                           END;
 
-    -- Convert year level to numeric format
+    -- Year level to numeric
     SET student_numeric_year = CASE NEW.year_level
                                   WHEN '1st Year' THEN 1
                                   WHEN '2nd Year' THEN 2
@@ -341,7 +360,7 @@ CREATE TRIGGER `trg_enroll_subjects` AFTER UPDATE ON `student` FOR EACH ROW BEGI
                                   ELSE 5
                                END;
 
-    -- Determine the maximum allowed units
+    -- Max allowed units
     SET max_allowed = CASE
         WHEN NEW.year_level = '1st Year' AND NEW.semester IN ('1st Sem', '2nd Sem') THEN 23
         WHEN NEW.year_level = '2nd Year' AND NEW.semester IN ('1st Sem', '2nd Sem') THEN 23
@@ -352,24 +371,30 @@ CREATE TRIGGER `trg_enroll_subjects` AFTER UPDATE ON `student` FOR EACH ROW BEGI
         ELSE 0
     END;
 
-    -- Process enrollment
+    -- Proceed only if status changed to 'Enrolled'
     IF NEW.status = 'Enrolled' AND OLD.status <> 'Enrolled' THEN
-        -- Get cumulative units already enrolled in the current semester
+        -- Get enrolled units so far
         SELECT IFNULL(SUM(s.units), 0) INTO cumulative_units
         FROM enrolled e
         JOIN subjects s ON e.sub_id = s.sub_id
-        WHERE e.student_id = NEW.id
-          AND e.semester = current_semester;
+        WHERE e.student_id = NEW.id AND e.semester = current_semester;
 
+        -- Irregular enrollment
         IF NEW.isIrregular = 1 THEN
+            SET done = 0;
             OPEN cur_irreg;
             irreg_loop: LOOP
-                FETCH cur_irreg INTO subj_id, subj_units, subj_prereq;
-                IF done = 1 THEN
-                    LEAVE irreg_loop;
+                FETCH cur_irreg INTO subj_id, subj_units, subj_prereq, subj_year, subj_semester;
+                IF done = 1 THEN LEAVE irreg_loop; END IF;
+
+                -- Check semester match
+                IF NOT (subj_semester = current_semester OR
+                        (current_semester IN ('First Semester','Second Semester') AND
+                         subj_semester IN ('First Semester','Second Semester'))) THEN
+                    ITERATE irreg_loop;
                 END IF;
 
-                -- Check prerequisites for irregular students
+                -- Check prerequisites
                 SET all_prereq_met = TRUE;
                 IF subj_prereq IS NOT NULL AND TRIM(subj_prereq) <> '' THEN
                     SET prereq_list = REPLACE(subj_prereq, ', ', ',');
@@ -382,41 +407,50 @@ CREATE TRIGGER `trg_enroll_subjects` AFTER UPDATE ON `student` FOR EACH ROW BEGI
                             SET prereq = prereq_list;
                             SET prereq_list = '';
                         END IF;
-                        IF TRIM(prereq) <> '' THEN
-                            -- Check if the student has already taken the prerequisite subject
-                            IF NOT EXISTS (
-                                SELECT 1
-                                FROM enrolled e
-                                JOIN subjects s ON e.sub_id = s.sub_id
-                                WHERE e.student_id = NEW.id
-                                  AND s.subj_code = TRIM(prereq)
-                            ) THEN
-                                SET all_prereq_met = FALSE;
-                                LEAVE irreg_loop;
-                            END IF;
+
+                        IF TRIM(prereq) <> '' AND NOT EXISTS (
+                            SELECT 1 FROM enrolled e
+                            JOIN subjects s ON e.sub_id = s.sub_id
+                            WHERE e.student_id = NEW.id AND s.subj_code = TRIM(prereq)
+                                  AND e.grade IS NOT NULL
+                        ) THEN
+                            SET all_prereq_met = FALSE;
+                            LEAVE irreg_loop;
                         END IF;
                     END WHILE;
                 END IF;
 
-                -- Enroll subject if prerequisites are met and within max units
-                IF all_prereq_met AND cumulative_units + subj_units <= max_allowed THEN
-                    INSERT INTO enrolled(student_id, sub_id, subsched_id, grade, semester, academic_year)
-                    VALUES (NEW.id, subj_id, NULL, NULL, current_semester, acad_year);
-                    SET cumulative_units = cumulative_units + subj_units;
+                -- Check if already taken
+                IF NOT EXISTS (
+                    SELECT 1 FROM enrolled
+                    WHERE student_id = NEW.id AND sub_id = subj_id AND grade IS NOT NULL
+                ) THEN
+                    IF all_prereq_met AND cumulative_units + subj_units <= max_allowed THEN
+                        INSERT INTO enrolled(student_id, sub_id, subsched_id, grade, semester, academic_year)
+                        VALUES (NEW.id, subj_id, NULL, NULL, current_semester, acad_year);
+                        SET cumulative_units = cumulative_units + subj_units;
+                    END IF;
                 END IF;
             END LOOP irreg_loop;
             CLOSE cur_irreg;
+
+        -- Regular enrollment
         ELSE
+            SET done = 0;
             OPEN cur_reg;
             reg_loop: LOOP
                 FETCH cur_reg INTO subj_id, subj_units;
-                IF done = 1 THEN
-                    LEAVE reg_loop;
-                END IF;
-                IF cumulative_units + subj_units <= max_allowed THEN
-                    INSERT INTO enrolled(student_id, sub_id, subsched_id, grade, semester, academic_year)
-                    VALUES (NEW.id, subj_id, NULL, NULL, current_semester, acad_year);
-                    SET cumulative_units = cumulative_units + subj_units;
+                IF done = 1 THEN LEAVE reg_loop; END IF;
+
+                IF NOT EXISTS (
+                    SELECT 1 FROM enrolled
+                    WHERE student_id = NEW.id AND sub_id = subj_id AND grade IS NOT NULL
+                ) THEN
+                    IF cumulative_units + subj_units <= max_allowed THEN
+                        INSERT INTO enrolled(student_id, sub_id, subsched_id, grade, semester, academic_year)
+                        VALUES (NEW.id, subj_id, NULL, NULL, current_semester, acad_year);
+                        SET cumulative_units = cumulative_units + subj_units;
+                    END IF;
                 END IF;
             END LOOP reg_loop;
             CLOSE cur_reg;
@@ -444,7 +478,7 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
                            WHEN '4th Year' THEN '4'
                            ELSE ''
                          END;
-                         
+
         -- Convert the semester into a code.
         SET sem_code = CASE NEW.semester
                            WHEN '1st Sem' THEN '1'
@@ -452,25 +486,25 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
                            WHEN 'Midterm' THEN 'M'
                            ELSE ''
                          END;
-                         
+
         -- Build the base section name starting with the student's program.
         SET base_section_name = NEW.program;
-        
+
         -- For 3rd or 4th year students with a defined major, append the major.
         IF (NEW.year_level IN ('3rd Year','4th Year')) AND (NEW.major IS NOT NULL) AND (NEW.major <> '') THEN
             SET base_section_name = CONCAT(base_section_name, '-', NEW.major);
         END IF;
-        
+
         -- Append the year digit and semester code.
         SET base_section_name = CONCAT(base_section_name, ' - ', year_digit, sem_code);
-        
+
         /*
           For example:
           - A BSIT student with year_level '1st Year' and semester '2nd Sem' becomes: "BSIT - 12"
           - A BSIT student with year_level '3rd Year' with major 'BA' in '1st Sem' becomes: "BSIT-BA - 31"
           The final section name will have a two-digit section number appended (e.g. "01").
         */
-        
+
         -- Look for an existing section matching the base section name pattern.
         SELECT section_id, RIGHT(section_name, 2) AS sec_num, population
           INTO sec_id, sec_num, current_population
@@ -478,7 +512,7 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
           WHERE section_name LIKE CONCAT(base_section_name, '%')
           ORDER BY section_name DESC
           LIMIT 1;
-        
+
         IF sec_id IS NULL THEN
             -- No section exists: create a new one with section number '01'
             SET sec_num = '01';
@@ -488,10 +522,10 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
                      new_section_name,
                      'CICS',              -- Example department; adjust as needed.
                      NEW.year_level,
-                     CASE 
-                         WHEN (NEW.major IS NOT NULL AND NEW.major <> '') 
-                         THEN NEW.major 
-                         ELSE NULL 
+                     CASE
+                         WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
+                         THEN NEW.major
+                         ELSE NULL
                      END,
                      1
                  );
@@ -515,10 +549,10 @@ CREATE TRIGGER `trg_student_enroll` AFTER UPDATE ON `student` FOR EACH ROW BEGIN
                          new_section_name,
                          'CICS',              -- Example department; adjust as needed.
                          NEW.year_level,
-                         CASE 
-                             WHEN (NEW.major IS NOT NULL AND NEW.major <> '') 
-                             THEN NEW.major 
-                             ELSE NULL 
+                         CASE
+                             WHEN (NEW.major IS NOT NULL AND NEW.major <> '')
+                             THEN NEW.major
+                             ELSE NULL
                          END,
                          1
                      );
@@ -549,7 +583,6 @@ CREATE TABLE `student_section` (
 --
 
 INSERT INTO `student_section` (`id`, `student_id`, `section_id`) VALUES
-(2, 1, 2),
 (1, 2, 1);
 
 -- --------------------------------------------------------
@@ -918,7 +951,7 @@ ALTER TABLE `current`
 -- AUTO_INCREMENT for table `enrolled`
 --
 ALTER TABLE `enrolled`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `faculty`
@@ -942,7 +975,7 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT for table `section`
 --
 ALTER TABLE `section`
-  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `section_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `student`
@@ -954,7 +987,7 @@ ALTER TABLE `student`
 -- AUTO_INCREMENT for table `student_section`
 --
 ALTER TABLE `student_section`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `subjects`
@@ -997,15 +1030,6 @@ ALTER TABLE `guardian`
 ALTER TABLE `student_section`
   ADD CONSTRAINT `fk_student_section_section` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_student_section_student` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `subsched`
---
-ALTER TABLE `subsched`
-  ADD CONSTRAINT `fk_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`),
-  ADD CONSTRAINT `fk_subsched_faculty` FOREIGN KEY (`faculty_id`) REFERENCES `faculty` (`faculty_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_subsched_section` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_subsched_subject` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`sub_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
