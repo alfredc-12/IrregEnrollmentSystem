@@ -1,4 +1,4 @@
-package Classes;
+/*package Classes;
 
 import GettersSetters.Subject;
 import javafx.collections.FXCollections;
@@ -210,3 +210,4 @@ public class SubjectContoller {
         alert.showAndWait();
     }
 }
+*/

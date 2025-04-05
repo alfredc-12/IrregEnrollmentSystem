@@ -150,14 +150,14 @@ public class StudentController {
 
         // Populate ComboBox options
         yearLevel.getItems().addAll("1st Year", "2nd Year", "3rd Year", "4th Year");
-        program.getItems().addAll("BS Computer Science", "BS Information Technology", "BS Computer Engineering");
+        program.getItems().addAll("BSCS", "BSIT", "BSCE");
         status.getItems().addAll("Enrolled", "Not Enrolled");
         semester.getItems().addAll("1st Sem", "2nd Sem", "Midterms");
 
         // Define major options based on the selected program
-        majorsMap.put("BS Computer Science", new String[]{"None", "Data Science", "Web Development"});
-        majorsMap.put("BS Information Technology", new String[]{"None", "Business Analytics", "Network Technology"});
-        majorsMap.put("BS Computer Engineering", new String[]{"None", "Robotics", "VLSI Design"});
+        majorsMap.put("BSCS", new String[]{"None", "Data Science", "Web Development"});
+        majorsMap.put("BSIT", new String[]{"None", "BA", "NT"});
+        majorsMap.put("BSCE", new String[]{"None", "Robotics", "VLSI Design"});
 
         // Assign event handlers to buttons
         insertButton.setOnAction(event -> insertStudent());
