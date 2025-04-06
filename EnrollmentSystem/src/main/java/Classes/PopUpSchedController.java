@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -369,19 +370,45 @@ public class PopUpSchedController {
     }
 
     private void loadSubjects() {
-        String sql = "SELECT sub_id, subject_name FROM subjects WHERE sub_id NOT IN (SELECT subject_id FROM subsched)";
         allSubjectItems = FXCollections.observableArrayList();
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                int id = rs.getInt("sub_id");
-                String name = rs.getString("subject_name");
-                allSubjectItems.add(id + " - " + name);
+
+        try (Connection con = DBConnect.getConnection()) {
+            // Get current semester directly from the current table
+            String currentQuery = "SELECT Semester FROM current LIMIT 1";
+
+            try (PreparedStatement currentPs = con.prepareStatement(currentQuery);
+                 ResultSet currentRs = currentPs.executeQuery()) {
+
+                if (currentRs.next()) {
+                    String currentSemester = currentRs.getString("Semester");
+                    System.out.println("Current semester from database: " + currentSemester);
+
+                    // Get subjects that match the current semester and aren't already scheduled
+                    String sql = "SELECT sub_id, subject_name FROM subjects " +
+                            "WHERE semester = ? " +
+                            "AND sub_id NOT IN (SELECT subject_id FROM subsched)";
+
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setString(1, currentSemester);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                int id = rs.getInt("sub_id");
+                                String name = rs.getString("subject_name");
+                                allSubjectItems.add(id + " - " + name);
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("No semester found in the current table.");
+                }
             }
+
             subjectListView.setItems(allSubjectItems);
+            System.out.println("Loaded " + allSubjectItems.size() + " subjects into listview");
+
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Error", "Error loading subjects: " + e.getMessage());
         }
     }
 
@@ -441,19 +468,45 @@ public class PopUpSchedController {
     }
 
     private void loadSubjectsComboBox() {
-        String sql = "SELECT sub_id, subject_name FROM subjects WHERE sub_id NOT IN (SELECT subject_id FROM subsched)";
         ObservableList<String> subjectsCombo = FXCollections.observableArrayList();
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                int id = rs.getInt("sub_id");
-                String name = rs.getString("subject_name");
-                subjectsCombo.add("(" + id + ", " + name + ")");
+
+        try (Connection con = DBConnect.getConnection()) {
+            // Get current semester directly from the current table
+            String currentQuery = "SELECT Semester FROM current LIMIT 1";
+
+            try (PreparedStatement currentPs = con.prepareStatement(currentQuery);
+                 ResultSet currentRs = currentPs.executeQuery()) {
+
+                if (currentRs.next()) {
+                    String currentSemester = currentRs.getString("Semester");
+                    System.out.println("Current semester from database: " + currentSemester);
+
+                    // Get subjects that match the current semester and aren't already scheduled
+                    String sql = "SELECT sub_id, subject_name FROM subjects " +
+                            "WHERE semester = ? " +
+                            "AND sub_id NOT IN (SELECT subject_id FROM subsched)";
+
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setString(1, currentSemester);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                int id = rs.getInt("sub_id");
+                                String name = rs.getString("subject_name");
+                                subjectsCombo.add("(" + id + ", " + name + ")");
+                            }
+                        }
+                    }
+                } else {
+                    showAlert("Info", "No semester found in the current table.");
+                }
             }
+
             subjectCb.setItems(subjectsCombo);
+            System.out.println("Loaded " + subjectsCombo.size() + " subjects into combobox");
+
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Error", "Database error: " + e.getMessage());
         }
     }
 
