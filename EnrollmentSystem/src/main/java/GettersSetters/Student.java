@@ -7,6 +7,7 @@ public class Student {
     private final SimpleStringProperty firstName;
     private final SimpleStringProperty middleName;
     private final SimpleStringProperty lastName;
+    private final SimpleStringProperty sex;  // Added sex after lastName
     private final SimpleStringProperty srCode;
     private final SimpleStringProperty yearLevel;
     private final SimpleStringProperty program;
@@ -21,17 +22,17 @@ public class Student {
     private final SimpleStringProperty semester;
     private final SimpleBooleanProperty isIrregular;
 
-
     private Guardian guardian;  // Guardian field for Student class
 
 
-    public Student(int studID, String firstName, String middleName, String lastName, String srCode,
+    public Student(int studID, String firstName, String middleName, String lastName, String sex, String srCode,
                    String yearLevel, String program, String major, String contact, String email,
                    String address, String status, String picLink, String signLink, String password, String semester, boolean isIrregular, Guardian guardian) {
         this.studID = new SimpleIntegerProperty(studID);
         this.firstName = new SimpleStringProperty(firstName);
         this.middleName = new SimpleStringProperty(middleName);
         this.lastName = new SimpleStringProperty(lastName);
+        this.sex = new SimpleStringProperty(sex);  // Initialize sex
         this.srCode = new SimpleStringProperty(srCode);
         this.yearLevel = new SimpleStringProperty(yearLevel);
         this.program = new SimpleStringProperty(program);
@@ -54,6 +55,7 @@ public class Student {
     public SimpleStringProperty firstNameProperty() { return firstName; }
     public SimpleStringProperty middleNameProperty() { return middleName; }
     public SimpleStringProperty lastNameProperty() { return lastName; }
+    public SimpleStringProperty sexProperty() { return sex; }  // Property for sex
     public SimpleStringProperty srCodeProperty() { return srCode; }
     public SimpleStringProperty yearLevelProperty() { return yearLevel; }
     public SimpleStringProperty programProperty() { return program; }
@@ -73,6 +75,7 @@ public class Student {
     public String getFirstName() { return firstName.get(); }
     public String getMiddleName() { return middleName.get(); }
     public String getLastName() { return lastName.get(); }
+    public String getSex() { return sex.get(); }  // Getter for sex
     public String getSrCode() { return srCode.get(); }
     public String getYearLevel() { return yearLevel.get(); }
     public String getProgram() { return program.get(); }
@@ -121,7 +124,4 @@ public class Student {
     public StringProperty guardianRelationshipProperty() {
         return guardian.relationshipProperty();
     }
-
-
 }
-
