@@ -334,6 +334,10 @@ public class PopUpSchedController {
         if (success) {
             showAlert("Success", "Schedules generated successfully for all sections!");
             loadSched(); // Refresh the schedule view
+            subjectCb.getSelectionModel().clearSelection();
+            facultyCb.getSelectionModel().clearSelection();
+            subjectCb.setPromptText("Choose subject");
+            facultyCb.setPromptText("Choose faculty");
         }
     }
 
