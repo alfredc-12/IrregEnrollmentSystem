@@ -68,6 +68,12 @@ public class SchedulerController {
     private TableColumn<ScheduleModel, String> sectionColumn;
 
     @FXML
+    private TableColumn<ScheduleModel, String> yearLevelColumn;
+
+    @FXML
+    private TableColumn<ScheduleModel, String> majorColumn;
+
+    @FXML
     private ToggleButton btnPull;
 
     @FXML
@@ -100,6 +106,8 @@ public class SchedulerController {
         roomNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoom()));
         instructorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFaculty()));
         sectionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSection()));
+        yearLevelColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getYearLevel()));
+        majorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMajor()));
 
         // Set event handlers for the toggle button
         btnPull.setOnAction(e -> showPopUp());
@@ -242,10 +250,10 @@ public class SchedulerController {
 
     public void loadScheduleData() {
         ObservableList<ScheduleModel> scheduleData = FXCollections.observableArrayList();
-        String sql = "SELECT s.sched_id, sub.subject_name, s.days, s.time_in, s.time_out, " +
+        String sql = "SELECT s.sched_id, sub.subj_code, s.days, s.time_in, s.time_out, " +
                 "CONCAT(r.room_name, ' - ', r.room_type) AS room, " +
                 "CONCAT(f.first_name, ' ', IFNULL(f.middle_name, ''), ' ', f.last_name) AS faculty_name, " +
-                "sec.section_name " +
+                "sec.section_name, sec.year_level, sec.track AS major " +  // Added year_level and track
                 "FROM subsched s " +
                 "JOIN subjects sub ON s.subject_id = sub.sub_id " +
                 "JOIN faculty f ON s.faculty_id = f.faculty_id " +
@@ -255,22 +263,24 @@ public class SchedulerController {
         try (Connection con = DBConnect.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("hh:mm a");
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
             while (rs.next()) {
-                java.sql.Time timeInValue = rs.getTime("time_in");
-                java.sql.Time timeOutValue = rs.getTime("time_out");
+                Time timeInValue = rs.getTime("time_in");
+                Time timeOutValue = rs.getTime("time_out");
                 String timeInFormatted = sdf.format(timeInValue);
                 String timeOutFormatted = sdf.format(timeOutValue);
 
                 ScheduleModel schedule = new ScheduleModel(
                         rs.getInt("sched_id"),
-                        rs.getString("subject_name"),
+                        rs.getString("subj_code"),
                         rs.getString("days"),
                         timeInFormatted,
                         timeOutFormatted,
                         rs.getString("room"),
                         rs.getString("faculty_name"),
-                        rs.getString("section_name")
+                        rs.getString("section_name"),
+                        rs.getString("year_level"),    // Added year_level
+                        rs.getString("major")          // Added major (track)
                 );
                 scheduleData.add(schedule);
             }

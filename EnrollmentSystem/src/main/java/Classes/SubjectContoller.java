@@ -51,9 +51,9 @@ public class SubjectContoller {
     public void initialize() {
         // Initialize TableView columns
         subjectColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getSubjectName()));
-        hoursColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getCreditHours()).asObject());
-        roomColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPreferredRoom()));
-        majorColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().getIsMajor()).asObject());
+        //hoursColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getCreditHours()).asObject());
+        //roomColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPreferredRoom()));
+        //majorColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().getIsMajor()).asObject());
 
         subjectTable.setItems(subjectList);
 
@@ -71,7 +71,7 @@ public class SubjectContoller {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                subjectList.add(new Subject(
+              /*  subjectList.add(new Subject(
                         0, // Set a default or dummy ID since we're not retrieving sub_id
                         rs.getString("subject_name"),
                         rs.getInt("credit_hours"),
@@ -152,7 +152,7 @@ public class SubjectContoller {
                 stmt.setString(1, subjectName);
                 stmt.setInt(2, creditHours);
                 stmt.setBoolean(3, isMajor);
-                stmt.setInt(4, selectedSubject.getId());
+                //stmt.setInt(4, selectedSubject.getId());
 
                 int rowsUpdated = stmt.executeUpdate();
                 if (rowsUpdated > 0) {
@@ -181,7 +181,7 @@ public class SubjectContoller {
         String query = "DELETE FROM subjects WHERE sub_id = ?";
 
         try (PreparedStatement stmt = kon.prepareStatement(query)) {
-            stmt.setInt(1, selectedSubject.getId());
+            //stmt.setInt(1, selectedSubject.getId());
 
             int rowsDeleted = stmt.executeUpdate();
             if (rowsDeleted > 0) {
