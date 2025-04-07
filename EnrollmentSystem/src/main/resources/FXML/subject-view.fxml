@@ -1,63 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="435.0" prefWidth="662.0" stylesheets="@../CSS/subject.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.SubjectContoller">
     <children>
         <Pane fx:id="Pane" prefHeight="450" prefWidth="750">
             <children>
-                <TextField fx:id="SubjectTXT" layoutX="185.0" layoutY="33.0" prefHeight="26.0" prefWidth="212.0" />
-                <TextField fx:id="CHoursTXT" layoutX="185.0" layoutY="74.0" prefHeight="26.0" prefWidth="212.0" />
-                <TextField fx:id="RoomTXT" layoutX="185.0" layoutY="115.0" prefHeight="26.0" prefWidth="212.0" />
+                <TextField fx:id="SubjectTXT" layoutX="151.0" layoutY="33.0" prefHeight="26.0" prefWidth="134.0" />
+                <TextField fx:id="SCodeTXT" layoutX="151.0" layoutY="74.0" prefHeight="26.0" prefWidth="134.0" />
+                <TextField fx:id="LectureTXT" layoutX="113.0" layoutY="117.0" prefHeight="26.0" prefWidth="84.0" />
 
-                <Label fx:id="sublabel" layoutX="45.0" layoutY="31.0" prefHeight="30.0" prefWidth="122.0" text="Subject Name :" textFill="WHITE">
+                <Label layoutX="45.0" layoutY="31.0" prefHeight="30.0" prefWidth="122.0" text="Subject Name :">
                     <font>
                         <Font name="Arial" size="14.0" />
                     </font>
                 </Label>
-                <Label fx:id="codelabel" layoutX="45.0" layoutY="72.0" prefHeight="30.0" prefWidth="122.0" text="Credit Hours :" textFill="WHITE">
+                <Label layoutX="45.0" layoutY="72.0" prefHeight="30.0" prefWidth="122.0" text="Subject Code :">
                     <font>
                         <Font name="Arial" size="14.0" />
                     </font>
                 </Label>
-                <Label fx:id="deplabel" layoutX="45.0" layoutY="113.0" prefHeight="30.0" prefWidth="122.0" text="Room :" textFill="WHITE">
+                <Label layoutX="45.0" layoutY="114.0" prefHeight="30.0" prefWidth="68.0" text="Lecture :" textAlignment="CENTER">
                     <font>
                         <Font name="Arial" size="14.0" />
                     </font>
                 </Label>
-
-                <CheckBox fx:id="majorchkbx" layoutX="419.0" layoutY="120.0" prefHeight="17.0" prefWidth="93.0" text="Is Major?" textFill="WHITE">
-                    <font>
-                        <Font name="Arial" size="14.0" />
-                    </font>
-                </CheckBox>
-
-                <VBox layoutX="50.0" layoutY="160.0" prefHeight="200.0" prefWidth="600.0">
-                    <TableView fx:id="subjectTable">
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                        <columns>
-                            <TableColumn fx:id="subjectColumn" prefWidth="150.0" text="Subject Name" />
-                            <TableColumn fx:id="hoursColumn" prefWidth="100.0" text="Credit Hours" />
-                            <TableColumn fx:id="roomColumn" prefWidth="100.0" text="Room" />
-                            <TableColumn fx:id="majorColumn" prefWidth="100.0" text="Is Major?" />
-                        </columns>
-                    </TableView>
-                </VBox>
-
-                <Button fx:id="addBtn" layoutX="218.0" layoutY="376.0" onAction="#addSubject" prefHeight="41.0" prefWidth="93.0" text="Add" />
-                <Button fx:id="updateBtn" layoutX="342.0" layoutY="376.0" onAction="#updateSubject" prefHeight="41.0" prefWidth="93.0" text="Update" />
-                <Button fx:id="DeleteBtn" layoutX="466.0" layoutY="376.0" onAction="#deleteSubject" prefHeight="41.0" prefWidth="93.0" text="Delete Subject" />
+            <Label layoutX="302.0" layoutY="31.0" prefHeight="30.0" prefWidth="40.0" text="Unit :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="300.0" layoutY="72.0" prefHeight="30.0" prefWidth="84.0" text="Laboratory :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="UnitTXT" layoutX="352.0" layoutY="33.0" prefHeight="26.0" prefWidth="84.0" />
+            <TextField fx:id="LabTXT" layoutX="388.0" layoutY="74.0" prefHeight="26.0" prefWidth="84.0" />
+            <Label layoutX="223.0" layoutY="115.0" prefHeight="30.0" prefWidth="84.0" text="Year Level :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="YLevelCmbBx" layoutX="311.0" layoutY="118.0" prefHeight="25.0" prefWidth="103.0" />
+            <Label layoutX="430.0" layoutY="116.0" prefHeight="30.0" prefWidth="84.0" text="Semester :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="SemCmbBx" accessibleRole="IMAGE_VIEW" layoutX="520.0" layoutY="119.0" prefHeight="25.0" prefWidth="103.0" />
+            <Label layoutX="452.0" layoutY="31.0" prefHeight="30.0" prefWidth="84.0" text="Prerequisite :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="PrerequisiteTXT" layoutX="542.0" layoutY="33.0" prefHeight="26.0" prefWidth="103.0" />
+            <Label layoutX="487.0" layoutY="72.0" prefHeight="30.0" prefWidth="84.0" text="Acad Track :">
+               <font>
+                  <Font name="Arial" size="14.0" />
+               </font>
+            </Label>
+            <TextField fx:id="AcadTrackTXT" layoutX="578.0" layoutY="74.0" prefHeight="26.0" prefWidth="103.0" />
+                <TableView fx:id="subjectTable" layoutX="30.0" layoutY="206.0" prefHeight="200.0" prefWidth="707.0" xmlns:fx="http://javafx.com/fxml">
+                    <columns>
+                        <TableColumn fx:id="acadTrackCol1" text="Action" />
+                        <TableColumn fx:id="subjCodeCol" prefWidth="100.0" text="Subject Code" />
+                        <TableColumn fx:id="subjectNameCol" prefWidth="101.60005187988281" text="Subject Name" />
+                        <TableColumn fx:id="lectureCol" prefWidth="99.20001220703125" text="Lecture Hours" />
+                        <TableColumn fx:id="labCol" prefWidth="82.39996337890625" text="Lab Hours" />
+                        <TableColumn fx:id="unitsCol" prefWidth="45.5999755859375" text="Units" />
+                        <TableColumn fx:id="yearLevelCol" prefWidth="71.199951171875" text="Year Level" />
+                        <TableColumn fx:id="semesterCol" prefWidth="60.2000732421875" text="Semester" />
+                        <TableColumn fx:id="prerequisiteCol" text="Prerequisite" />
+                        <TableColumn fx:id="acadTrackCol" text="Academic Track" />
+                    </columns>
+                </TableView>
+                <Button fx:id="Add" layoutX="37.0" layoutY="166.0" mnemonicParsing="false" onAction="#addSubject" text="ADD" />
             </children>
         </Pane>
     </children>

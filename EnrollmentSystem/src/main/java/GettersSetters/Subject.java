@@ -13,6 +13,7 @@ public class Subject {
     private String acadTrack;
 
     public Subject() {
+
     }
 
     public int getSubId() {
