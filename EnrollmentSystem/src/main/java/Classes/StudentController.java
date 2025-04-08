@@ -1113,7 +1113,7 @@ public class StudentController {
             // Insert guardian record using retrieved studentID
             String guardianSQL = "INSERT INTO guardian (student_id, first_name, middle_name, last_name, address, email, contact_no, relationship) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-            try (PreparedStatement guardianStmt = kon.prepareStatement(guardianSQL)) {
+            try (PreparedStatement guardianStmt = DBConnect.getConnection().prepareStatement(guardianSQL)) {
                 guardianStmt.setInt(1, studentID);
                 guardianStmt.setString(2, guardianDetails.get("GFName"));
                 guardianStmt.setString(3, guardianDetails.get("GMName"));
@@ -1162,7 +1162,7 @@ public class StudentController {
         String sql = "SELECT sr_code FROM student WHERE sr_code = ?";
 
         // Loop until a unique sr_code is found
-        try (PreparedStatement stmt = kon.prepareStatement(sql)) {
+        try (PreparedStatement stmt = DBConnect.getConnection().prepareStatement(sql)) {
             while (true) {
                 stmt.setString(1, newSrCode);
                 try (ResultSet rs = stmt.executeQuery()) {
