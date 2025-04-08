@@ -23,10 +23,12 @@
 
             <TableView fx:id="studentTable" layoutX="14.0" layoutY="50.0" prefHeight="159.0" prefWidth="724.0" style="-fx-background-color: EBE8DB;">
                <columns>
+                  <TableColumn fx:id="colControls" prefWidth="75.0" text="Controls" />
                   <TableColumn fx:id="studIDColumn" text="Student ID" />
                   <TableColumn fx:id="picLinkColumn" text="Picture" />
                   <TableColumn fx:id="signLinkColumn" text="Sign" />
                   <TableColumn fx:id="studentNameColumn" text="Full Name" />
+                  <TableColumn fx:id="studentSexColumn" text="Sex" />
                   <TableColumn fx:id="srCodeColumn" text="SR Code" />
                   <TableColumn fx:id="yearLevelColumn" text="Year Level" />
                   <TableColumn fx:id="semesterColumn" text="Semester" />
@@ -41,14 +43,14 @@
                   <TableColumn fx:id="guardianFullNameColumn" text="Guardian Full Name" />
                   <TableColumn fx:id="guardianContactNoColumn" text="Guardian Contact No" />
                   <TableColumn fx:id="guardianRelationshipColumn" text="Guardian Relationship" />
-                  
+
                </columns>
             </TableView>
             <RadioButton fx:id="showDeleted" layoutX="458.0" layoutY="15.0" mnemonicParsing="false" onAction="#loadStudents" text="Show Deleted" />
             <Pane fx:id="hidePane" layoutY="195.0" prefHeight="254.0" prefWidth="750.0" style="-fx-background-color: D76C82;">
                <children>
                   <TextField fx:id="email" layoutX="16.0" layoutY="170.0" prefHeight="25.0" prefWidth="140.0" />
-                  <Button fx:id="insertButton" layoutX="117.0" layoutY="208.0" prefHeight="30.0" prefWidth="107.0" text="Add Student">
+                  <Button fx:id="insertButton" layoutX="167.0" layoutY="208.0" prefHeight="30.0" prefWidth="140.0" text="Add Student">
                      <graphic>
                         <ImageView fitHeight="17.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -70,17 +72,17 @@
                   <Label layoutX="169.0" layoutY="108.0" text="Address" />
                   <TextField fx:id="contact" layoutX="167.0" layoutY="83.0" prefHeight="25.0" prefWidth="141.0" />
                   <Label layoutX="168.0" layoutY="66.0" text="Contact" />
-                  <TextField fx:id="srCode" layoutX="167.0" layoutY="43.0" prefHeight="25.0" prefWidth="141.0" />
+                  <TextField fx:id="srCode" disable="true" editable="false" layoutX="167.0" layoutY="43.0" prefHeight="25.0" prefWidth="141.0" />
                   <Label layoutX="167.0" layoutY="25.0" text="SR-Code" />
-                  <Label layoutX="319.0" layoutY="151.0" text="Status" />
-                  <ComboBox fx:id="status" layoutX="319.0" layoutY="170.0" prefWidth="150.0" />
-                  <ComboBox fx:id="major" layoutX="319.0" layoutY="125.0" prefWidth="150.0" />
-                  <Label layoutX="320.0" layoutY="108.0" text="Major" />
-                  <ComboBox fx:id="program" layoutX="319.0" layoutY="83.0" prefWidth="150.0" />
-                  <Label layoutX="319.0" layoutY="66.0" text="Program" />
+                  <Label layoutX="321.0" layoutY="195.0" prefHeight="19.0" prefWidth="29.0" text="Status" />
+                  <ComboBox fx:id="status" layoutX="319.0" layoutY="212.0" prefWidth="150.0" />
+                  <ComboBox fx:id="major" layoutX="319.0" layoutY="171.0" prefWidth="150.0" />
+                  <Label layoutX="321.0" layoutY="151.0" text="Major" />
+                  <ComboBox fx:id="program" layoutX="319.0" layoutY="127.0" prefWidth="150.0" />
+                  <Label layoutX="321.0" layoutY="108.0" text="Program" />
 
-                        <ComboBox fx:id="yearLevel" accessibleText="adsf" layoutX="319.0" layoutY="43.0" prefWidth="150.0" />
-                  <Label layoutX="324.0" layoutY="25.0" prefHeight="14.0" prefWidth="76.0" text="Year Level" />
+                  <ComboBox fx:id="yearLevel" accessibleText="adsf" layoutX="319.0" layoutY="85.0" prefWidth="150.0" />
+                  <Label layoutX="324.0" layoutY="66.0" prefHeight="14.0" prefWidth="76.0" text="Year Level" />
                   <Pane fx:id="imagePanel" layoutX="484.0" layoutY="71.0" prefHeight="112.0" prefWidth="118.0" style="-fx-background-color: EBE8DB; -fx-border-color: B59F78; -fx-border-width: 3;" />
                   <Pane fx:id="signaturePanel" layoutX="619.0" layoutY="72.0" prefHeight="111.0" prefWidth="120.0" style="-fx-background-color: EBE8DB; -fx-border-color: B59F78; -fx-border-width: 3;" />
                   <Button fx:id="picture" layoutX="557.0" layoutY="193.0" mnemonicParsing="false" onAction="#openPictureDialog" prefHeight="43.0" prefWidth="45.0">
@@ -107,26 +109,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="Delete" layoutX="247.0" layoutY="209.0" mnemonicParsing="false" onAction="#deleteStudent" prefHeight="29.0" prefWidth="95.0" text="Delete">
-                     <graphic>
-                        <ImageView fitHeight="16.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Images/icons8-delete-48 (green).png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-
-                        <Button fx:id="Update" layoutX="365.0" layoutY="209.0" mnemonicParsing="false" onAction="#updateStudent" prefHeight="28.0" prefWidth="99.0" text="Update">
-                     <graphic>
-                        <ImageView fitHeight="18.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../Images/icons8-update-64.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="clearButton" layoutX="21.0" layoutY="207.0" prefHeight="31.0" prefWidth="68.0" text="Clear">
+                  <Button fx:id="clearButton" layoutX="55.0" layoutY="208.0" prefHeight="31.0" prefWidth="68.0" text="Clear">
                      <graphic>
                         <ImageView fitHeight="17.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -161,10 +144,12 @@
                   <ComboBox fx:id="semester" accessibleText="adsf" layoutX="483.0" layoutY="43.0" prefHeight="22.0" prefWidth="120.0" />
                   <CheckBox fx:id="isIrregular" layoutX="619.0" layoutY="46.0" mnemonicParsing="false" prefHeight="16.0" prefWidth="121.0" text="Is Irregular?" />
                   <Label layoutX="495.0" layoutY="25.0" prefHeight="14.0" prefWidth="76.0" text="Semester" />
+                  <ComboBox fx:id="sex" accessibleText="adsf" layoutX="319.0" layoutY="43.0" prefWidth="150.0" />
+                  <Label layoutX="324.0" layoutY="25.0" prefHeight="14.0" prefWidth="76.0" text="Sex" />
                </children>
             </Pane>
             <RadioButton fx:id="showIrregular" layoutX="344.0" layoutY="15.0" mnemonicParsing="false" onAction="#loadStudents" text="Show Irregular" />
-            <Label layoutX="27.0" layoutY="15.0" prefHeight="14.0" prefWidth="152.0" text="Student Management" />
+            <Label layoutX="27.0" layoutY="15.0" prefHeight="14.0" prefWidth="152.0" text="Student Registration" />
 
          </children>
       </AnchorPane>

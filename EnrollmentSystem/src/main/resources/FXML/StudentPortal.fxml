@@ -15,7 +15,6 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-
 <AnchorPane fx:id="mainPane" prefHeight="1022.0" prefWidth="886.0" style="-fx-background-color: #FFFFF0;" stylesheets="@../CSS/StudentPortal.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentPortal">
    <children>
       <Pane prefHeight="118.0" prefWidth="886.0" style="-fx-background-color: #353a40;">
@@ -102,10 +101,10 @@
       </Pane>
       <Polyline fill="#d2232a" layoutX="308.0" layoutY="443.0" points="-308.0, -40.0, 50.0, -40.0, -308.0, -179.0, -308.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" />
       <MenuButton fx:id="missionVision" layoutX="58.0" layoutY="403.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="293.0" style="-fx-background-color: transparent;" text="University Mission, Vision, and Core Values">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
+         <items>
+            <MenuItem mnemonicParsing="false" text="Action 1" />
+            <MenuItem mnemonicParsing="false" text="Action 2" />
+         </items>
          <font>
             <Font name="Arial" size="13.0" />
          </font>
@@ -142,7 +141,7 @@
                         <Font size="15.0" />
                      </font>
                   </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" official email accounts">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="shadow-pane" text=" official email accounts">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -200,17 +199,17 @@
          </children>
       </Pane>
       <TabPane layoutY="654.0" prefHeight="452.0" prefWidth="886.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab fx:id="home" text="Home">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="352.0" prefWidth="886.0" />
-            </content>
-          </Tab>
-          <Tab fx:id="enrollment" text="Enrollment">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </Tab>
+         <tabs>
+            <Tab fx:id="home" text="Home">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="352.0" prefWidth="886.0" />
+               </content>
+            </Tab>
+            <Tab fx:id="enrollment" text="Enrollment">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </Tab>
             <Tab fx:id="schedule" text="Schedules">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
@@ -231,7 +230,7 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                </content>
             </Tab>
-        </tabs>
+         </tabs>
       </TabPane>
    </children>
 </AnchorPane>

@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.Year;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,6 +85,8 @@ public class StudentController {
     @FXML private TableColumn<Student, String> picLinkColumn;
     @FXML private TableColumn<Student, String> signLinkColumn;
     @FXML private TableColumn<Student, String> passwordColumn;
+    @FXML private TableColumn<Student, String> studentSexColumn;
+    @FXML private TableColumn<Student, Void> colControls;
 
 
     @FXML private TableColumn<Student, String> semesterColumn;
@@ -94,7 +97,7 @@ public class StudentController {
     @FXML private TableColumn<Student, String> guardianRelationshipColumn;
 
     @FXML private TextField firstName, middleName, lastName, picLink, signLink, srCode, contact, email, password, address;
-    @FXML private ComboBox<String> yearLevel, program, major, status, semester;
+    @FXML private ComboBox<String> yearLevel, program, major, status, semester, sex;
     @FXML private Button insertButton, clearButton;
     @FXML private CheckBox isIrregular;
     @FXML private TextField studID; // If needed for the database
@@ -149,20 +152,22 @@ public class StudentController {
         kon = DBConnect.getConnection();
 
         // Populate ComboBox options
+        sex.getItems().addAll("Male", "Female");
         yearLevel.getItems().addAll("1st Year", "2nd Year", "3rd Year", "4th Year");
         program.getItems().addAll("BSCS", "BSIT", "BSCE");
         status.getItems().addAll("Enrolled", "Not Enrolled");
-        semester.getItems().addAll("1st Sem", "2nd Sem", "Midterms");
+        semester.getItems().addAll("1st Sem", "2nd Sem", "Midterm");
 
         // Define major options based on the selected program
-        majorsMap.put("BSCS", new String[]{"None", "Data Science", "Web Development"});
-        majorsMap.put("BSIT", new String[]{"None", "BA", "NT"});
-        majorsMap.put("BSCE", new String[]{"None", "Robotics", "VLSI Design"});
+        majorsMap.put("BSCS", new String[]{"", "Data Science", "Web Development"});
+        majorsMap.put("BSIT", new String[]{"", "BA", "NT"});
+        majorsMap.put("BSCE", new String[]{"", "Robotics", "VLSI Design"});
 
         // Assign event handlers to buttons
         insertButton.setOnAction(event -> insertStudent());
         clearButton.setOnAction(event -> clearFields());
-        studentTable.setOnMouseClicked(event -> populateFieldsFromTable()); // mouseclick
+
+
 
         // Assign event handlers to combo boxes
         program.setOnAction(event -> updateMajorOptions());
@@ -255,6 +260,11 @@ public class StudentController {
 
     @FXML
     private void initializeTableColumns() {
+
+        colControls.setCellFactory(col -> new CustomControlsCell<Student>(
+                student -> populateFieldsFromTable(student),
+                student -> deleteStudent(student)
+        ));
         studIDColumn.setCellValueFactory(cellData -> cellData.getValue().studIDProperty().asObject());
         srCodeColumn.setCellValueFactory(cellData -> cellData.getValue().srCodeProperty());
         yearLevelColumn.setCellValueFactory(cellData -> cellData.getValue().yearLevelProperty());
@@ -268,8 +278,6 @@ public class StudentController {
         passwordColumn.setCellValueFactory(cellData -> cellData.getValue().passwordProperty());
         semesterColumn.setCellValueFactory(cellData -> cellData.getValue().semesterProperty());
         isIrregularColumn.setCellValueFactory(cellData -> cellData.getValue().isIrregularProperty());
-
-        // Bind the guardian-related columns to the corresponding properties in the Student and Guardian class
         guardianFullNameColumn.setCellValueFactory(cellData -> cellData.getValue().guardianFullNameProperty());
         guardianContactNoColumn.setCellValueFactory(cellData -> cellData.getValue().guardianContactNoProperty());
         guardianRelationshipColumn.setCellValueFactory(cellData -> cellData.getValue().guardianRelationshipProperty());
@@ -546,19 +554,20 @@ public class StudentController {
     }
 
     @FXML
-    private void deleteStudent() {
-        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-
-        if (selectedStudent == null) {
-            showAlert(Alert.AlertType.WARNING, "Warning", "Please select a student.");
+    private void deleteStudent(Student student) {
+        if (student == null) {
+            showAlert(Alert.AlertType.WARNING, "Warning", "No student selected.");
             return;
         }
+
+        // Get the studentID directly from the passed student object
+        int studentID = student.getStudID();
 
         try {
             // Check if the student is already deleted
             String checkQuery = "SELECT is_deleted FROM student WHERE id = ?";
             PreparedStatement checkStmt = DBConnect.getConnection().prepareStatement(checkQuery);
-            checkStmt.setInt(1, selectedStudent.getStudID());
+            checkStmt.setInt(1, studentID);
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next() && rs.getInt("is_deleted") == 1) {
@@ -576,7 +585,7 @@ public class StudentController {
                 if (result == restoreButton) {
                     String restoreQuery = "UPDATE student SET is_deleted = 0 WHERE id = ?";
                     PreparedStatement restoreStmt = DBConnect.getConnection().prepareStatement(restoreQuery);
-                    restoreStmt.setInt(1, selectedStudent.getStudID());
+                    restoreStmt.setInt(1, studentID);
                     restoreStmt.executeUpdate();
 
                     loadStudents();
@@ -595,7 +604,7 @@ public class StudentController {
             if (result == ButtonType.OK) {
                 String deleteQuery = "UPDATE student SET is_deleted = 1 WHERE id = ?";
                 PreparedStatement deleteStmt = DBConnect.getConnection().prepareStatement(deleteQuery);
-                deleteStmt.setInt(1, selectedStudent.getStudID());
+                deleteStmt.setInt(1, studentID);
                 deleteStmt.executeUpdate();
 
                 loadStudents();
@@ -724,14 +733,14 @@ public class StudentController {
 
         ObservableList<Student> filteredStudents = FXCollections.observableArrayList();
 
-        // Updated query to include guardian fields for search
-        String sql = "SELECT s.id, s.first_name, s.middle_name, s.last_name, s.sr_code, " +
+        // Updated query to include the sex field in the search
+        String sql = "SELECT s.id, s.first_name, s.middle_name, s.last_name, s.sex, s.sr_code, " +
                 "s.year_level, s.program, s.major, s.contact, s.email, s.address, s.status, " +
                 "s.pic_link, s.sign_link, s.password, s.semester, s.isIrregular, " +
                 "g.first_name AS guardian_first_name, g.middle_name AS guardian_middle_name, " +
                 "g.last_name AS guardian_last_name, g.contact_no AS guardian_contact, g.relationship AS guardian_relationship " +
                 "FROM student s LEFT JOIN guardian g ON s.id = g.student_id WHERE " +
-                "s.first_name LIKE ? OR s.middle_name LIKE ? OR s.last_name LIKE ? OR " +
+                "s.first_name LIKE ? OR s.middle_name LIKE ? OR s.last_name LIKE ? OR s.sex LIKE ? OR " +  // Added sex in search
                 "s.sr_code LIKE ? OR s.year_level LIKE ? OR s.program LIKE ? OR " +
                 "s.major LIKE ? OR s.contact LIKE ? OR s.email LIKE ? OR s.address LIKE ? OR " +
                 "s.status LIKE ? OR g.first_name LIKE ? OR g.middle_name LIKE ? OR g.last_name LIKE ? OR " +
@@ -740,18 +749,19 @@ public class StudentController {
         try (PreparedStatement stmt = DBConnect.getConnection().prepareStatement(sql)) {
             String searchPattern = "%" + searchText + "%"; // Allow partial matching with wildcards
 
-            // Set search text for all columns
-            for (int i = 1; i <= 16; i++) {
+            // Set search text for all columns, including the sex field
+            for (int i = 1; i <= 17; i++) {
                 stmt.setString(i, searchPattern);
             }
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                // Retrieve Student data
+                // Retrieve Student data including sex
                 int studentId = rs.getInt("id");
                 String firstName = rs.getString("first_name");
                 String middleName = rs.getString("middle_name");
                 String lastName = rs.getString("last_name");
+                String sex = rs.getString("sex");  // Retrieve sex
                 String srCode = rs.getString("sr_code");
                 String yearLevel = rs.getString("year_level");
                 String program = rs.getString("program");
@@ -789,12 +799,13 @@ public class StudentController {
                         guardianRelationship
                 );
 
-                // Create Student object with the loaded data and associated Guardian
+                // Create Student object with the loaded data, including sex and associated Guardian
                 Student student = new Student(
                         studentId,
                         firstName,
                         middleName,
                         lastName,
+                        sex, // Pass sex to the Student constructor
                         srCode,
                         yearLevel,
                         program,
@@ -823,13 +834,14 @@ public class StudentController {
 
 
 
+
     @FXML
     private void loadStudents() {
         boolean showDeletedSelected = showDeleted.isSelected();
         boolean showIrregularSelected = showIrregular.isSelected(); // Added for irregular students
 
         // Adjust the WHERE clause based on the checkbox selections
-        String query = "SELECT s.id, s.first_name, IFNULL(s.middle_name, '') AS middle_name, s.last_name, s.sr_code, " +
+        String query = "SELECT s.id, s.first_name, IFNULL(s.middle_name, '') AS middle_name, s.last_name, s.sex, s.sr_code, " +
                 "s.year_level, s.program, s.major, s.contact, s.email, s.address, s.status, s.pic_link, s.semester, " +
                 "s.sign_link, s.password, s.isIrregular, g.first_name AS guardian_first_name, g.middle_name AS guardian_middle_name, " +
                 "g.last_name AS guardian_last_name, g.contact_no AS guardian_contact, g.relationship AS guardian_relationship " +
@@ -853,6 +865,7 @@ public class StudentController {
                 String firstName = rs.getString("first_name");
                 String middleName = rs.getString("middle_name");
                 String lastName = rs.getString("last_name");
+                String sex = rs.getString("sex"); // Retrieve sex field
 
                 // Concatenate full name for the student (Handle potential null middle name)
                 String fullName = firstName + " " +
@@ -877,12 +890,13 @@ public class StudentController {
                         guardianRelationship
                 );
 
-                // Create Student object and assign Guardian to it
+                // Create Student object and assign Guardian to it, include sex
                 studentList.add(new Student(
                         id,
                         firstName,
                         middleName,
                         lastName,
+                        sex, // Include sex in the Student constructor
                         rs.getString("sr_code"),
                         rs.getString("year_level"),
                         rs.getString("program"),
@@ -912,58 +926,68 @@ public class StudentController {
                 return new SimpleStringProperty(fullName);
             });
 
+            // Optional: If you want to display the sex field in a column (you could add a new column for sex):
+            studentSexColumn.setCellValueFactory(cellData -> {
+                Student student = cellData.getValue();
+                return new SimpleStringProperty(student.getSex()); // Display sex
+            });
+
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Error loading students: " + e.getMessage()).show();
         }
     }
 
-
     @FXML
-    private void populateFieldsFromTable() {
-        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
-        if (selectedStudent != null) {
-            firstName.setText(selectedStudent.getFirstName());
-            middleName.setText(selectedStudent.getMiddleName());
-            lastName.setText(selectedStudent.getLastName());
-            srCode.setText(selectedStudent.getSrCode());
-            yearLevel.setValue(selectedStudent.getYearLevel());
-            program.setValue(selectedStudent.getProgram());
-            major.setValue(selectedStudent.getMajor());
-            contact.setText(selectedStudent.getContact());
-            email.setText(selectedStudent.getEmail());
-            address.setText(selectedStudent.getAddress());
-            status.setValue(selectedStudent.getStatus());
-            semester.setValue(selectedStudent.getSemester());
-            isIrregular.setSelected(selectedStudent.getIsIrregular()); // Assuming isActive() returns a boolean
-            password.setText(selectedStudent.getPassword());
+    private void populateFieldsFromTable(Student student) {
+        if (student == null) return;
 
-            // Load picture into imagePanel if available.
-            if (selectedStudent.getPicLink() != null && !selectedStudent.getPicLink().isEmpty()) {
-                Image image = new Image(selectedStudent.getPicLink(), true);
-                ImageView iv = new ImageView(image);
-                iv.setFitWidth(imagePanel.getPrefWidth());
-                iv.setFitHeight(imagePanel.getPrefHeight());
-                iv.setPreserveRatio(true);
-                imagePanel.getChildren().clear();
-                imagePanel.getChildren().add(iv);
-            } else {
-                imagePanel.getChildren().clear();
-            }
+        // Populate text fields from the student object.
+        firstName.setText(student.getFirstName());
+        middleName.setText(student.getMiddleName());
+        lastName.setText(student.getLastName());
+        srCode.setText(student.getSrCode());
+        yearLevel.setValue(student.getYearLevel());
+        program.setValue(student.getProgram());
+        major.setValue(student.getMajor());
+        contact.setText(student.getContact());
+        email.setText(student.getEmail());
+        address.setText(student.getAddress());
+        status.setValue(student.getStatus());
+        semester.setValue(student.getSemester());
+        isIrregular.setSelected(student.getIsIrregular());
+        password.setText(student.getPassword());
+        sex.setValue(student.getSex());
 
-            // Load signature into signaturePanel if available.
-            if (selectedStudent.getSignLink() != null && !selectedStudent.getSignLink().isEmpty()) {
-                Image image = new Image(selectedStudent.getSignLink(), true);
-                ImageView iv = new ImageView(image);
-                iv.setFitWidth(signaturePanel.getPrefWidth());
-                iv.setFitHeight(signaturePanel.getPrefHeight());
-                iv.setPreserveRatio(true);
-                signaturePanel.getChildren().clear();
-                signaturePanel.getChildren().add(iv);
-            } else {
-                signaturePanel.getChildren().clear();
-            }
+        // Load picture into imagePanel if available.
+        if (student.getPicLink() != null && !student.getPicLink().isEmpty()) {
+            Image image = new Image(student.getPicLink(), true);
+            ImageView iv = new ImageView(image);
+            iv.setFitWidth(imagePanel.getPrefWidth());
+            iv.setFitHeight(imagePanel.getPrefHeight());
+            iv.setPreserveRatio(true);
+            imagePanel.getChildren().clear();
+            imagePanel.getChildren().add(iv);
+        } else {
+            imagePanel.getChildren().clear();
         }
+
+        // Load signature into signaturePanel if available.
+        if (student.getSignLink() != null && !student.getSignLink().isEmpty()) {
+            Image image = new Image(student.getSignLink(), true);
+            ImageView iv = new ImageView(image);
+            iv.setFitWidth(signaturePanel.getPrefWidth());
+            iv.setFitHeight(signaturePanel.getPrefHeight());
+            iv.setPreserveRatio(true);
+            signaturePanel.getChildren().clear();
+            signaturePanel.getChildren().add(iv);
+        } else {
+            signaturePanel.getChildren().clear();
+        }
+
+        updateStudent();
     }
+
+
 
     @FXML
     private void updateMajorOptions() {
@@ -973,8 +997,8 @@ public class StudentController {
 
         // If 1st Year or 2nd Year is selected, show only "None" as the major
         if ("1st Year".equals(selectedYearLevel) || "2nd Year".equals(selectedYearLevel)) {
-            major.getItems().add("None");
-            major.setValue("None"); // Automatically select "None"
+            major.getItems().add("");
+            major.setValue(""); // Automatically select "None"
         } else if (selectedProgram != null && majorsMap.containsKey(selectedProgram)) {
             major.getItems().addAll(majorsMap.get(selectedProgram));
             major.setValue(null); // Reset major selection
@@ -983,6 +1007,10 @@ public class StudentController {
 
     @FXML
     private void insertStudent() {
+
+        String generatedSrCode = generateSrCode(); // 🔸 Auto-generate SR-Code
+        srCode.setText(generatedSrCode);
+
         kon = DBConnect.getConnection();
         if (kon == null) {
             new Alert(Alert.AlertType.ERROR, "Database connection is unavailable!").show();
@@ -994,9 +1022,10 @@ public class StudentController {
             return;
         }
 
-        // Check if student already exists
-        if (isStudentExists(srCode.getText(), email.getText(), contact.getText())) {
-            new Alert(Alert.AlertType.ERROR, "Student with the same SR-Code, Email, or Contact already exists!").show();
+        // Check if student already exists and get which field is duplicated
+        String duplicateField = isStudentExists(srCode.getText(), email.getText(), contact.getText());
+        if (duplicateField != null) {
+            new Alert(Alert.AlertType.ERROR, "Student with the same " + duplicateField + " already exists!").show();
             return;
         }
 
@@ -1026,34 +1055,35 @@ public class StudentController {
                 signatureLinks = getImageUrlFromPane(signaturePanel);
             }
 
-            if (photoLinks == null || signatureLinks == null || photoLinks.isEmpty() || signatureLinks.isEmpty()) {
-                throw new IOException("File upload failed: Photo or Signature URL is empty.");
-            }
 
-            // Insert student into database
-            String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, pic_link, sign_link, sr_code, year_level, semester, program, major, contact, email, password, address, status, is_deleted, isIrregular) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
+
+            String studentSQL = "INSERT INTO student (first_name, middle_name, last_name, sex, pic_link, sign_link, sr_code, year_level, semester, program, major, contact, email, password, address, status, is_deleted, isIrregular) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)";
             int studentID = -1;
+            // Optional: show in UI
 
             try (PreparedStatement studentStmt = kon.prepareStatement(studentSQL, Statement.RETURN_GENERATED_KEYS)) {
                 studentStmt.setString(1, firstName.getText());
                 studentStmt.setString(2, middleName.getText());
                 studentStmt.setString(3, lastName.getText());
-                studentStmt.setString(4, photoLinks);
-                studentStmt.setString(5, signatureLinks);
-                studentStmt.setString(6, srCode.getText());
-                studentStmt.setString(7, yearLevel.getValue());
-                studentStmt.setString(8, semester.getStyle());
-                studentStmt.setString(9, program.getValue());
-                studentStmt.setString(10, major.getValue());
-                studentStmt.setString(11, contact.getText());
-                studentStmt.setString(12, email.getText());
-                studentStmt.setString(13, password.getText());
-                studentStmt.setString(14, address.getText());
-                studentStmt.setString(15, status.getValue());
-                studentStmt.setBoolean(16, isIrregularSelected);
-
+                studentStmt.setString(4, sex.getValue());
+                studentStmt.setString(5, photoLinks);
+                studentStmt.setString(6, signatureLinks);
+                studentStmt.setString(7, generatedSrCode); // 🔹 Use generated SR-Code here
+                studentStmt.setString(8, yearLevel.getValue());
+                studentStmt.setString(9, semester.getValue());
+                studentStmt.setString(10, program.getValue());
+                studentStmt.setString(11, major.getValue());
+                studentStmt.setString(12, contact.getText());
+                studentStmt.setString(13, email.getText());
+                studentStmt.setString(14, password.getText());
+                studentStmt.setString(15, address.getText());
+                studentStmt.setString(16, status.getValue());
+                studentStmt.setBoolean(17, isIrregularSelected);
 
                 int rowsInserted = studentStmt.executeUpdate();
+
+
                 if (rowsInserted == 0) {
                     throw new SQLException("Failed to insert student record.");
                 }
@@ -1122,9 +1152,51 @@ public class StudentController {
     }
 
 
+    private String generateSrCode() {
+        String year = String.valueOf(Year.now().getValue()).substring(2); // e.g. "25"
+        String prefix = year + "-";
+        int nextNumber = 1;
+        String newSrCode = String.format("%s%05d", prefix, nextNumber); // Initial code: "25-00001"
+
+        // SQL query to check if the generated sr_code already exists
+        String sql = "SELECT sr_code FROM student WHERE sr_code = ?";
+
+        // Loop until a unique sr_code is found
+        try (PreparedStatement stmt = kon.prepareStatement(sql)) {
+            while (true) {
+                stmt.setString(1, newSrCode);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (!rs.next()) {
+                        // If sr_code does not exist, we have found a unique one
+                        break;
+                    }
+                }
+                // If sr_code exists, increment and regenerate
+                nextNumber++;
+                newSrCode = String.format("%s%05d", prefix, nextNumber);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return newSrCode; // Return the unique sr_code
+    }
+
 
     @FXML
     private void updateStudent() {
+        if (isPaneHidden) {
+            togglePaneAndResize();
+
+        }
+        Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
+
+
+        insertButton.setText("Confirm Update");
+        insertButton.setOnAction(event -> updateStudent());
+        yearLevel.setDisable(true);
+        semester.setDisable(true);
+
         if (kon == null) {
             new Alert(Alert.AlertType.ERROR, "Database connection is unavailable!").show();
             return;
@@ -1158,22 +1230,22 @@ public class StudentController {
             }
 
             String signatureLink;
-                if (signatureFile != null) {
-                    String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
-                    Drive driveService = getDriveService();
-                    signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
-                    System.out.println("Signature uploaded: " + signatureLink);
-                } else {
-                    signatureLink = getImageUrlFromPane(signaturePanel);
-                }
-                if (signatureFile != null) {
-                    String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
-                    Drive driveService = getDriveService();
-                    signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
-                    System.out.println("Updated signature uploaded: " + signatureLink);
-                } else {
-                    signatureLink = getImageUrlFromPane(signaturePanel);
-                }
+            if (signatureFile != null) {
+                String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
+                Drive driveService = getDriveService();
+                signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
+                System.out.println("Signature uploaded: " + signatureLink);
+            } else {
+                signatureLink = getImageUrlFromPane(signaturePanel);
+            }
+            if (signatureFile != null) {
+                String signatureFolderId = "1dTQTt1N3YyNeF2TZltLls4D45CSWaE58";
+                Drive driveService = getDriveService();
+                signatureLink = uploadFileToDrive(driveService, signatureFile, signatureFolderId, "image/png");
+                System.out.println("Updated signature uploaded: " + signatureLink);
+            } else {
+                signatureLink = getImageUrlFromPane(signaturePanel);
+            }
 
 
             // Check if student exists
@@ -1247,31 +1319,36 @@ public class StudentController {
             }
 
             boolean isIrregularSelected = isIrregular.isSelected();
-// Update student details
-            String studentSQL = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, pic_link = ?, year_level = ?, semester = ?, program = ?, major = ?, contact = ?, email = ?, password = ?, address = ?, status = ?, isIrregular = ? WHERE id = ?";
+            // Update student details
+            String studentSQL = "UPDATE student SET first_name = ?, middle_name = ?, last_name = ?, sex = ?, pic_link = ?, program = ?, major = ?, contact = ?, email = ?, password = ?, address = ?, status = ?, isIrregular = ? WHERE id = ?";
+
             try (PreparedStatement studentStmt = DBConnect.getConnection().prepareStatement(studentSQL)) {
                 studentStmt.setString(1, firstName.getText());
                 studentStmt.setString(2, middleName.getText());
                 studentStmt.setString(3, lastName.getText());
-                studentStmt.setString(4, photoLink);
-                studentStmt.setString(5, yearLevel.getValue());
-                studentStmt.setString(6, semester.getValue());
-                studentStmt.setString(7, program.getValue());
-                studentStmt.setString(8, major.getValue());
-                studentStmt.setString(9, contact.getText());
-                studentStmt.setString(10, email.getText());
-                studentStmt.setString(11, password.getText());
-                studentStmt.setString(12, address.getText());
-                studentStmt.setString(13, status.getValue());
-                studentStmt.setBoolean(14, isIrregularSelected);
-                studentStmt.setInt(15, studentID);
-
+                studentStmt.setString(4, sex.getValue()); // New line for sex
+                studentStmt.setString(5, photoLink);
+                studentStmt.setString(6, program.getValue());
+                studentStmt.setString(7, major.getValue());
+                studentStmt.setString(8, contact.getText());
+                studentStmt.setString(9, email.getText());
+                studentStmt.setString(10, password.getText());
+                studentStmt.setString(11, address.getText());
+                studentStmt.setString(12, status.getValue());
+                studentStmt.setBoolean(13, isIrregularSelected);
+                studentStmt.setInt(14, studentID);
                 studentStmt.executeUpdate();
             }
 
 
+
             loadStudents(); // Refresh student list
             clearFields(); // Clear form fields
+            yearLevel.setDisable(false);
+            semester.setDisable(false);
+            insertButton.setText("Add Student");
+            insertButton.setOnAction(event -> insertStudent());
+
             new Alert(Alert.AlertType.INFORMATION, "Student details updated successfully!").show();
 
         } catch (SQLException ex) {
@@ -1288,27 +1365,33 @@ public class StudentController {
         }
     }
 
-    @FXML
-    private boolean isStudentExists(String srCode, String email, String contact) {
-        if (kon == null) {
-            new Alert(Alert.AlertType.ERROR, "Database connection is unavailable!").show();
-            return false;
-        }
+    private String isStudentExists(String srCode, String email, String contact) {
+        String duplicateField = null;
 
-        String sql = "SELECT COUNT(*) FROM student WHERE sr_code = ? OR email = ? OR contact = ?";
+        try {
+            String checkSQL = "SELECT * FROM student WHERE sr_code = ? OR email = ? OR contact = ?";
+            try (PreparedStatement stmt = kon.prepareStatement(checkSQL)) {
+                stmt.setString(1, srCode);
+                stmt.setString(2, email);
+                stmt.setString(3, contact);
 
-        try (PreparedStatement stmt = DBConnect.getConnection().prepareStatement(sql)) {
-            stmt.setString(1, srCode);
-            stmt.setString(2, email);
-            stmt.setString(3, contact);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                return rs.next() && rs.getInt(1) > 0;
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        if (rs.getString("sr_code").equals(srCode)) {
+                            duplicateField = "SR-Code";
+                        } else if (rs.getString("email").equals(email)) {
+                            duplicateField = "Email";
+                        } else if (rs.getString("contact").equals(contact)) {
+                            duplicateField = "Contact";
+                        }
+                    }
+                }
             }
-        } catch (SQLException ex) {
-            new Alert(Alert.AlertType.ERROR, "Error: " + ex.getMessage()).show();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return false;
+
+        return duplicateField;  // Will return null if no duplicate found, or the duplicate field name
     }
 
 
@@ -1379,6 +1462,15 @@ public class StudentController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
+                // Perform validation before returning the data
+                if (gfName.getText().isEmpty() || gmName.getText().isEmpty() || glName.getText().isEmpty() ||
+                        gAddress.getText().isEmpty() || gEmail.getText().isEmpty() || gContactNo.getText().isEmpty()) {
+                    new Alert(Alert.AlertType.ERROR, "Please fill in all fields.").show();
+                    return null; // Prevent submission if fields are empty
+                }
+
+
+                // If validation passes, return the result
                 Map<String, String> result = new HashMap<>();
                 result.put("GFName", gfName.getText());
                 result.put("GMName", gmName.getText());
@@ -1389,11 +1481,12 @@ public class StudentController {
                 result.put("Relationship", relationship.getValue());
                 return result;
             }
-            return new HashMap<>(); // Return empty if user cancels
+            return null; // Return null if user cancels or validation fails
         });
 
         return dialog.showAndWait().orElse(new HashMap<>());
     }
+
 
 
     /**
@@ -1454,12 +1547,16 @@ public class StudentController {
         Arrays.asList(firstName, middleName, lastName, password, srCode, contact, email, password, address)
                 .forEach(TextField::clear);
 
-        Arrays.asList(yearLevel, program, major, status, semester)
+        Arrays.asList(yearLevel, program, major, status, semester, sex)
                 .forEach(comboBox -> comboBox.setValue(null));
 
         isIrregular.setSelected(false);  // Clear selection for the "showIrregular" RadioButton
 
         clearPanels();
+        yearLevel.setDisable(false);
+        semester.setDisable(false);
+        insertButton.setText("Add Student");
+        insertButton.setOnAction(event -> insertStudent());
     }
     private void clearPanels() {
         signaturePanel.getChildren().clear();
