@@ -8,10 +8,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import ExtraSources.DBConnect;
@@ -119,149 +120,232 @@ public class PopUpSchedController {
     private int getRoomIdByType(String roomType) {
         int roomId = -1;
         String sql = "SELECT room_id FROM rooms WHERE room_type = ? LIMIT 1";
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+
+        try {
+            Connection con = DBConnect.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, roomType);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    roomId = rs.getInt("room_id");
-                }
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                roomId = rs.getInt("room_id");
             }
+
+            // Close resources individually, not through try-with-resources
+            rs.close();
+            ps.close();
+            // Don't close the connection here
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return roomId;
     }
 
+    private String convertYearLevel(String yearLevel) {
+        if (yearLevel == null) return null;
+
+        return switch (yearLevel.toLowerCase()) {
+            case "first year" -> "1st Year";
+            case "second year" -> "2nd Year";
+            case "third year" -> "3rd Year";
+            case "fourth year" -> "4th Year";
+            default -> yearLevel; // Return as-is if no match
+        };
+    }
+
     @FXML
     private void generateSchedule() {
-        String subjectRecord = subjectCb.getSelectionModel().getSelectedItem();
-        String facultyRecord = facultyCb.getSelectionModel().getSelectedItem();
-        if (subjectRecord == null || facultyRecord == null) {
-            System.out.println("Please select both a subject and an instructor.");
+        // Get selected subject and faculty from combo boxes
+        String selectedSubject = subjectCb.getValue();
+        String selectedFaculty = facultyCb.getValue();
+
+        if (selectedSubject == null || selectedFaculty == null) {
+            showAlert("Error", "Please select both subject and faculty.");
             return;
         }
-        String subjectIdStr = subjectRecord.substring(1, subjectRecord.indexOf(",")).trim();
-        int subjectId = Integer.parseInt(subjectIdStr);
-        String facultyIdStr = facultyRecord.substring(1, facultyRecord.indexOf(",")).trim();
-        int facultyId = Integer.parseInt(facultyIdStr);
 
-        int creditHours = 0;
-        String subjectName = "";
-        boolean isMajor = false;
-        String subjectSql = "SELECT credit_hours, subject_name, is_major FROM subjects WHERE sub_id = ?";
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(subjectSql)) {
+        // Extract IDs from the formatted strings
+        int subjectId = Integer.parseInt(selectedSubject.substring(1, selectedSubject.indexOf(",")));
+        int facultyId = Integer.parseInt(selectedFaculty.substring(1, selectedFaculty.indexOf(",")));
+
+        // Declare variables outside try block
+        int lectureDuration = 0;
+        int labDuration = 0;
+        String yearLevel = null;
+        int lectureRoomId = -1;
+        int labRoomId = -1;
+        List<ORToolsScheduler.TimeSlot> existingTimeSlots = new ArrayList<>();
+        List<Integer> sectionIds = new ArrayList<>();
+
+        // Get subject details in a separate connection
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT year_level, lecture, lab FROM subjects WHERE sub_id = ?")) {
             ps.setInt(1, subjectId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                creditHours = rs.getInt("credit_hours");
-                subjectName = rs.getString("subject_name");
-                isMajor = rs.getInt("is_major") == 1;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    yearLevel = rs.getString("year_level");
+                    lectureDuration = rs.getInt("lecture") * 60; // Convert hours to minutes
+                    Integer lab = rs.getObject("lab", Integer.class);
+                    if (lab != null) {
+                        labDuration = lab * 60; // Convert hours to minutes
+                    }
+                } else {
+                    showAlert("Error", "Subject information not found.");
+                    return;
+                }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Database error: " + e.getMessage());
             return;
         }
 
-        ObservableList<Integer> sectionIds = FXCollections.observableArrayList();
-        String sectionSql = "SELECT section_id FROM section";
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sectionSql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                sectionIds.add(rs.getInt("section_id"));
+        // Debug output
+        System.out.println("Subject year level from database: " + yearLevel);
+        String convertedYearLevel = convertYearLevel(yearLevel);
+        System.out.println("Converted year level for section query: " + convertedYearLevel);
+        System.out.println("Lecture duration: " + lectureDuration/60 + " hours (" + lectureDuration + " minutes)");
+        System.out.println("Lab duration: " + labDuration/60 + " hours (" + labDuration + " minutes)");
+
+        // Get room IDs in a separate connection
+        try (Connection conn = DBConnect.getConnection()) {
+            lectureRoomId = getRoomIdByType("Lecture");
+            labRoomId = getRoomIdByType("Lab");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Error getting room information: " + e.getMessage());
+            return;
+        }
+
+        if (lectureRoomId == -1) {
+            showAlert("Error", "No lecture room available.");
+            return;
+        }
+
+        if (labDuration > 0 && labRoomId == -1) {
+            showAlert("Error", "No lab room available.");
+            return;
+        }
+
+        // Get existing schedules in a separate connection
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT time_in, time_out, days, room_id FROM subsched WHERE room_id = ? OR room_id = ?")) {
+            ps.setInt(1, lectureRoomId);
+            ps.setInt(2, labRoomId > 0 ? labRoomId : lectureRoomId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    existingTimeSlots.add(new ORToolsScheduler.TimeSlot(
+                            rs.getString("days"),
+                            rs.getTime("time_in").toLocalTime(),
+                            rs.getTime("time_out").toLocalTime(),
+                            rs.getInt("room_id")
+                    ));
+                }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Error getting existing schedules: " + e.getMessage());
+            return;
+        }
+
+        // Get section IDs in a separate connection
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT section_id FROM section WHERE year_level = ?")) {
+            ps.setString(1, convertedYearLevel);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sectionIds.add(rs.getInt("section_id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Error getting section information: " + e.getMessage());
             return;
         }
 
         if (sectionIds.isEmpty()) {
-            System.out.println("No sections available.");
+            showAlert("Error", "No suitable sections found for year level: " + convertedYearLevel);
             return;
         }
 
-        ORToolsScheduler scheduler = new ORToolsScheduler();
-        if (isMajor && creditHours > 2) {
-            int duration = (creditHours * 60) / 2;
-            int lectureRoomId = getRoomIdByType("Lecture");
-            int labRoomId = getRoomIdByType("Lab");
-            if (lectureRoomId == -1 || labRoomId == -1) {
-                System.out.println("Appropriate room(s) not found.");
-                return;
-            }
-            ORToolsScheduler.DualSchedule dualSchedule = scheduler.generateDualSchedule(duration, sectionIds);
-            if (dualSchedule == null) {
-                System.out.println("No feasible schedule found.");
-                return;
-            }
-            String insertSql = "INSERT INTO subsched (subject_id, time_in, time_out, days, room_id, faculty_id, section_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            try (Connection con = DBConnect.getConnection();
-                 PreparedStatement ps = con.prepareStatement(insertSql)) {
-                // Insert lecture sessions.
-                for (ORToolsScheduler.ScheduleItem item : dualSchedule.lectureSchedule) {
-                    ps.setInt(1, subjectId);
-                    ps.setString(2, item.timeIn);
-                    ps.setString(3, item.timeOut);
-                    ps.setString(4, item.day);
-                    ps.setInt(5, lectureRoomId);
-                    ps.setInt(6, facultyId);
-                    ps.setInt(7, item.sectionId);
-                    ps.addBatch();
+        // Create separate schedule for each section to prevent conflicts
+        boolean success = true;
+        for (int i = 0; i < sectionIds.size(); i++) {
+            int sectionId = sectionIds.get(i);
+
+            // For each section, create a fresh list of subjects and generate a new schedule
+            List<ORToolsScheduler.ScheduleSubject> subjects = new ArrayList<>();
+            subjects.add(new ORToolsScheduler.ScheduleSubject(subjectId, lectureDuration, labDuration));
+
+            // Create a new scheduler for each section
+            ORToolsScheduler scheduler = new ORToolsScheduler();
+
+            // Generate schedule for this specific section
+            Map<Integer, List<ORToolsScheduler.TimeSlot>> schedules = scheduler.generateOptimizedSchedule(
+                    subjects, existingTimeSlots, lectureRoomId, labRoomId);
+
+            if (schedules.containsKey(subjectId)) {
+                List<ORToolsScheduler.TimeSlot> timeSlots = schedules.get(subjectId);
+
+                if (timeSlots.isEmpty()) {
+                    showAlert("Error", "Failed to find suitable time slots for section " + sectionId +
+                            ". Try different parameters or check existing schedules.");
+                    success = false;
+                    break;
                 }
-                // Insert lab sessions.
-                for (ORToolsScheduler.ScheduleItem item : dualSchedule.labSchedule) {
-                    ps.setInt(1, subjectId);
-                    ps.setString(2, item.timeIn);
-                    ps.setString(3, item.timeOut);
-                    ps.setString(4, item.day);
-                    ps.setInt(5, labRoomId);
-                    ps.setInt(6, facultyId);
-                    ps.setInt(7, item.sectionId);
-                    ps.addBatch();
+
+                // Insert schedule for this section
+                try (Connection conn = DBConnect.getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "INSERT INTO subsched (subject_id, faculty_id, time_in, time_out, days, room_id, section_id) " +
+                                     "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+
+                    for (ORToolsScheduler.TimeSlot slot : timeSlots) {
+                        ps.setInt(1, subjectId);
+                        ps.setInt(2, facultyId);
+                        ps.setTime(3, Time.valueOf(slot.startTime));
+                        ps.setTime(4, Time.valueOf(slot.endTime));
+                        ps.setString(5, slot.day);
+                        ps.setInt(6, slot.roomId);
+                        ps.setInt(7, sectionId);
+                        ps.addBatch();
+                    }
+
+                    ps.executeBatch();
+
+                    // Add this new schedule to existing schedules to prevent conflicts with next sections
+                    for (ORToolsScheduler.TimeSlot slot : timeSlots) {
+                        existingTimeSlots.add(slot);
+                    }
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showAlert("Error", "Failed to insert schedule for section " + sectionId + ": " + e.getMessage());
+                    success = false;
+                    break;
                 }
-                ps.executeBatch();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                return;
-            }
-        } else {
-            int duration = creditHours * 60;
-            int lectureRoomId = getRoomIdByType("Lecture");
-            if (lectureRoomId == -1) {
-                System.out.println("Lecture room not found.");
-                return;
-            }
-            ObservableList<ORToolsScheduler.ScheduleItem> scheduleItems = scheduler.generateSchedule(duration, sectionIds);
-            String insertSql = "INSERT INTO subsched (subject_id, time_in, time_out, days, room_id, faculty_id, section_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            try (Connection con = DBConnect.getConnection();
-                 PreparedStatement ps = con.prepareStatement(insertSql)) {
-                for (ORToolsScheduler.ScheduleItem item : scheduleItems) {
-                    ps.setInt(1, subjectId);
-                    ps.setString(2, item.timeIn);
-                    ps.setString(3, item.timeOut);
-                    ps.setString(4, item.day);
-                    ps.setInt(5, lectureRoomId);
-                    ps.setInt(6, facultyId);
-                    ps.setInt(7, item.sectionId);
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                return;
+            } else {
+                showAlert("Error", "Failed to generate schedule for section " + sectionId + ". Try different parameters.");
+                success = false;
+                break;
             }
         }
-        parentController.loadScheduleData();
-        loadFaculties();
-        loadSubjects();
-        loadFacultyComboBox();
-        loadSubjectsComboBox();
-        facultyCb.getSelectionModel().clearSelection();
-        subjectCb.getSelectionModel().clearSelection();
-        facultyCb.setPromptText("Choose instructor");
-        subjectCb.setPromptText("Choose subject");
+
+        if (success) {
+            showAlert("Success", "Schedules generated successfully for all sections!");
+            loadSched(); // Refresh the schedule view
+            subjectCb.getSelectionModel().clearSelection();
+            facultyCb.getSelectionModel().clearSelection();
+            subjectCb.setPromptText("Choose subject");
+            facultyCb.setPromptText("Choose faculty");
+        }
+    }
+
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     private void listViewSelections() {
@@ -290,19 +374,45 @@ public class PopUpSchedController {
     }
 
     private void loadSubjects() {
-        String sql = "SELECT sub_id, subject_name FROM subjects WHERE sub_id NOT IN (SELECT subject_id FROM subsched)";
         allSubjectItems = FXCollections.observableArrayList();
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                int id = rs.getInt("sub_id");
-                String name = rs.getString("subject_name");
-                allSubjectItems.add(id + " - " + name);
+
+        try (Connection con = DBConnect.getConnection()) {
+            // Get current semester directly from the current table
+            String currentQuery = "SELECT Semester FROM current LIMIT 1";
+
+            try (PreparedStatement currentPs = con.prepareStatement(currentQuery);
+                 ResultSet currentRs = currentPs.executeQuery()) {
+
+                if (currentRs.next()) {
+                    String currentSemester = currentRs.getString("Semester");
+                    System.out.println("Current semester from database: " + currentSemester);
+
+                    // Get subjects that match the current semester and aren't already scheduled
+                    String sql = "SELECT sub_id, subject_name FROM subjects " +
+                            "WHERE semester = ? " +
+                            "AND sub_id NOT IN (SELECT subject_id FROM subsched)";
+
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setString(1, currentSemester);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                int id = rs.getInt("sub_id");
+                                String name = rs.getString("subject_name");
+                                allSubjectItems.add(id + " - " + name);
+                            }
+                        }
+                    }
+                } else {
+                    System.out.println("No semester found in the current table.");
+                }
             }
+
             subjectListView.setItems(allSubjectItems);
+            System.out.println("Loaded " + allSubjectItems.size() + " subjects into listview");
+
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Error", "Error loading subjects: " + e.getMessage());
         }
     }
 
@@ -362,19 +472,45 @@ public class PopUpSchedController {
     }
 
     private void loadSubjectsComboBox() {
-        String sql = "SELECT sub_id, subject_name FROM subjects WHERE sub_id NOT IN (SELECT subject_id FROM subsched)";
         ObservableList<String> subjectsCombo = FXCollections.observableArrayList();
-        try (Connection con = DBConnect.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                int id = rs.getInt("sub_id");
-                String name = rs.getString("subject_name");
-                subjectsCombo.add("(" + id + ", " + name + ")");
+
+        try (Connection con = DBConnect.getConnection()) {
+            // Get current semester directly from the current table
+            String currentQuery = "SELECT Semester FROM current LIMIT 1";
+
+            try (PreparedStatement currentPs = con.prepareStatement(currentQuery);
+                 ResultSet currentRs = currentPs.executeQuery()) {
+
+                if (currentRs.next()) {
+                    String currentSemester = currentRs.getString("Semester");
+                    System.out.println("Current semester from database: " + currentSemester);
+
+                    // Get subjects that match the current semester and aren't already scheduled
+                    String sql = "SELECT sub_id, subject_name FROM subjects " +
+                            "WHERE semester = ? " +
+                            "AND sub_id NOT IN (SELECT subject_id FROM subsched)";
+
+                    try (PreparedStatement ps = con.prepareStatement(sql)) {
+                        ps.setString(1, currentSemester);
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                int id = rs.getInt("sub_id");
+                                String name = rs.getString("subject_name");
+                                subjectsCombo.add("(" + id + ", " + name + ")");
+                            }
+                        }
+                    }
+                } else {
+                    showAlert("Info", "No semester found in the current table.");
+                }
             }
+
             subjectCb.setItems(subjectsCombo);
+            System.out.println("Loaded " + subjectsCombo.size() + " subjects into combobox");
+
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Error", "Database error: " + e.getMessage());
         }
     }
 

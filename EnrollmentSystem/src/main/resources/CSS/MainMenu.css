@@ -1,0 +1,11 @@
+/* Apply shadow to both left and right sides */
+#rootPane Pane, Polyline, TextField, Line, Button{
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.2, 0, 0);
+}
+
+#image1 {
+    -fx-opacity: 0.7 ; /* Slightly faded */
+    -fx-blend-mode: multiply; /* Helps with contrast */
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 2, 0.5, 0, 0);
+}
+

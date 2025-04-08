@@ -13,7 +13,6 @@ public class Subject {
     private String acadTrack;
 
     public Subject() {
-
     }
 
     public int getSubId() {
@@ -95,5 +94,4 @@ public class Subject {
     public void setAcadTrack(String acadTrack) {
         this.acadTrack = acadTrack;
     }
-    //check check
 }

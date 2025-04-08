@@ -18,13 +18,15 @@
             <TableView fx:id="subjectScheduleTbl" layoutX="15.0" layoutY="75.0" prefHeight="314.0" prefWidth="719.0" stylesheets="@../CSS/scheduler.css">
                <columns>
                   <TableColumn fx:id="schedIdColumn" minWidth="0.0" prefWidth="59.99999713897705" text="Sched ID" visible="false" />
-                  <TableColumn fx:id="timeinColumn" editable="false" prefWidth="88.0" text="Time-in" />
-                  <TableColumn fx:id="timeoutColumn" editable="false" prefWidth="99.0" text="Time-out" />
-                  <TableColumn fx:id="daysColumn" editable="false" prefWidth="98.0" text="Days" />
-                  <TableColumn fx:id="roomNameColumn" editable="false" prefWidth="121.0" text="Room Name" />
-                  <TableColumn fx:id="instructorColumn" editable="false" prefWidth="118.0" text="Instructor" />
-                  <TableColumn fx:id="subjectColumn" editable="false" prefWidth="94.0" text="Subject" />
-                  <TableColumn fx:id="sectionColumn" editable="false" prefWidth="98.0" text="Section" />
+                  <TableColumn fx:id="timeinColumn" editable="false" prefWidth="82.0" text="Time-in" />
+                  <TableColumn fx:id="timeoutColumn" editable="false" prefWidth="91.0" text="Time-out" />
+                  <TableColumn fx:id="daysColumn" editable="false" prefWidth="104.0" text="Days" />
+                  <TableColumn fx:id="roomNameColumn" editable="false" prefWidth="130.0" text="Room Name" />
+                  <TableColumn fx:id="instructorColumn" editable="false" prefWidth="160.0" text="Instructor" />
+                  <TableColumn fx:id="subjectColumn" editable="false" minWidth="0.0" prefWidth="100.0" text="Subject" />
+                  <TableColumn fx:id="sectionColumn" editable="false" minWidth="7.0" prefWidth="110.0" text="Section" />
+                  <TableColumn fx:id="yearLevelColumn" prefWidth="100.0" text="Year Level" />
+                  <TableColumn fx:id="majorColumn" minWidth="5.0" prefWidth="50.0" text="Major" />
                </columns>
             </TableView>
             <ComboBox fx:id="filterSchedCb" layoutX="551.0" layoutY="41.0" prefHeight="25.0" prefWidth="176.0" promptText="Filter Schedule" />

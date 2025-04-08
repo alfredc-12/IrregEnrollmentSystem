@@ -128,13 +128,13 @@ public class Dashboard {
             Parent sched = loader.load();
             setupPreloadedView(sched);
             viewMap.put(4, sched);
-
+/*
             // Pre-load Schedule view (4)
             loader = new FXMLLoader(getClass().getResource("/FXML/subject-view.fxml"));
             Parent subj = loader.load();
             setupPreloadedView(subj);
             viewMap.put(5, subj);
-
+*/
             // Initially display the student view
             currentView = viewMap.get(currentIndex);
             rightpane.getChildren().clear();

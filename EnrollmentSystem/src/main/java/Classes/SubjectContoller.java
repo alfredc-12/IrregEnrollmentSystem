@@ -1,401 +1,213 @@
-package Classes;
-//check check
-import ExtraSources.DBConnect;
+/*package Classes;
+
 import GettersSetters.Subject;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import ExtraSources.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Optional;
-
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
+import java.sql.*;
 
 public class SubjectContoller {
-    private final javafx.collections.ObservableList<Subject> subjectList = javafx.collections.FXCollections.observableArrayList();
 
     @FXML
-    private TextField AcadTrackTXT;
+    private TextField CHoursTXT;
 
     @FXML
-    private Button Add;
-
-    @FXML
-    private TextField LabTXT;
-
-    @FXML
-    private TextField LectureTXT;
-
-    @FXML
-    private TextField PrerequisiteTXT;
-
-    @FXML
-    private TextField SCodeTXT;
-
-    @FXML
-    private ComboBox<String> SemCmbBx;
+    private TextField RoomTXT;
 
     @FXML
     private TextField SubjectTXT;
 
     @FXML
-    private TextField UnitTXT;
+    private CheckBox majorchkbx;
 
     @FXML
-    private ComboBox<String> YLevelCmbBx;
+    private TableView<Subject> subjectTable; // Define TableView to hold Subject objects
 
     @FXML
-    private javafx.scene.control.TableView<Subject> subjectTable;
+    private TableColumn<Subject, String> subjectColumn;
 
     @FXML
-    private javafx.scene.control.TableColumn<Subject, String> subjCodeCol;
+    private TableColumn<Subject, Integer> hoursColumn;
 
     @FXML
-    private javafx.scene.control.TableColumn<Subject, String> subjectNameCol;
+    private TableColumn<Subject, String> roomColumn;
 
     @FXML
-    private javafx.scene.control.TableColumn<Subject, String> yearLevelCol;
+    private TableColumn<Subject, Boolean> majorColumn;
 
     @FXML
-    private javafx.scene.control.TableColumn<Subject, String> semesterCol;
+    private Button addBtn, updateBtn, DeleteBtn;
 
     @FXML
-    private javafx.scene.control.TableColumn<Subject, Integer> lectureCol;
+    private Pane Pane;
 
-    @FXML
-    private javafx.scene.control.TableColumn<Subject, Integer> labCol;
+    private ObservableList<Subject> subjectList = FXCollections.observableArrayList(); // List to store subjects
 
-    @FXML
-    private javafx.scene.control.TableColumn<Subject, Integer> unitsCol;
-
-    @FXML
-    private javafx.scene.control.TableColumn<Subject, String> prerequisiteCol;
-
-    @FXML
-    private javafx.scene.control.TableColumn<Subject, String> acadTrackCol;
-
-    @FXML
-    private javafx.scene.control.TableColumn<Subject, Void> acadTrackCol1;
-
-
-
-    // Initialize method to populate combo boxes
     @FXML
     public void initialize() {
-        YLevelCmbBx.getItems().addAll("First Year", "Second Year", "Third Year", "Fourth Year");
-        SemCmbBx.getItems().addAll("First Semester", "Second Semester", "Midterm");
+        // Initialize TableView columns
+        subjectColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getSubjectName()));
+        //hoursColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getCreditHours()).asObject());
+        //roomColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPreferredRoom()));
+        //majorColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleBooleanProperty(cellData.getValue().getIsMajor()).asObject());
 
-        subjCodeCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getSubjCode()));
-        subjectNameCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getSubjectName()));
-        lectureCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getLecture()).asObject());
-        labCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getLab()).asObject());
-        unitsCol.setCellValueFactory(data -> new javafx.beans.property.SimpleIntegerProperty(data.getValue().getUnits()).asObject());
-        yearLevelCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getYearLevel()));
-        semesterCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getSemester()));
-        prerequisiteCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPrerequisite()));
-        acadTrackCol.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getAcadTrack()));
+        subjectTable.setItems(subjectList);
 
-        // Add key press event listeners to TextFields and ComboBoxes
-        setEnterKeyListener(SCodeTXT);
-        setEnterKeyListener(SubjectTXT);
-        setEnterKeyListener(LectureTXT);
-        setEnterKeyListener(LabTXT);
-        setEnterKeyListener(UnitTXT);
-        setEnterKeyListener(PrerequisiteTXT);
-        setEnterKeyListener(AcadTrackTXT);
-        setEnterKeyListener(YLevelCmbBx);
-        setEnterKeyListener(SemCmbBx);
-
-        // Initial load
-        loadSubjectTable();
-        addUpdateButtonToTable();
+        // Set Pane size (750x450)
+        Pane.setPrefSize(750, 450);
+        loadSubjects();
     }
 
-    private void setEnterKeyListener(javafx.scene.control.Control control) {
-        control.setOnKeyPressed(event -> {
-            if (event.getCode() == javafx.scene.input.KeyCode.ENTER) {
-                handleUpdateConfirmation();
-            }
-        });
-    }
+    private void loadSubjects() {
+        subjectList.clear();
+        Connection kon = DBConnect.getConnection();
+        String query = "SELECT subject_name, credit_hours, is_major FROM subjects";
 
-
-    private void handleUpdateConfirmation() {
-        // Create an Alert for confirmation
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Update Subject");
-        alert.setHeaderText("Are you sure you want to update this subject?");
-        alert.setContentText("Changes will be saved.");
-
-        // Wait for user response
-        Optional<ButtonType> result = alert.showAndWait();
-
-        // If user clicks YES, proceed with the update
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            updateSubjectInDatabase();
-        } else if (result.isPresent() && result.get() == ButtonType.CANCEL) {
-            // Clear all the fields if user clicks Cancel
-            clearFields();
-        }
-    }
-
-    private void clearFields() {
-        // Clear TextFields
-        SCodeTXT.clear();
-        SubjectTXT.clear();
-        LectureTXT.clear();
-        LabTXT.clear();
-        UnitTXT.clear();
-        PrerequisiteTXT.clear();
-        AcadTrackTXT.clear();
-
-        // Clear ComboBoxes
-        YLevelCmbBx.getSelectionModel().clearSelection();
-        SemCmbBx.getSelectionModel().clearSelection();
-    }
-
-
-
-    private void loadSubjectTable() {
-        subjectList.clear(); // Clear existing data
-
-        try (Connection connection = DBConnect.getConnection()) {
-            String query = "SELECT subj_code, subject_name, lecture, lab, units, year_level, semester, prerequisite, acad_track FROM subjects";
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();
+        try (PreparedStatement stmt = kon.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Subject subject = new Subject();
-                subject.setSubjCode(rs.getString("subj_code"));
-                subject.setSubjectName(rs.getString("subject_name"));
-                subject.setLecture(rs.getInt("lecture"));
-                subject.setLab(rs.getInt("lab"));
-                subject.setUnits(rs.getInt("units"));
-                subject.setYearLevel(rs.getString("year_level"));
-                subject.setSemester(rs.getString("semester"));
-                subject.setPrerequisite(rs.getString("prerequisite"));
-                subject.setAcadTrack(rs.getString("acad_track"));
-
-                subjectList.add(subject);
+              /*  subjectList.add(new Subject(
+                        0, // Set a default or dummy ID since we're not retrieving sub_id
+                        rs.getString("subject_name"),
+                        rs.getInt("credit_hours"),
+                        rs.getBoolean("is_major"),
+                        "" // You can store preferredRoom if needed
+                ));
             }
-
-
-            subjectTable.setItems(subjectList); // Set list to table
-
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to load subjects.");
         }
-    }
 
-    private void addUpdateButtonToTable() {
-        Callback<TableColumn<Subject, Void>, TableCell<Subject, Void>> cellFactory = new Callback<>() {
-            @Override
-            public TableCell<Subject, Void> call(final TableColumn<Subject, Void> param) {
-                return new TableCell<>() {
-
-                    // Create a button to hold the image icon
-                    private final Button updateButton = new Button();
-                    private final ImageView updateIcon = new ImageView(new Image(getClass().getResourceAsStream("/Images/icons8-edit-30.png")));
-
-                    {
-                        updateIcon.setFitWidth(20);
-                        updateIcon.setFitHeight(20);
-                        updateButton.setGraphic(updateIcon); // Set the ImageView as the button's graphic
-                        updateButton.setStyle("-fx-cursor: hand;"); // Set cursor to hand to indicate clickability
-
-                        // Add click event to button
-                        updateButton.setOnAction(event -> {
-                            Subject subject = getTableView().getItems().get(getIndex());
-                            // Pre-fill the form with the subject data
-                            SCodeTXT.setText(subject.getSubjCode());
-                            SubjectTXT.setText(subject.getSubjectName());
-                            LectureTXT.setText(String.valueOf(subject.getLecture()));
-                            LabTXT.setText(String.valueOf(subject.getLab()));
-                            UnitTXT.setText(String.valueOf(subject.getUnits()));
-                            YLevelCmbBx.setValue(subject.getYearLevel());
-                            SemCmbBx.setValue(subject.getSemester());
-                            PrerequisiteTXT.setText(subject.getPrerequisite());
-                            AcadTrackTXT.setText(subject.getAcadTrack());
-                        });
-                    }
-
-                    @Override
-                    protected void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(updateButton);  // Set the button in the cell
-                        }
-                    }
-                };
-            }
-        };
-
-        acadTrackCol1.setCellFactory(cellFactory); // Apply the cell factory to the column
+        subjectTable.setItems(subjectList);
     }
 
 
-
-
-    // Add event handler for the "Add" button
     @FXML
-    public void addSubject() {
-        // Retrieve input values from the form
-        String subjCode = SCodeTXT.getText();
+    private void addSubject() {
         String subjectName = SubjectTXT.getText();
-        Integer lecture = null;
-        Integer lab = null;
-        int units = Integer.valueOf(UnitTXT.getText());
+        String creditHoursStr = CHoursTXT.getText();
+        String preferredRoom = RoomTXT.getText();
+        boolean isMajor = majorchkbx.isSelected();
 
-        // If the lecture field is not empty, parse it
-        if (!LectureTXT.getText().isEmpty()) {
-            lecture = Integer.valueOf(LectureTXT.getText());
+        if (subjectName.isEmpty() || creditHoursStr.isEmpty() || preferredRoom.isEmpty()) {
+            showAlert("Missing Fields", "Please fill in all fields.");
+            return;
         }
 
-        // If the lab field is not empty, parse it
-        if (!LabTXT.getText().isEmpty()) {
-            lab = Integer.valueOf(LabTXT.getText());
-        }
+        try {
+            int creditHours = Integer.parseInt(creditHoursStr);
+            Connection kon = DBConnect.getConnection();
 
-        // If the prerequisite field is not empty, use the value
-        String prerequisite = PrerequisiteTXT.getText().isEmpty() ? null : PrerequisiteTXT.getText();
+            String query = "INSERT INTO subjects (subject_name, credit_hours, is_major) VALUES (?, ?, ?)";
+            try (PreparedStatement stmt = kon.prepareStatement(query)) {
+                stmt.setString(1, subjectName);
+                stmt.setInt(2, creditHours);
+                stmt.setBoolean(3, isMajor);
 
-        // Trim the combo box selections to ensure there are no leading/trailing spaces
-        String yearLevel = YLevelCmbBx.getValue() != null ? YLevelCmbBx.getValue().trim() : null;
-        String semester = SemCmbBx.getValue() != null ? SemCmbBx.getValue().trim() : null;
-
-        // Validate Year Level and Semester selections
-        if (yearLevel == null || yearLevel.isEmpty()) {
-            System.out.println("Please select a valid Year Level.");
-            return; // Prevent insertion if Year Level is not selected
-        }
-
-        if (semester == null || semester.isEmpty()) {
-            System.out.println("Please select a valid Semester.");
-            return; // Prevent insertion if Semester is not selected
-        }
-
-        // Create a Subject object with the retrieved values
-        Subject subject = new Subject();
-        subject.setSubjCode(subjCode);
-        subject.setSubjectName(subjectName);
-        subject.setLecture(lecture);  // May be null
-        subject.setLab(lab);  // May be null
-        subject.setUnits(units);
-        subject.setYearLevel(yearLevel);
-        subject.setSemester(semester);
-        subject.setPrerequisite(prerequisite);  // May be null
-        subject.setAcadTrack(AcadTrackTXT.getText());
-
-        // Insert the subject into the database
-        insertSubject(subject);
-        loadSubjectTable();
-        clearFields();
-    }
-
-    private void insertSubject(Subject subject) {
-        String query = "INSERT INTO subjects (subj_code, subject_name, lecture, lab, units, year_level, semester, prerequisite, acad_track) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection connection = DBConnect.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            // Set the parameters for the query
-            statement.setString(1, subject.getSubjCode());
-            statement.setString(2, subject.getSubjectName());
-
-            // Check if lecture is null before setting
-            if (subject.getLecture() != null) {
-                statement.setInt(3, subject.getLecture());
-            } else {
-                statement.setNull(3, java.sql.Types.INTEGER);  // Set as NULL if lecture is not provided
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    showAlert("Success", "Subject added successfully!");
+                    loadSubjects(); // Refresh table
+                    clearFields();
+                }
             }
-
-            // Check if lab is null before setting
-            if (subject.getLab() != null) {
-                statement.setInt(4, subject.getLab());
-            } else {
-                statement.setNull(4, java.sql.Types.INTEGER);  // Set as NULL if lab is not provided
-            }
-
-            statement.setInt(5, subject.getUnits());
-
-            // Check if year level is valid
-            statement.setString(6, subject.getYearLevel());
-
-            // Check if semester is valid
-            statement.setString(7, subject.getSemester());
-
-            // Check if prerequisite is null before setting
-            if (subject.getPrerequisite() != null) {
-                statement.setString(8, subject.getPrerequisite());
-            } else {
-                statement.setNull(8, java.sql.Types.VARCHAR);  // Set as NULL if prerequisite is not provided
-            }
-
-            statement.setString(9, subject.getAcadTrack());
-
-            // Execute the query
-            int result = statement.executeUpdate();
-            if (result > 0) {
-                System.out.println("Subject added successfully!");
-            } else {
-                System.out.println("Failed to add subject.");
-            }
-
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Credit hours must be a number.");
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to add subject.");
         }
     }
 
+    @FXML
+    private void updateSubject() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+        if (selectedSubject == null) {
+            showAlert("No Selection", "Please select a subject to update.");
+            return;
+        }
 
-    private void updateSubjectInDatabase() {
-        // Retrieve updated values from the form fields
-        String subjCode = SCodeTXT.getText();
         String subjectName = SubjectTXT.getText();
-        Integer lecture = Integer.valueOf(LectureTXT.getText());
-        Integer lab = Integer.valueOf(LabTXT.getText());
-        int units = Integer.valueOf(UnitTXT.getText());
+        String creditHoursStr = CHoursTXT.getText();
+        String preferredRoom = RoomTXT.getText();
+        boolean isMajor = majorchkbx.isSelected();
 
-        String yearLevel = YLevelCmbBx.getValue();
-        String semester = SemCmbBx.getValue();
-        String prerequisite = PrerequisiteTXT.getText();
-        String acadTrack = AcadTrackTXT.getText();
+        if (subjectName.isEmpty() || creditHoursStr.isEmpty() || preferredRoom.isEmpty()) {
+            showAlert("Missing Fields", "Please fill in all fields.");
+            return;
+        }
 
-        // Update the subject in the database
-        String query = "UPDATE subjects SET subject_name = ?, lecture = ?, lab = ?, units = ?, year_level = ?, semester = ?, prerequisite = ?, acad_track = ? WHERE subj_code = ?";
+        try {
+            int creditHours = Integer.parseInt(creditHoursStr);
+            Connection kon = DBConnect.getConnection();
 
-        try (Connection connection = DBConnect.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+            String query = "UPDATE subjects SET subject_name = ?, credit_hours = ?, is_major = ? WHERE sub_id = ?";
+            try (PreparedStatement stmt = kon.prepareStatement(query)) {
+                stmt.setString(1, subjectName);
+                stmt.setInt(2, creditHours);
+                stmt.setBoolean(3, isMajor);
+                //stmt.setInt(4, selectedSubject.getId());
 
-            // Set parameters for the query
-            statement.setString(1, subjectName);
-            statement.setInt(2, lecture);
-            statement.setInt(3, lab);
-            statement.setInt(4, units);
-            statement.setString(5, yearLevel);
-            statement.setString(6, semester);
-            statement.setString(7, prerequisite);
-            statement.setString(8, acadTrack);
-            statement.setString(9, subjCode);
+                int rowsUpdated = stmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    showAlert("Success", "Subject updated successfully!");
+                    loadSubjects(); // Refresh table
+                    clearFields();
+                }
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Invalid Input", "Credit hours must be a number.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database Error", "Failed to update subject.");
+        }
+    }
 
-            // Execute the query
-            int result = statement.executeUpdate();
-            if (result > 0) {
-                System.out.println("Subject updated successfully!");
-            } else {
-                System.out.println("Failed to update subject.");
+    @FXML
+    private void deleteSubject() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+        if (selectedSubject == null) {
+            showAlert("No Selection", "Please select a subject to delete.");
+            return;
+        }
+
+        Connection kon = DBConnect.getConnection();
+        String query = "DELETE FROM subjects WHERE sub_id = ?";
+
+        try (PreparedStatement stmt = kon.prepareStatement(query)) {
+            //stmt.setInt(1, selectedSubject.getId());
+
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                showAlert("Success", "Subject deleted successfully!");
+                loadSubjects(); // Refresh table
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert("Database Error", "Failed to delete subject.");
         }
     }
 
+
+    private void clearFields() {
+        SubjectTXT.clear();
+        CHoursTXT.clear();
+        RoomTXT.clear();
+        majorchkbx.setSelected(false);
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }
+*/
