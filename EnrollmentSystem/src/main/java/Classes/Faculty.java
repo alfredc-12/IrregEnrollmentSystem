@@ -251,7 +251,7 @@ public class Faculty {
         if (!isPaneHidden) {
             // Hide the hidePane by sliding it downward.
             TranslateTransition hideTransition = new TranslateTransition(Duration.millis(200), hidePane);
-            hideTransition.setToY(213); // Adjust as needed
+            hideTransition.setToY(216); // Adjust as needed
             hideTransition.setInterpolator(Interpolator.SPLINE(0.42, 0, 0.58, 1));
             hideTransition.play();
 
@@ -347,7 +347,7 @@ public class Faculty {
                                 String bsuEmail = (cleanFirstName + "." + cleanLastName).toLowerCase() + "@g.batstate-u.edu.ph";
 
                                 // For new records, use default (or null) for password and maxSubjects.
-                                String defaultPassword = null;
+                                String defaultPassword = "12345";
                                 Integer defaultMaxSubjects = null;
 
                                 // --- Prepare the photo link ---
@@ -397,8 +397,8 @@ public class Faculty {
                                 if (currentUpdateFacultyId == null) {
                                     Connection connect = DBConnect.getConnection();
                                     // --- INSERT new record ---
-                                    String sql = "INSERT INTO faculty (first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, password, pic_link, sign_link, max_subjects) " +
-                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                    String sql = "INSERT INTO faculty (first_name, middle_name, last_name, role, contact_no, personal_email, bsu_email, password, pic_link, sign_link, max_subjects, isDeleted) " +
+                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                     PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql);
                                     ps.setString(1, firstName);
                                     ps.setString(2, middleName);
@@ -407,11 +407,8 @@ public class Faculty {
                                     ps.setString(5, contactNo);
                                     ps.setString(6, personalEmail);
                                     ps.setString(7, bsuEmail);
-                                    if (defaultPassword == null) {
-                                        ps.setNull(8, Types.VARCHAR);
-                                    } else {
-                                        ps.setString(8, defaultPassword);
-                                    }
+                                    ps.setString(8, defaultPassword);
+
                                     ps.setString(9, photoLink);
                                     ps.setString(10, signatureLink);
                                     if (defaultMaxSubjects == null) {
@@ -419,6 +416,7 @@ public class Faculty {
                                     } else {
                                         ps.setInt(11, defaultMaxSubjects);
                                     }
+                                    ps.setBoolean(12, false);
 
                                     int affectedRows = ps.executeUpdate();
                                     if (affectedRows > 0) {
