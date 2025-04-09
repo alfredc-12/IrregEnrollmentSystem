@@ -294,30 +294,50 @@ public class PopUpSchedController {
                     break;
                 }
 
-                // Insert schedule for this section
-                try (Connection conn = DBConnect.getConnection();
-                     PreparedStatement ps = conn.prepareStatement(
-                             "INSERT INTO subsched (subject_id, faculty_id, time_in, time_out, days, room_id, section_id) " +
-                                     "VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-
-                    for (ORToolsScheduler.TimeSlot slot : timeSlots) {
-                        ps.setInt(1, subjectId);
-                        ps.setInt(2, facultyId);
-                        ps.setTime(3, Time.valueOf(slot.startTime));
-                        ps.setTime(4, Time.valueOf(slot.endTime));
-                        ps.setString(5, slot.day);
-                        ps.setInt(6, slot.roomId);
-                        ps.setInt(7, sectionId);
-                        ps.addBatch();
+                try (Connection conn = DBConnect.getConnection()) {
+                    // 1) Fetch current semester & academic year
+                    String curSql =
+                            "SELECT Semester, AcademicYear " +
+                                    "FROM current " +
+                                    "ORDER BY currentID DESC " +
+                                    "LIMIT 1";
+                    String currentSemester = null, currentAcadYear = null;
+                    try (PreparedStatement psCur = conn.prepareStatement(curSql);
+                         ResultSet rs = psCur.executeQuery()) {
+                        if (rs.next()) {
+                            currentSemester = rs.getString("Semester");
+                            currentAcadYear  = rs.getString("AcademicYear");
+                        } else {
+                            throw new IllegalStateException("No current semester/academic year defined");
+                        }
                     }
 
-                    ps.executeBatch();
+                    // 2) Prepare your INSERT (now including semester & acadYear)
+                    String insertSql =
+                            "INSERT INTO subsched " +
+                                    "(subject_id, faculty_id, time_in, time_out, days, room_id, section_id, semester, acadYear) " +
+                                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                    // Add this new schedule to existing schedules to prevent conflicts with next sections
+                    try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                        for (ORToolsScheduler.TimeSlot slot : timeSlots) {
+                            ps.setInt(1, subjectId);
+                            ps.setInt(2, facultyId);
+                            ps.setTime(3, Time.valueOf(slot.startTime));
+                            ps.setTime(4, Time.valueOf(slot.endTime));
+                            ps.setString(5, slot.day);
+                            ps.setInt(6, slot.roomId);
+                            ps.setInt(7, sectionId);
+                            ps.setString(8, currentSemester);
+                            ps.setString(9, currentAcadYear);
+                            ps.addBatch();
+                        }
+                        ps.executeBatch();
+                    }
+
+                    // 3) Add these new slots to your existingTimeSlots to avoid conflicts
                     for (ORToolsScheduler.TimeSlot slot : timeSlots) {
                         existingTimeSlots.add(slot);
                     }
-
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showAlert("Error", "Failed to insert schedule for section " + sectionId + ": " + e.getMessage());
