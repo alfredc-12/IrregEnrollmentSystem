@@ -9,6 +9,7 @@ module org.enrolment.enrollmentsystem {
     requires webcam.capture;
     requires ortools.java;
     requires com.google.protobuf;
+    requires org.apache.poi.ooxml;
 
 
     requires google.api.client;

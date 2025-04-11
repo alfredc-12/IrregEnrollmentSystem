@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Polyline?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="990.0" prefWidth="886.0" style="-fx-background-color: #FFFFF0;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.DeanController">
+   <children>
+      <Pane prefHeight="118.0" prefWidth="886.0" style="-fx-background-color: #353a40;">
+         <children>
+            <ImageView fitHeight="56.0" fitWidth="61.0" layoutX="19.0" layoutY="16.0">
+               <image>
+                  <Image url="@../Images/BatStateU-NEU-Logo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="19.0" layoutY="78.0" text="Batangas State University" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="22.0" />
+               </font>
+            </Label>
+            <Label fx:id="date" layoutX="684.0" layoutY="16.0" prefHeight="26.0" prefWidth="187.0" text="(Date)" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="time" layoutX="684.0" layoutY="39.0" prefHeight="26.0" prefWidth="187.0" text="(Time)" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="19.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <ImageView fitHeight="212.0" fitWidth="886.0" layoutY="118.0">
+         <image>
+            <Image url="@../Images/204107.jpg" />
+         </image>
+      </ImageView>
+      <Pane layoutY="143.0" prefHeight="163.0" prefWidth="886.0" style="-fx-background-color: #f8f9fb; -fx-opacity: 0.8;">
+         <children>
+            <Polyline fill="#f19a1f" layoutX="50.0" layoutY="60.0" points="-50.0, -40.0, 309.0, 127.0, -50.0, 127.0, -50.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" style="-fx-opacity: 1;" />
+            <ImageView fx:id="deanPhoto" fitHeight="149.0" fitWidth="149.0" layoutX="65.0" layoutY="-14.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="studentName" layoutX="231.0" layoutY="12.0" prefHeight="26.0" prefWidth="216.0" text="(Name)">
+               <font>
+                  <Font name="Arial Bold" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="semester" layoutX="584.0" layoutY="12.0" prefHeight="26.0" prefWidth="280.0" text="(Semester A.Y)">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <ImageView layoutX="562.0" layoutY="15.0">
+               <image>
+                  <Image url="@../Images/play.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="semester1" layoutX="584.0" layoutY="36.0" prefHeight="34.0" prefWidth="280.0" text="College of Infomatics and Computing Sciences - ARASOF - Nasugbu Campus" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <ImageView layoutX="562.0" layoutY="36.0">
+               <image>
+                  <Image url="@../Images/play.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="courseYearLevel" layoutX="584.0" layoutY="70.0" prefHeight="26.0" prefWidth="280.0" text="(course) - (Year Level)">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="enrollent" layoutX="584.0" layoutY="94.0" prefHeight="16.0" prefWidth="280.0" text="(Enrollment Status)" textFill="#4bad58" wrapText="true">
+               <font>
+                  <Font name="Arial Bold" size="12.0" />
+               </font>
+            </Label>
+            <ImageView layoutX="562.0" layoutY="94.0">
+               <image>
+                  <Image url="@../Images/play.png" />
+               </image>
+            </ImageView>
+            <ImageView layoutX="562.0" layoutY="75.0">
+               <image>
+                  <Image url="@../Images/play.png" />
+               </image>
+            </ImageView>
+            <Polyline fill="#d2232a" layoutX="309.0" layoutY="231.0" points="-308.0, -40.0, 50.0, -40.0, -308.0, -179.0, -308.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" />
+         </children>
+      </Pane>
+      <MenuButton fx:id="btnMissionVision" layoutX="31.0" layoutY="330.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="293.0" style="-fx-background-color: transparent;" text="University Mission, Vision, and Core Values">
+         <items>
+            <MenuItem mnemonicParsing="false" text="Action 1" />
+            <MenuItem mnemonicParsing="false" text="Action 2" />
+         </items>
+         <font>
+            <Font name="Arial" size="13.0" />
+         </font>
+      </MenuButton>
+      <Button fx:id="btnHymn" layoutX="357.0" layoutY="332.0" mnemonicParsing="false" style="-fx-background-color: Transparent;" text="University Hymn">
+         <font>
+            <Font name="Arial" size="13.0" />
+         </font>
+      </Button>
+      <ScrollPane fx:id="deanNavigationScroll" layoutY="526.0" prefHeight="465.0" prefWidth="886.0" style="-fx-background-color: #FFFFF0; -fx-border-color: black; -fx-border-width: 2;">
+         <content>
+            <fx:include fx:id="deanNavigation" source="dean-navigation.fxml" />
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
