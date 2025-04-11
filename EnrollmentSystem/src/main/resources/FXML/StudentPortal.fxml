@@ -1,236 +1,767 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane fx:id="mainPane" prefHeight="1022.0" prefWidth="886.0" style="-fx-background-color: #FFFFF0;" stylesheets="@../CSS/StudentPortal.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentPortal">
+<AnchorPane fx:id="invisible" prefHeight="1384.0" prefWidth="909.0" stylesheets="@../CSS/StudentPortal.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Classes.StudentPortal">
    <children>
-      <Pane prefHeight="118.0" prefWidth="886.0" style="-fx-background-color: #353a40;">
+      <Pane fx:id="mainPane" layoutX="11.0" prefHeight="1387.0" prefWidth="887.0" style="-fx-background-color: #FFFFF0;" styleClass="shadow">
          <children>
-            <ImageView fitHeight="56.0" fitWidth="61.0" layoutX="19.0" layoutY="16.0">
+            <Pane prefHeight="118.0" prefWidth="887.0" style="-fx-background-color: #353a40;" styleClass="shadow">
+               <children>
+                  <ImageView fitHeight="56.0" fitWidth="61.0" layoutX="19.0" layoutY="16.0">
+                     <image>
+                        <Image url="@../Images/BatStateU-NEU-Logo.png" />
+                     </image>
+                     <styleClass>
+                        <String fx:value="shadow" />
+                        <String fx:value="green-filter-overlay" />
+                     </styleClass>
+                  </ImageView>
+                  <Label layoutX="19.0" layoutY="78.0" styleClass="shadow" text="Batangas State University" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="22.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="date" layoutX="684.0" layoutY="16.0" prefHeight="26.0" prefWidth="187.0" styleClass="shadow" text="(Date)" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="time" layoutX="684.0" layoutY="39.0" prefHeight="26.0" prefWidth="187.0" styleClass="shadow" text="(Time)" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="19.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Button fx:id="changePassword" layoutX="136.0" layoutY="136.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="149.0" style="-fx-background-radius: 25;" styleClass="shadow" text="Change Password" />
+            <Button fx:id="signOut" layoutX="601.0" layoutY="136.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="149.0" style="-fx-background-radius: 25;" styleClass="shadow" text="Sign Out" />
+            <ImageView fitHeight="212.0" fitWidth="887.0" layoutY="189.0" styleClass="shadow">
+               <image>
+                  <Image url="@../Images/204107.jpg" />
+               </image>
+            </ImageView>
+            <Pane layoutY="214.0" prefHeight="163.0" prefWidth="887.0" style="-fx-background-color: #f8f9fb; -fx-opacity: 0.8;">
+               <children>
+                  <Polyline fill="#f19a1f" layoutX="50.0" layoutY="60.0" points="-50.0, -40.0, 309.0, 127.0, -50.0, 127.0, -50.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" style="-fx-opacity: 1;" />
+                  <Label fx:id="studentName" layoutX="231.0" layoutY="12.0" prefHeight="26.0" prefWidth="216.0" styleClass="shadow" text="(Name)">
+                     <font>
+                        <Font name="Arial Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="semesterLabel" layoutX="584.0" layoutY="12.0" prefHeight="26.0" prefWidth="280.0" text="(Semester A.Y)">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <ImageView layoutX="562.0" layoutY="15.0" styleClass="shadow">
+                     <image>
+                        <Image url="@../Images/play.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="584.0" layoutY="36.0" prefHeight="34.0" prefWidth="280.0" text="College of Infomatics and Computing Sciences - ARASOF - Nasugbu Campus" wrapText="true">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <ImageView layoutX="562.0" layoutY="36.0" styleClass="shadow">
+                     <image>
+                        <Image url="@../Images/play.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="enrollent" layoutX="584.0" layoutY="94.0" prefHeight="16.0" prefWidth="280.0" text="(Enrollment Status)" textFill="#4bad58" wrapText="true">
+                     <font>
+                        <Font name="Arial Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <ImageView layoutX="562.0" layoutY="94.0">
+                     <image>
+                        <Image url="@../Images/play.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView layoutX="562.0" layoutY="75.0" styleClass="shadow">
+                     <image>
+                        <Image url="@../Images/play.png" />
+                     </image>
+                  </ImageView>
+                  <Polyline fill="#d2232a" layoutX="308.0" layoutY="227.0" points="-308.0, -40.0, 50.0, -40.0, -308.0, -179.0, -308.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" />
+                  <TextFlow layoutX="584.0" layoutY="75.0" prefHeight="16.0" prefWidth="280.0">
+                     <children>
+                        <Text fx:id="course" strokeType="OUTSIDE" strokeWidth="0.0" text="(Course)">
+                           <font>
+                              <Font name="Arial Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" - ">
+                           <font>
+                              <Font name="Arial" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="yearLevelLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="(Year Level)" />
+                     </children>
+                  </TextFlow>
+               </children>
+            </Pane>
+            <Button fx:id="hymn" layoutX="352.0" layoutY="407.0" mnemonicParsing="false" style="-fx-background-color: transparent;" styleClass="shadow" text="University Hymn">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </Button>
+            <MenuButton fx:id="readFirst" layoutX="500.0" layoutY="406.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: transparent;" styleClass="shadow" text="Read First">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Action 1" />
+                  <MenuItem mnemonicParsing="false" text="Action 2" />
+               </items>
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </MenuButton>
+            <TabPane fx:id="studentTab" layoutY="885.0" prefHeight="504.0" prefWidth="887.0" tabClosingPolicy="UNAVAILABLE">
+               <tabs>
+                  <Tab fx:id="home" text="Home">
+                     <content>
+                        <AnchorPane fx:id="homePane" minHeight="0.0" minWidth="0.0" prefHeight="446.0" prefWidth="886.0">
+                           <children>
+                              <Label layoutX="40.0" layoutY="24.0" text="Enrollment - (semester) AY (academic year)" textFill="RED">
+                                 <font>
+                                    <Font name="Arial Bold" size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="71.0" layoutY="52.0" text="Click &quot;Filter Option..&quot; button to change the default schoolyear / semester" textFill="#797171">
+                                 <font>
+                                    <Font name="Arial" size="13.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../Images/info.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Label>
+                              <Button layoutX="53.0" layoutY="91.0" mnemonicParsing="false" style="-fx-background-radius: 25; -fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #797171; -fx-border-radius: 25;" text="Filter Option" textFill="#797171">
+                                 <graphic>
+                                    <ImageView>
+                                       <image>
+                                          <Image url="@../Images/filter.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Button>
+                              <Pane fx:id="buttons" layoutX="3.0" layoutY="129.0" prefHeight="310.0" prefWidth="887.0">
+                                 <children>
+                                    <VBox alignment="CENTER_RIGHT" layoutX="17.0" prefHeight="310.0" prefWidth="280.0" spacing="20.0">
+                                       <children>
+                                          <Button fx:id="corBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="252.0" style="-fx-label-padding: 5; -fx-background-color: rgba(0,0,0,0.01);" text="Certificate of Registration (COR)" textAlignment="JUSTIFY">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip contentDisplay="BOTTOM" maxWidth="200.0" text="Click here to view and print your Certificate of Registration (COR)" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font name="Arial" size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/certificate.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="gradeBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="252.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Grades">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your grades" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font name="Arial" size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/test.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="scholarshipBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="252.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Scholarship (1)">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your Scholarship/s" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/degree.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="sscBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="252.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="SSC Payments">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your SSC membership payments" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/receipt.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="printGradesBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="252.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Print Copy of Grades">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view and print your copy of grades" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/printer.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" layoutX="297.0" prefHeight="310.0" prefWidth="293.0" spacing="20.0">
+                                       <children>
+                                          <Button fx:id="idBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="View Student ID">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view and print your Student ID" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/card.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="allGradeBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="All Grades">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your grades" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/test.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="assessBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Assessment of Fees">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view the assessment of fees" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/calculator.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="liabilitiesBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Liabilities">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your liabilities" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/fair.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="printAllGradesBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Print Copy of All Grades">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view and print your copy of all grades" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/printer.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER_LEFT" layoutX="590.0" prefHeight="310.0" prefWidth="280.0" spacing="20.0">
+                                       <children>
+                                          <Button fx:id="subjectsBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Subjects (number)">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your encoded subjects" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/bookss.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="curriculumBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Curriculum">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your programs curriculum" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/scroll.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="paymentBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="249.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Payments">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view your payments" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/bill.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button fx:id="completeBut" alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-label-padding: 5; -fx-background-color: transparent;" text="Subjects to Complete">
+                                             <font>
+                                                <Font name="Arial" size="13.0" />
+                                             </font>
+                                             <tooltip>
+                                                <Tooltip maxWidth="200.0" text="Click here to view the list of subjects to complete" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Tooltip>
+                                             </tooltip>
+                                             <graphic>
+                                                <ImageView>
+                                                   <image>
+                                                      <Image url="@../Images/puzzle.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Button>
+                                          <Button disable="true" mnemonicParsing="false" prefHeight="40.0" prefWidth="250.0" style="-fx-background-color: transparent;" visible="false" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="enrollment" text="Enrollment">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="887.0">
+                           <children>
+                              <Pane fx:id="regularStudent" layoutX="30.0" layoutY="25.0" prefHeight="425.0" prefWidth="827.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 25;" styleClass="shadow">
+                                 <children>
+                                    <Pane prefHeight="104.0" prefWidth="828.0" style="-fx-background-color: #353a40; -fx-background-radius: 25 25 0 0;">
+                                       <children>
+                                          <Label alignment="CENTER" layoutX="116.0" layoutY="22.0" styleClass="shadow" text="Batangas State University" textFill="WHITE">
+                                             <font>
+                                                <Font name="Arial Bold" size="22.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="181.0" layoutY="7.0" styleClass="shadow" text="Republic of the Philippines" textFill="WHITE">
+                                             <font>
+                                                <Font name="Arial" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="156.0" layoutY="48.0" styleClass="shadow" text="The National Engineering University" textFill="RED">
+                                             <font>
+                                                <Font name="Arial" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="177.0" layoutY="63.0" styleClass="shadow" text="ARASOF-Nasugbu Campus" textFill="WHITE">
+                                             <font>
+                                                <Font name="Arial" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="118.0" layoutY="83.0" styleClass="shadow" text="R. Martinez St., Brgy. Bucana, Nasugbu Batangas" textFill="WHITE">
+                                             <font>
+                                                <Font name="Arial" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <ImageView fitHeight="84.0" fitWidth="86.0" layoutX="21.0" layoutY="10.0">
+                                             <image>
+                                                <Image url="@../Images/BatStateU-NEU-Logo.png" />
+                                             </image>
+                                          </ImageView>
+                                          <Label alignment="CENTER" layoutX="456.0" layoutY="10.0" prefHeight="85.0" prefWidth="358.0" styleClass="shadow" text="ONLINE REGISTRATION" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                                             <font>
+                                                <Font name="Arial Bold" size="32.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </Pane>
+                                    <TableView fx:id="enrollTable" layoutX="26.0" layoutY="151.0" prefHeight="196.0" prefWidth="604.0" styleClass="shadow">
+                                      <columns>
+                                        <TableColumn fx:id="codeCol" editable="false" prefWidth="70.0" sortable="false" text="Code" />
+                                        <TableColumn fx:id="subjectNameCol" editable="false" prefWidth="128.0" sortable="false" text="Subject Name" />
+                                          <TableColumn fx:id="unitsCol" editable="false" prefWidth="54.0" sortable="false" text="Units" />
+                                          <TableColumn fx:id="lectureCol" editable="false" prefWidth="70.0" sortable="false" text="Lecture" />
+                                          <TableColumn fx:id="labCol" editable="false" prefWidth="74.0" sortable="false" text="Lab" />
+                                          <TableColumn fx:id="acadTrackCol" editable="false" prefWidth="98.0" sortable="false" text="Academic Track" />
+                                          <TableColumn fx:id="prerequisiteCol" editable="false" prefWidth="109.0" sortable="false" text="Prerequisite" />
+                                      </columns>
+                                    </TableView>
+                                    <Label alignment="CENTER" layoutX="662.0" layoutY="151.0" text="Enrollment Status">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="enrollent2" alignment="CENTER" layoutX="646.0" layoutY="170.0" prefHeight="16.0" prefWidth="158.0" text="(Enrollment Status)" textFill="#4bad58" wrapText="true">
+                                       <font>
+                                          <Font name="Arial Bold" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="semesterEnroll" alignment="CENTER" layoutX="274.0" layoutY="105.0" prefHeight="26.0" prefWidth="280.0" text="(Semester)">
+                                       <font>
+                                          <Font name="Arial Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="acadYearEnroll" alignment="CENTER" layoutX="274.0" layoutY="125.0" prefHeight="26.0" prefWidth="280.0" text="(AY)">
+                                       <font>
+                                          <Font name="Arial Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="enrollBut" layoutX="358.0" layoutY="374.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="113.0" style="-fx-background-color: #4bad58;" styleClass="shadow" text="ENROLL" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Arial Bold" size="12.0" />
+                                       </font>
+                                    </Button>
+                                    <ComboBox fx:id="sections" layoutX="650.0" layoutY="249.0" prefWidth="150.0" />
+                                    <Label alignment="CENTER" layoutX="669.0" layoutY="224.0" text="Current Section">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="74.0" layoutY="364.0" text="Total Units">
+                                       <font>
+                                          <Font name="Arial" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="units" layoutX="98.0" layoutY="389.0" text="(units)" />
+                                    <StackPane fx:id="pickMajor" layoutX="183.0" layoutY="45.0" prefHeight="316.0" prefWidth="461.0">
+                                       <children>
+                                          <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #FFFFF0; -fx-background-radius: 25;" styleClass="shadow">
+                                             <children>
+                                                <Label alignment="CENTER" layoutX="91.0" layoutY="98.0" prefHeight="40.0" prefWidth="280.0" text="SELECT YOUR MAJOR" textAlignment="CENTER" wrapText="true">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="21.0" />
+                                                   </font>
+                                                </Label>
+                                                <ImageView fitHeight="84.0" fitWidth="86.0" layoutX="47.0" layoutY="14.0">
+                                                   <image>
+                                                      <Image url="@../Images/BatStateU-NEU-Logo.png" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label alignment="CENTER" layoutX="143.0" layoutY="28.0" styleClass="shadow" text="Batangas State University">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="22.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="183.0" layoutY="54.0" styleClass="shadow" text="The National Engineering University" textFill="RED">
+                                                   <font>
+                                                      <Font name="Arial" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label layoutX="204.0" layoutY="69.0" styleClass="shadow" text="ARASOF-Nasugbu Campus">
+                                                   <font>
+                                                      <Font name="Arial" size="12.0" />
+                                                   </font>
+                                                </Label>
+                                                <Button fx:id="confirmBut" layoutX="189.0" layoutY="276.0" mnemonicParsing="false" style="-fx-background-color: #4bad58;" text="CONFIRM">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="13.0" />
+                                                   </font>
+                                                </Button>
+                                                <ComboBox fx:id="majoringCombo" layoutX="133.0" layoutY="158.0" prefHeight="25.0" prefWidth="196.0" promptText="(Select Major)" styleClass="shadow" />
+                                                <Label fx:id="linkMajor" layoutX="96.0" layoutY="228.0" text="* Learn more about the academic tracks. Click here!" textFill="#575454">
+                                                   <font>
+                                                      <Font name="Arial Bold" size="11.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </Pane>
+                                       </children>
+                                    </StackPane>
+                                 </children>
+                              </Pane>
+                           </children></AnchorPane>
+                     </content>
+                  </Tab>
+                  <Tab fx:id="schedule" text="Schedules">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="downloads" text="Downloads">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="links" text="Links">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+                  <Tab fx:id="contacts" text="Contacts">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+            <ImageView fx:id="studentPhoto" depthTest="DISABLE" fitHeight="149.0" fitWidth="149.0" layoutX="72.0" layoutY="197.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 1;">
                <image>
                   <Image url="@../Images/BatStateU-NEU-Logo.png" />
                </image>
             </ImageView>
-            <Label layoutX="19.0" layoutY="78.0" text="Batangas State University" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="22.0" />
-               </font>
-            </Label>
-            <Label fx:id="date" layoutX="684.0" layoutY="16.0" prefHeight="26.0" prefWidth="187.0" text="(Date)" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Label>
-            <Label fx:id="time" layoutX="684.0" layoutY="39.0" prefHeight="26.0" prefWidth="187.0" text="(Time)" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="19.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
-      <Button fx:id="changePassword" layoutX="79.0" layoutY="137.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="149.0" style="-fx-background-radius: 25;" text="Change Password" />
-      <Button fx:id="signOut" layoutX="645.0" layoutY="137.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="149.0" style="-fx-background-radius: 25;" text="Sign Out" />
-      <ImageView fitHeight="212.0" fitWidth="886.0" layoutY="191.0">
-         <image>
-            <Image url="@../Images/204107.jpg" />
-         </image>
-      </ImageView>
-      <Pane layoutY="216.0" prefHeight="163.0" prefWidth="886.0" style="-fx-background-color: #f8f9fb; -fx-opacity: 0.8;">
-         <children>
-            <Polyline fill="#f19a1f" layoutX="50.0" layoutY="60.0" points="-50.0, -40.0, 309.0, 127.0, -50.0, 127.0, -50.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" style="-fx-opacity: 1;" />
-            <ImageView fx:id="studentPhoto" fitHeight="149.0" fitWidth="149.0" layoutX="65.0" layoutY="-14.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="studentName" layoutX="231.0" layoutY="12.0" prefHeight="26.0" prefWidth="216.0" text="(Name)">
-               <font>
-                  <Font name="Arial Bold" size="16.0" />
-               </font>
-            </Label>
-            <Label fx:id="semester" layoutX="584.0" layoutY="12.0" prefHeight="26.0" prefWidth="280.0" text="(Semester A.Y)">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Label>
-            <ImageView layoutX="562.0" layoutY="15.0">
-               <image>
-                  <Image url="@../Images/play.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="semester1" layoutX="584.0" layoutY="36.0" prefHeight="34.0" prefWidth="280.0" text="College of Infomatics and Computing Sciences - ARASOF - Nasugbu Campus" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Label>
-            <ImageView layoutX="562.0" layoutY="36.0">
-               <image>
-                  <Image url="@../Images/play.png" />
-               </image>
-            </ImageView>
-            <Label fx:id="courseYearLevel" layoutX="584.0" layoutY="70.0" prefHeight="26.0" prefWidth="280.0" text="(course) - (Year Level)">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Label>
-            <Label fx:id="enrollent" layoutX="584.0" layoutY="94.0" prefHeight="16.0" prefWidth="280.0" text="(Enrollment Status)" textFill="#4bad58" wrapText="true">
-               <font>
-                  <Font name="Arial Bold" size="12.0" />
-               </font>
-            </Label>
-            <ImageView layoutX="562.0" layoutY="94.0">
-               <image>
-                  <Image url="@../Images/play.png" />
-               </image>
-            </ImageView>
-            <ImageView layoutX="562.0" layoutY="75.0">
-               <image>
-                  <Image url="@../Images/play.png" />
-               </image>
-            </ImageView>
-         </children>
-      </Pane>
-      <Polyline fill="#d2232a" layoutX="308.0" layoutY="443.0" points="-308.0, -40.0, 50.0, -40.0, -308.0, -179.0, -308.0, -40.0" strokeType="INSIDE" strokeWidth="0.0" />
-      <MenuButton fx:id="missionVision" layoutX="58.0" layoutY="403.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="293.0" style="-fx-background-color: transparent;" text="University Mission, Vision, and Core Values">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-         <font>
-            <Font name="Arial" size="13.0" />
-         </font>
-      </MenuButton>
-      <Button fx:id="hymn" layoutX="371.0" layoutY="405.0" mnemonicParsing="false" style="-fx-background-color: Transparent;" text="University Hymn">
-         <font>
-            <Font name="Arial" size="13.0" />
-         </font>
-      </Button>
-      <MenuButton fx:id="readFirst" layoutX="499.0" layoutY="403.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="101.0" style="-fx-background-color: transparent;" text="Read First">
-         <items>
-            <MenuItem mnemonicParsing="false" text="Action 1" />
-            <MenuItem mnemonicParsing="false" text="Action 2" />
-         </items>
-         <font>
-            <Font name="Arial" size="13.0" />
-         </font>
-      </MenuButton>
-      <Pane layoutX="44.0" layoutY="446.0" prefHeight="196.0" prefWidth="381.0" style="-fx-background-color: #FFFFF0;">
-         <children>
-            <Label layoutX="16.0" layoutY="16.0" text="Advisory" textFill="RED">
-               <graphic>
-                  <ImageView>
-                     <image>
-                        <Image url="@../Images/exclamation-mark.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Label>
-            <TextFlow layoutX="15.0" layoutY="39.0" prefHeight="149.0" prefWidth="351.0">
+            <Pane fx:id="missionText" layoutX="17.0" layoutY="442.0" prefHeight="200.0" prefWidth="423.0" style="-fx-border-color: &quot;#d1d1d1&quot;; -fx-border-width: 2; -fx-border-radius: 10;">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Red Spartan students, please be informed that the">
+                  <ImageView fitHeight="139.0" fitWidth="138.0" layoutX="143.0" layoutY="31.0" style="-fx-opacity: 0.3;">
+                     <image>
+                        <Image url="@../Images/BatStateU-NEU-Logo.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="149.0" layoutY="21.0" text="University Mission">
                      <font>
-                        <Font size="15.0" />
+                        <Font size="16.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="shadow-pane" text=" official email accounts">
+                  </Label>
+                  <Label layoutX="33.0" layoutY="53.0" prefHeight="127.0" prefWidth="359.0" text="A university committed to producing leaders by providing a 21stcentury learning environment through innovations in education,multidisciplinary research, and community and industry partnerships inorder to nurture the spirit of nationhood, propel the national economy,and engage the world for sustainable development." textAlignment="CENTER" wrapText="true">
                      <font>
-                        <Font name="System Bold" size="15.0" />
+                        <Font name="Arial" size="15.0" />
                      </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" that are being used by the BatStateU academic community are those that are under the domain">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" @g.batstate-u.edu.ph">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" More so,">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" do not share">
-                     <font>
-                        <Font name="System Bold" size="15.0" />
-                     </font>
-                  </Text>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" the account passwords of your student portal and G suite email account. Stay safe Red Spartans!">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Text>
+                  </Label>
                </children>
-            </TextFlow>
-         </children>
-      </Pane>
-      <Pane layoutX="461.0" layoutY="446.0" prefHeight="196.0" prefWidth="381.0" style="-fx-background-color: #FFFFF0;">
-         <children>
-            <Label layoutX="14.0" layoutY="14.0" text="Office of Student Affairs Services" />
-            <Label fx:id="policies" layoutX="27.0" layoutY="51.0" text="Policies on Shifters and Transferees">
-               <graphic>
-                  <ImageView>
+            </Pane>
+            <Pane fx:id="visionText" layoutX="448.0" layoutY="442.0" prefHeight="200.0" prefWidth="423.0" style="-fx-border-color: &quot;#d1d1d1&quot;; -fx-border-width: 2; -fx-border-radius: 10;">
+               <children>
+                  <ImageView fitHeight="139.0" fitWidth="138.0" layoutX="154.0" layoutY="31.0" style="-fx-opacity: 0.3;">
                      <image>
-                        <Image url="@../Images/book.png" />
+                        <Image url="@../Images/BatStateU-NEU-Logo.png" />
                      </image>
                   </ImageView>
-               </graphic>
-            </Label>
-            <Label fx:id="SAS" layoutX="27.0" layoutY="81.0" text=" Student Affairs Services (SAS) Continuity Plan AY 2021 - 2022">
-               <graphic>
-                  <ImageView>
-                     <image>
-                        <Image url="@../Images/book.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Label>
+                  <Label layoutX="153.0" layoutY="23.0" text="University Vision">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="43.0" layoutY="52.0" prefHeight="40.0" prefWidth="359.0" text="A premier national university that develops leaders in the globalknowledge economy." textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="Arial" size="15.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="153.0" layoutY="109.0" prefHeight="25.0" prefWidth="117.0" text="Core Values" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" layoutX="5.0" layoutY="134.0" prefHeight="40.0" prefWidth="412.0" text="• Patriotism • Service • Integrity • Resilience • Excellence • Faith" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="Arial" size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <ToggleButton fx:id="missionVision" layoutX="27.0" layoutY="408.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="315.0" style="-fx-background-color: transparent;" text="University Mission, Vision, and Core Values">
+               <font>
+                  <Font name="Arial" size="13.0" />
+               </font>
+            </ToggleButton>
+            <Pane fx:id="advisoryPane" layoutX="38.0" layoutY="665.0" prefHeight="196.0" prefWidth="381.0" style="-fx-background-color: #FFFFF0;" styleClass="shadow">
+               <children>
+                  <Label layoutX="16.0" layoutY="16.0" text="Advisory" textFill="RED">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../Images/exclamation-mark.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <TextFlow layoutX="15.0" layoutY="39.0" prefHeight="149.0" prefWidth="351.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Red Spartan students, please be informed that the">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="shadow-pane" text=" official email accounts">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" that are being used by the BatStateU academic community are those that are under the domain">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" @g.batstate-u.edu.ph">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" More so,">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" do not share">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" the account passwords of your student portal and G suite email account. Stay safe Red Spartans!">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </TextFlow>
+               </children>
+            </Pane>
+            <Pane fx:id="policyPane" layoutX="469.0" layoutY="665.0" prefHeight="196.0" prefWidth="381.0" style="-fx-background-color: #FFFFF0;" styleClass="shadow">
+               <children>
+                  <Label layoutX="14.0" layoutY="14.0" text="Office of Student Affairs Services" />
+                  <Label fx:id="policies" layoutX="27.0" layoutY="51.0" text="Policies on Shifters and Transferees">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../Images/book.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <Label fx:id="SAS" layoutX="27.0" layoutY="81.0" text=" Student Affairs Services (SAS) Continuity Plan AY 2021 - 2022">
+                     <graphic>
+                        <ImageView>
+                           <image>
+                              <Image url="@../Images/book.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+               </children>
+            </Pane>
+            <ImageView fx:id="control" layoutX="318.0" layoutY="412.0">
+               <image>
+                  <Image url="@../Images/arrow-down-sign-to-navigate.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
-      <TabPane layoutY="654.0" prefHeight="452.0" prefWidth="886.0" tabClosingPolicy="UNAVAILABLE">
-         <tabs>
-            <Tab fx:id="home" text="Home">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="352.0" prefWidth="886.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="enrollment" text="Enrollment">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="schedule" text="Schedules">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="downloads" text="Downloads">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="links" text="Links">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-            <Tab fx:id="contacts" text="Contacts">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
    </children>
 </AnchorPane>
