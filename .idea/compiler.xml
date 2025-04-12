@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="EnrollmentSystem" options="--add-reads org.enrolment.enrollmentsystem=ALL-UNNAMED" />
+      <module name="EnrollmentSystem" options="--add-reads org.enrolment.enrollmentsystem=ALL-UNNAMED --add-exports javafx.graphics/com.sun.glass.ui=org.enrolment.enrollmentsystem" />
     </option>
   </component>
 </project>

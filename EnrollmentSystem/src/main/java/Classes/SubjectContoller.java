@@ -5,16 +5,19 @@ import GettersSetters.Subject;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
 import java.util.Optional;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
+
+import javax.swing.*;
+
+import static com.sun.glass.ui.Cursor.setVisible;
 
 public class SubjectContoller {
     private final javafx.collections.ObservableList<Subject> subjectList = javafx.collections.FXCollections.observableArrayList();
@@ -24,6 +27,9 @@ public class SubjectContoller {
 
     @FXML
     private Button Add;
+
+    @FXML
+    private Button delete;
 
     @FXML
     private TextField LabTXT;
@@ -114,6 +120,7 @@ public class SubjectContoller {
         // Initial load
         loadSubjectTable();
         addUpdateButtonToTable();
+
     }
 
     private void setEnterKeyListener(javafx.scene.control.Control control) {
@@ -397,5 +404,50 @@ public class SubjectContoller {
             e.printStackTrace();
         }
     }
+
+
+    @FXML
+    private void handleDeleteButtonAction() {
+        Subject selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
+        if (selectedSubject != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm Delete");
+            alert.setHeaderText(null);
+            alert.setContentText("Are you sure you want to delete this subject?");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                softDeleteSubject(selectedSubject.getSubId()); // replace with the actual getter method for ID
+                subjectTable.getItems().remove(selectedSubject); // visually remove from table
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a subject to delete.");
+            alert.showAndWait();
+        }
+    }
+
+    private void softDeleteSubject(int subjectId) {
+        String query = "UPDATE subjects SET isDeleted = 0 WHERE subjectId = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, subjectId);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Subject soft-deleted successfully.");
+            } else {
+                System.out.println("Subject not found or already deleted.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

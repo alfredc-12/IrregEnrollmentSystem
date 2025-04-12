@@ -84,6 +84,7 @@
                     </columns>
                 </TableView>
                 <Button fx:id="Add" layoutX="37.0" layoutY="166.0" mnemonicParsing="false" onAction="#addSubject" text="ADD" />
+            <Button fx:id="delete" layoutX="106.0" layoutY="166.0" mnemonicParsing="false" text="DELETE" onAction="#handleDeleteButtonAction" />
             </children>
         </Pane>
     </children>
